@@ -47,6 +47,7 @@ const BUILTIN_RULES: BuiltinRule[] = [
   { user_id: null, category_id: 'd2be5fb6-8463-4934-b920-abf63091a22d', keyword: 'ifood',        match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'd2be5fb6-8463-4934-b920-abf63091a22d', keyword: 'lanchonete',   match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'd2be5fb6-8463-4934-b920-abf63091a22d', keyword: 'padaria',      match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: 'd2be5fb6-8463-4934-b920-abf63091a22d', keyword: 'panificadora', match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'd2be5fb6-8463-4934-b920-abf63091a22d', keyword: 'pastelaria',   match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'd2be5fb6-8463-4934-b920-abf63091a22d', keyword: 'acougue',      match_type: 'contains', priority: 1, active: true },
   // Restaurante
@@ -54,16 +55,31 @@ const BUILTIN_RULES: BuiltinRule[] = [
   { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'pizzaria',     match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'churrascaria', match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'hamburgueria', match_type: 'contains', priority: 1, active: true },
-  // Supermercado
+  { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'outback',      match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'mcdonalds',    match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'mc donalds',   match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'burger king',  match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'bob\'s',       match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'giraffas',     match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '044e3340-58c6-4e34-ada5-efac1ff8b096', keyword: 'spoleto',      match_type: 'contains', priority: 1, active: true },
+  // Supermercado — specific chains before generic "mercado" to win tiebreaks
   { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'supermercado', match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'hortifruti',   match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'carrefour',    match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'atacadista',   match_type: 'contains', priority: 1, active: true },
+  // "atacado" kept for backwards-compat but "atacadista" now catches Assaí etc.
   { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'atacado',      match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'assai',        match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'extra',        match_type: 'word',     priority: 1, active: true },
+  // "mercado" uses word match so it doesn't fire on "mercadolivre" / "mercadopago"
+  { user_id: null, category_id: '985de7e6-b623-4bcb-bbe3-3aa910b9cd8d', keyword: 'mercado',      match_type: 'word',     priority: 1, active: true },
   // Combustível
   { user_id: null, category_id: '11bd5484-48b9-4a6e-9ba5-78d6f671553b', keyword: 'gasolina',     match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '11bd5484-48b9-4a6e-9ba5-78d6f671553b', keyword: 'etanol',       match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '11bd5484-48b9-4a6e-9ba5-78d6f671553b', keyword: 'abastecimento',match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '11bd5484-48b9-4a6e-9ba5-78d6f671553b', keyword: 'diesel',       match_type: 'contains', priority: 1, active: true },
+  // "posto" uses word match to avoid e.g. "posto de saude"
+  { user_id: null, category_id: '11bd5484-48b9-4a6e-9ba5-78d6f671553b', keyword: 'posto',        match_type: 'word',     priority: 1, active: true },
   // Transporte
   { user_id: null, category_id: '5d20cc59-38fc-4413-b22c-ed9eadd14d81', keyword: 'uber',         match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '5d20cc59-38fc-4413-b22c-ed9eadd14d81', keyword: '99app',        match_type: 'contains', priority: 1, active: true },
@@ -112,13 +128,23 @@ const BUILTIN_RULES: BuiltinRule[] = [
   { user_id: null, category_id: '625030a7-ed49-42d4-94eb-2ee61b1a9d28', keyword: 'seguro',       match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '625030a7-ed49-42d4-94eb-2ee61b1a9d28', keyword: 'imposto',      match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: '625030a7-ed49-42d4-94eb-2ee61b1a9d28', keyword: 'multa',        match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '625030a7-ed49-42d4-94eb-2ee61b1a9d28', keyword: 'anuidade',     match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '625030a7-ed49-42d4-94eb-2ee61b1a9d28', keyword: 'inss',         match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '625030a7-ed49-42d4-94eb-2ee61b1a9d28', keyword: 'das mei',      match_type: 'contains', priority: 1, active: true },
+  { user_id: null, category_id: '625030a7-ed49-42d4-94eb-2ee61b1a9d28', keyword: 'mercadopago',  match_type: 'contains', priority: 1, active: true },
   // Serviços digitais
+  { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'mercadolivre', match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'google',       match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'microsoft',    match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'apple',        match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'chatgpt',      match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'openai',       match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'amazon',       match_type: 'contains', priority: 1, active: true },
+  // Telecom — word match to avoid false positives on common words
+  { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'claro',        match_type: 'word',     priority: 1, active: true },
+  { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'vivo',         match_type: 'word',     priority: 1, active: true },
+  { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'tim',          match_type: 'word',     priority: 1, active: true },
+  { user_id: null, category_id: 'c7ed306c-566a-417e-a765-ae27a9b1b8d3', keyword: 'oi ',          match_type: 'starts_with', priority: 1, active: true },
   // Vestuário
   { user_id: null, category_id: 'c9dfeb22-1ec4-4a26-9e36-92a36436af54', keyword: 'renner',       match_type: 'contains', priority: 1, active: true },
   { user_id: null, category_id: 'c9dfeb22-1ec4-4a26-9e36-92a36436af54', keyword: 'zara',         match_type: 'contains', priority: 1, active: true },
@@ -206,11 +232,13 @@ export function classifyTransaction(
 // ─── Fetch user rules from DB ─────────────────────────────────────────────────
 
 async function fetchUserRules(userId: string): Promise<CategoryRule[]> {
+  // Fetch user-specific rules AND system rules (user_id = NULL)
+  // User-specific rules beat system rules via tiebreak in classifyTransaction()
   const { data, error } = await supabase
     .from('category_rules')
     .select('*')
     .eq('active', true)
-    .eq('user_id', userId)
+    .or(`user_id.is.null,user_id.eq.${userId}`)
 
   if (error) throw new Error(error.message)
   return (data ?? []) as CategoryRule[]

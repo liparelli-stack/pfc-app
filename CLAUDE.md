@@ -19,22 +19,25 @@ No test runner is configured yet.
 
 ## Current Implementation State
 
-The codebase is at the **Vite + React scaffold stage**. Only the default template files exist in `src/`. The planned dependencies below are **not yet installed** and must be added before building any feature:
+All dependencies are installed. The following is built and functional:
 
-| Dependency | Purpose | Install command |
-|---|---|---|
-| `@supabase/supabase-js` | Database client | `npm install @supabase/supabase-js` |
-| `react-router-dom` | Routing | `npm install react-router-dom` |
-| `tailwindcss` | CSS | see shadcn/ui docs |
-| `shadcn/ui` | Component library | `npx shadcn@latest init` |
+**Auth:** Supabase Auth with `AuthContext`, `RequireAuth` guard, Login / ForgotPassword / ResetPassword pages.
 
-All architecture described below is **planned**. What currently exists:
-- `src/lib/utils.ts` — `cn()` helper
-- `src/lib/supabase.ts` — Supabase client
-- `src/router.tsx` — React Router with all 8 routes
-- `src/components/layout/` — `AppLayout`, `Sidebar`, `Topbar` (functional)
-- `src/pages/` — all 8 pages as placeholders ("em construção")
-- Nothing in `src/services/` or `src/components/ui/` yet
+**Services (all implemented):**
+- `auth.service.ts` — sign in, sign out, password reset
+- `banks.service.ts`, `cards.service.ts` — CRUD for banks and credit cards
+- `categories.service.ts` — CRUD for categories + category rules
+- `transactions.service.ts` — upsert bank/card transactions, manual category override
+- `transactions-view.service.ts` — unified read queries across both transaction tables
+- `classification.service.ts` — keyword-based auto-classifier with built-in rules + user rules
+- `dashboard.service.ts` — aggregations for summary cards and charts
+- `import-history.service.ts` — import batch tracking
+- `import/csv.parser.ts` — encoding detection (UTF-8 / Windows-1252), FNV-1a deduplication hash, parser routing
+- `import/parsers/` — Itaú bank, Itaú card, Nubank bank, Nubank card, Bradesco bank
+
+**Pages (all functional):** Dashboard (with Recharts charts), Banks, Cards, Transactions, Import, Categories, Budget (placeholder), Analysis (placeholder), Settings (placeholder).
+
+**Not yet built:** `budget.service.ts`, `llm.service.ts`, `analysis.service.ts`, `LlmConfigForm`, `AnalysisForm/Result/History`, `BudgetTable/BudgetVsActual`.
 
 ---
 
@@ -94,70 +97,56 @@ building a personal budget, and requesting AI-powered financial analysis.
 ## Project Structure
 ```
 pfc-app/
-├── CLAUDE.md                        ← this file
+├── CLAUDE.md
 ├── .env.local                       ← Supabase keys (never commit)
-├── index.html
 ├── vite.config.ts
 ├── tailwind.config.ts
 ├── components.json                  ← shadcn/ui config
 │
 ├── src/
 │   ├── main.tsx
-│   ├── App.tsx
-│   ├── router.tsx                   ← React Router routes
+│   ├── App.tsx                      ← wraps RouterProvider + AuthProvider + Toaster
+│   ├── router.tsx                   ← React Router; protected routes via RequireAuth
+│   │
+│   ├── contexts/
+│   │   └── AuthContext.tsx          ← session state via Supabase onAuthStateChange
 │   │
 │   ├── lib/
 │   │   ├── supabase.ts              ← Supabase client instance
-│   │   └── utils.ts                 ← shadcn/ui cn() helper + shared utils
+│   │   └── utils.ts                 ← cn() helper
 │   │
-│   ├── services/                    ← LAYER 2: all business logic here
+│   ├── services/                    ← LAYER 2: all business logic + DB calls
+│   │   ├── auth.service.ts
 │   │   ├── banks.service.ts
 │   │   ├── cards.service.ts
-│   │   ├── transactions.service.ts
 │   │   ├── categories.service.ts
-│   │   ├── budget.service.ts
-│   │   ├── llm.service.ts           ← LLM provider calls (Gemini, OpenAI, DeepSeek)
-│   │   ├── analysis.service.ts      ← builds prompt, calls llm.service, saves result
+│   │   ├── classification.service.ts ← keyword classifier + BUILTIN_RULES
+│   │   ├── dashboard.service.ts
+│   │   ├── import-history.service.ts
+│   │   ├── transactions.service.ts  ← upsert + manual override
+│   │   ├── transactions-view.service.ts ← unified read queries
+│   │   ├── budget.service.ts        ← NOT YET IMPLEMENTED
+│   │   ├── llm.service.ts           ← NOT YET IMPLEMENTED
+│   │   ├── analysis.service.ts      ← NOT YET IMPLEMENTED
 │   │   └── import/
-│   │       ├── csv.parser.ts        ← generic CSV normalizer
-│   │       └── parsers/             ← one file per bank format
+│   │       ├── csv.parser.ts        ← detectAndDecode + parseCSV + parser routing
+│   │       └── parsers/             ← itau-bank, itau-card, nubank-bank, nubank-card, bradesco-bank
 │   │
-│   ├── components/                  ← LAYER 3: React UI components
-│   │   ├── ui/                      ← shadcn/ui generated components (do not edit)
+│   ├── components/
+│   │   ├── ui/                      ← shadcn/ui generated (do not edit)
 │   │   ├── layout/
-│   │   │   ├── AppLayout.tsx        ← sidebar + topbar shell
+│   │   │   ├── AppLayout.tsx
+│   │   │   ├── RequireAuth.tsx      ← route guards (RequireAuth + RedirectIfAuth)
 │   │   │   ├── Sidebar.tsx
 │   │   │   └── Topbar.tsx
-│   │   ├── banks/
-│   │   │   ├── BankList.tsx
-│   │   │   └── BankForm.tsx
-│   │   ├── cards/
-│   │   │   ├── CardList.tsx
-│   │   │   └── CardForm.tsx
-│   │   ├── transactions/
-│   │   │   ├── TransactionTable.tsx
-│   │   │   └── TransactionFilters.tsx
-│   │   ├── import/
-│   │   │   └── CsvUploader.tsx
-│   │   ├── analysis/
-│   │   │   ├── AnalysisForm.tsx     ← period + source filters + LLM selector
-│   │   │   ├── AnalysisResult.tsx   ← renders summary, alerts, suggestions
-│   │   │   └── AnalysisHistory.tsx
-│   │   ├── llm/
-│   │   │   └── LlmConfigForm.tsx    ← provider + model + API key input
-│   │   └── budget/
-│   │       ├── BudgetTable.tsx
-│   │       └── BudgetVsActual.tsx
+│   │   ├── banks/, cards/, categories/, transactions/, import/
+│   │   └── dashboard/               ← SummaryCards, charts (Recharts), UncategorizedAlert
 │   │
-│   └── pages/                       ← one file per route
-│       ├── Dashboard.tsx
-│       ├── Banks.tsx
-│       ├── Cards.tsx
-│       ├── Transactions.tsx
-│       ├── Import.tsx
-│       ├── Analysis.tsx
-│       ├── Budget.tsx
-│       └── Settings.tsx             ← LLM config lives here
+│   └── pages/
+│       ├── Login.tsx, ForgotPassword.tsx, ResetPassword.tsx  ← public
+│       ├── Dashboard.tsx, Banks.tsx, Cards.tsx, Transactions.tsx
+│       ├── Import.tsx, Categories.tsx                        ← functional
+│       └── Analysis.tsx, Budget.tsx, Settings.tsx            ← placeholders
 ```
 
 ---
@@ -240,12 +229,12 @@ pfc-app/
 - Supabase client configured
 - Routing and layout shell
 
-### Phase 3 — CSV Import
+### Phase 3 — CSV Import ✅ Done
 - Upload and parse CSV files
 - Normalize to internal transaction format
 - Preserve origin traceability
 
-### Phase 4 — Classification Engine
+### Phase 4 — Classification Engine ✅ Done
 - Match descriptions to categories via rules
 - Manual override always available
 
@@ -261,6 +250,15 @@ pfc-app/
 ### Phase 7 — Budget
 - Monthly budget per category
 - Planned vs actual comparison
+
+---
+
+## Key Library Conventions
+- **Forms:** `react-hook-form` + `zod` for validation. Use shadcn/ui `<Form>` wrappers.
+- **Toasts:** `sonner` (`toast.success`, `toast.error`) — Toaster is mounted in `App.tsx`.
+- **Charts:** `recharts` — used in Dashboard components only.
+- **Icons:** `lucide-react`.
+- **Adding shadcn/ui components:** `npx shadcn@latest add <component>` — output goes to `src/components/ui/`.
 
 ---
 

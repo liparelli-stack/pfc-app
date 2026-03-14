@@ -260,6 +260,8 @@ export function Analysis() {
 
         <TabsContent value="classification">
           <ClassificationTab
+            provider={selectedProvider}
+            apiKey={currentApiKey}
             periodStart={periodStartDate}
             periodEnd={periodEndDate}
           />

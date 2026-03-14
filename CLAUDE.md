@@ -4,307 +4,243 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## Development Commands
+## 1. IDENTIDADE DO PROJETO
+
+- **Nome:** MGB - Money Get Back Personal Control Finance
+- **Repositório:** https://github.com/liparelli-stack/pfc-app
+- **Deploy:** https://mgbpcf.netlify.app
+- **Supabase projeto:** moneygetback_appy
+- **Supabase URL:** https://inagloqzkzgubfqrlwxb.supabase.co
+
+---
+
+## 2. STACK COMPLETA
+
+| Categoria       | Ferramenta                    |
+|----------------|-------------------------------|
+| Frontend        | React 19 + Vite + TypeScript  |
+| CSS             | Tailwind CSS v3 + shadcn/ui   |
+| Banco de dados  | Supabase (PostgreSQL + Auth)  |
+| Roteamento      | React Router DOM v7           |
+| Formulários     | React Hook Form + Zod         |
+| Gráficos        | Recharts                      |
+| CSV parsing     | PapaParse                     |
+| Markdown        | react-markdown                |
+| Toasts          | Sonner                        |
+| Ícones          | lucide-react                  |
+
+---
+
+## 3. AMBIENTE DE DESENVOLVIMENTO
+
+- Windows 11 + WSL2 / Ubuntu 24.04 LTS
+- Claude Code v2.1.70
+- Node.js v20 + npm
+- Projeto em: `~/projetos/pfc-app`
 
 ```bash
-npm run dev       # Start Vite dev server (localhost:5173)
-npm run build     # TypeScript check + Vite production build
-npm run lint      # ESLint check
-npm run preview   # Preview production build locally
+npm run dev       # Vite dev server → localhost:5173
+npm run build     # TypeScript check + build produção
+npm run lint      # ESLint
+npm run preview   # Preview do build
 ```
 
-No test runner is configured yet.
+Sem test runner configurado.
 
 ---
 
-## Current Implementation State
+## 4. ARQUITETURA — 3 CAMADAS
 
-All dependencies are installed. The following is built and functional:
+| Camada | Localização | Responsabilidade |
+|--------|-------------|-----------------|
+| 1 — Dados | Supabase / PostgreSQL | Persistência, RLS, triggers |
+| 2 — Serviços | `src/services/` | Lógica de negócio, chamadas Supabase e LLM APIs |
+| 3 — UI | `src/pages/` + `src/components/` | React, formulários, navegação |
 
-**Auth:** Supabase Auth with `AuthContext`, `RequireAuth` guard, Login / ForgotPassword / ResetPassword pages.
-
-**Services (all implemented):**
-- `auth.service.ts` — sign in, sign out, password reset
-- `banks.service.ts`, `cards.service.ts` — CRUD for banks and credit cards
-- `categories.service.ts` — CRUD for categories + category rules
-- `transactions.service.ts` — upsert bank/card transactions, manual category override
-- `transactions-view.service.ts` — unified read queries across both transaction tables
-- `classification.service.ts` — keyword-based auto-classifier with built-in rules + user rules
-- `dashboard.service.ts` — aggregations for summary cards and charts
-- `import-history.service.ts` — import batch tracking
-- `import/csv.parser.ts` — encoding detection (UTF-8 / Windows-1252), FNV-1a deduplication hash, parser routing
-- `import/parsers/` — Itaú bank, Itaú card, Nubank bank, Nubank card, Bradesco bank
-
-**Pages (all functional):** Dashboard (with Recharts charts), Banks, Cards, Transactions, Import, Categories, Budget (placeholder), Analysis (placeholder), Settings (placeholder).
-
-**Also built:** `budget.service.ts`, `llm.service.ts`, `analysis.service.ts`, `src/components/ai/` (AISettings, ChatTab, AnalysisTab, ClassificationTab, SuggestionsTab), `src/components/budget/` (BudgetChart, BudgetForm, BudgetKPICards, BudgetMatrix, BudgetTable).
-
-**Not yet built:** Settings page (LLM config UI wiring), anything marked as placeholder in future phases.
+**Regra fundamental:** componentes React nunca chamam Supabase ou APIs LLM diretamente. Sempre via service layer.
 
 ---
 
-# Personal Finance Control (PFC)
-## Project Overview
-A personal finance management web application for FL (CognosLabAlpha).
-Allows importing bank statements and credit card bills, classifying expenses,
-building a personal budget, and requesting AI-powered financial analysis.
+## 5. PÁGINAS E ROTAS
+
+| Arquivo | Rota | Descrição |
+|---------|------|-----------|
+| `Login.tsx` | `/login` | Login com senha ou Google |
+| `Register.tsx` | `/register` | Cadastro de novo usuário |
+| `ForgotPassword.tsx` | `/esqueci-senha` | Solicitar reset de senha |
+| `ResetPassword.tsx` | `/redefinir-senha` | Redefinir senha via link Supabase |
+| `Dashboard.tsx` | `/` | Resumo financeiro com gráficos |
+| `Banks.tsx` | `/bancos` | CRUD de bancos |
+| `Cards.tsx` | `/cartoes` | CRUD de cartões de crédito |
+| `Transactions.tsx` | `/transacoes` | Listagem e classificação manual |
+| `Import.tsx` | `/importar` | Upload e importação de CSV |
+| `Categories.tsx` | `/categorias` | CRUD de categorias e regras |
+| `Analysis.tsx` | `/analise` | Análise IA (chat, análise, sugestões, classificação) |
+| `Budget.tsx` | `/orcamento` | Orçamento mensal vs realizado |
+| `Settings.tsx` | `/configuracoes` | Configurações LLM e preferências |
+
+Rotas públicas: `/login`, `/register`, `/esqueci-senha`, `/redefinir-senha`.
+Demais rotas: protegidas por `RequireAuth`.
 
 ---
 
-## AI Ecosystem & Roles
-- **Eva (Claude Pro)** = Principal Reasoning Core. All architecture decisions go through Eva.
-- **Gemini Pro** = Co-creation and brainstorming (not coding).
-- **Qwen** = Primary technical validation inside this pipeline.
-- **DeepSeek** = Secondary technical validation inside this pipeline.
-- FL makes all final decisions. Eva never imposes conclusions.
+## 6. SERVICES
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `auth.service.ts` | signIn, signUp, signOut, Google OAuth, magic link, reset/update password |
+| `banks.service.ts` | CRUD de bancos |
+| `cards.service.ts` | CRUD de cartões de crédito |
+| `categories.service.ts` | CRUD de categorias + regras de classificação |
+| `classification.service.ts` | Motor de classificação por keywords (contains, starts_with, exact, word) |
+| `transactions.service.ts` | Upsert de transações banco/cartão, override manual de categoria |
+| `transactions-view.service.ts` | Queries unificadas de leitura (banco + cartão) |
+| `dashboard.service.ts` | Agregações para cards de resumo e gráficos |
+| `import-history.service.ts` | Registro de lotes de importação |
+| `budget.service.ts` | CRUD de orçamento mensal, cálculo planejado vs realizado |
+| `llm.service.ts` | Configuração de provedores LLM, chat, análise financeira |
+| `analysis.service.ts` | Análise IA: busca transações, monta prompt, chama LLM, salva resultado |
+| `import/csv.parser.ts` | Detecção de encoding (UTF-8/Windows-1252), roteamento para parsers |
+| `import/parsers/` | Parsers específicos por banco/cartão (ver seção 8) |
 
 ---
 
-## Architecture: 3-Layer Pattern
+## 7. TABELAS SUPABASE
 
-### Layer 1 — Data (Supabase / PostgreSQL)
-- All tables, policies, and data persistence live here.
-- Never put business logic in this layer.
+Todas as tabelas têm RLS habilitado. Todas referenciam `auth.users(id)` via `user_id`.
 
-### Layer 2 — Service (`src/services/`)
-- Business logic, validation rules, external integrations (parsers, LLM APIs).
-- Bridge between data and application layers.
-- All Supabase and LLM API calls happen here — never from React components directly.
+### `banks`
+`id, user_id, name, short_name, logo_url, active, created_at, deleted_at`
 
-### Layer 3 — Application (`src/` React)
-- UI, user interaction flows, calls to service layer only.
-- No direct Supabase or LLM API calls from this layer.
+### `credit_cards`
+`id, user_id, bank_id, name, last_four, closing_day, due_day, credit_limit, active, created_at, deleted_at`
+
+### `categories`
+`id, user_id (nullable — NULL = sistema), name, icon, color, active, created_at, deleted_at`
+
+### `category_rules`
+`id, user_id (nullable — NULL = global), category_id, keyword, match_type (contains|starts_with|exact|word), priority, active, created_at`
+- 198 regras globais (user_id = NULL)
+
+### `bank_transactions`
+`id, user_id, bank_id, category_id, date, description, amount, type (debit|credit), balance, auto_classified, notes, import_hash, import_id, reference_month, created_at, deleted_at`
+
+### `card_transactions`
+`id, user_id, card_id, category_id, date, description, amount, installment_current, installment_total, auto_classified, notes, import_hash, import_id, reference_month, created_at, deleted_at`
+
+### `budget`
+`id, user_id, category_id, year, month, amount, is_base, created_at, updated_at`
+- `is_base = true`: valor base recorrente; `is_base = false`: override pontual do mês
+
+### `import_history`
+`id, user_id, type (bank|card), origin_id, origin_name, file_name, reference_month, total_rows, imported_rows, duplicate_rows, error_rows, status (success|partial|error), created_at`
+
+### `user_llm_configs`
+`id, user_id, provider (gemini|openai|deepseek), display_name, api_key (text), api_key_enc (bytea), model, is_default, active, created_at, updated_at`
+
+### `ai_analyses`
+`id, user_id, llm_config_id, source_type (card|bank|both), source_ids[], period_from, period_to, transaction_count, total_amount, prompt_text, analysis_summary, alerts (jsonb), suggestions (jsonb), status (pending|processing|completed|error), error_message, created_at, completed_at`
 
 ---
 
-## Tech Stack
-| Category        | Tool           | Version   | Environment |
-|----------------|----------------|-----------|-------------|
-| OS             | Windows 11     | 25H2      | Host        |
-| Virtualization | WSL2           | 2.6.2.0   | Windows     |
-| Linux          | Ubuntu         | 24.04 LTS | WSL         |
-| Runtime        | Node.js        | v20.20.1  | WSL         |
-| Package Manager| npm            | 10.8.2    | WSL         |
-| Version Control| Git            | 2.43.0    | WSL         |
-| Containers     | Docker Engine  | 29.2.1    | WSL         |
-| AI CLI         | Claude Code    | v2.1.70   | WSL         |
-| Database       | Supabase       | cloud     | Production  |
-| Frontend       | React + Vite   | latest    | WSL         |
-| UI Components  | shadcn/ui      | latest    | WSL         |
-| CSS            | Tailwind CSS   | v3        | WSL         |
-| Deploy         | Netlify        | cloud     | Production  |
+## 8. PARSERS DE IMPORTAÇÃO
 
----
-
-## Project Structure
-```
-pfc-app/
-├── CLAUDE.md
-├── .env.local                       ← Supabase keys (never commit)
-├── vite.config.ts
-├── tailwind.config.ts
-├── components.json                  ← shadcn/ui config
-│
-├── src/
-│   ├── main.tsx
-│   ├── App.tsx                      ← wraps RouterProvider + AuthProvider + Toaster
-│   ├── router.tsx                   ← React Router; protected routes via RequireAuth
-│   │
-│   ├── contexts/
-│   │   └── AuthContext.tsx          ← session state via Supabase onAuthStateChange
-│   │
-│   ├── lib/
-│   │   ├── supabase.ts              ← Supabase client instance
-│   │   └── utils.ts                 ← cn() helper
-│   │
-│   ├── services/                    ← LAYER 2: all business logic + DB calls
-│   │   ├── auth.service.ts
-│   │   ├── banks.service.ts
-│   │   ├── cards.service.ts
-│   │   ├── categories.service.ts
-│   │   ├── classification.service.ts ← keyword classifier + BUILTIN_RULES
-│   │   ├── dashboard.service.ts
-│   │   ├── import-history.service.ts
-│   │   ├── transactions.service.ts  ← upsert + manual override
-│   │   ├── transactions-view.service.ts ← unified read queries
-│   │   ├── budget.service.ts        ← NOT YET IMPLEMENTED
-│   │   ├── llm.service.ts           ← NOT YET IMPLEMENTED
-│   │   ├── analysis.service.ts      ← NOT YET IMPLEMENTED
-│   │   └── import/
-│   │       ├── csv.parser.ts        ← detectAndDecode + parseCSV + parser routing
-│   │       └── parsers/             ← itau-bank, itau-card, nubank-bank, nubank-card, bradesco-bank
-│   │
-│   ├── components/
-│   │   ├── ui/                      ← shadcn/ui generated (do not edit)
-│   │   ├── layout/
-│   │   │   ├── AppLayout.tsx
-│   │   │   ├── RequireAuth.tsx      ← route guards (RequireAuth + RedirectIfAuth)
-│   │   │   ├── Sidebar.tsx
-│   │   │   └── Topbar.tsx
-│   │   ├── banks/, cards/, categories/, transactions/, import/
-│   │   └── dashboard/               ← SummaryCards, charts (Recharts), UncategorizedAlert
-│   │
-│   └── pages/
-│       ├── Login.tsx, ForgotPassword.tsx, ResetPassword.tsx  ← public
-│       ├── Dashboard.tsx, Banks.tsx, Cards.tsx, Transactions.tsx
-│       ├── Import.tsx, Categories.tsx                        ← functional
-│       └── Analysis.tsx, Budget.tsx, Settings.tsx            ← placeholders
+Todos os parsers saem com o mesmo objeto normalizado:
+```ts
+{ date: "YYYY-MM-DD", description: string, amount: number,
+  type: "debit" | "credit", origin_id: string, origin_type: "bank" | "card" }
 ```
 
----
-
-## Database Schema
-
-### Core Tables
-- `banks` — registered banks per user
-- `credit_cards` — registered credit cards per user (may link to a bank)
-- `bank_transactions` — bank statement transactions (linked to bank)
-- `card_transactions` — credit card transactions (linked to card)
-- `categories` — expense categories (system defaults + user custom)
-- `category_rules` — auto-classification rules (keyword → category)
-- `budget` — monthly budget per category per user
-
-### LLM Integration Tables
-- `user_llm_configs` — LLM provider + encrypted API key per user (one per provider)
-- `ai_analyses` — full history of AI analyses requested, with results
-
-### Key Principles
-- Every transaction preserves origin (bank_id or card_id) — traceability is non-negotiable.
-- All tables have `user_id` referencing `auth.users(id)` — RLS enforced on all tables.
-- Soft delete preferred (`deleted_at`) over hard delete.
-- `import_hash` on transactions prevents duplicate imports.
-- API keys stored encrypted via pgcrypto (BYTEA) — never stored as plain text.
+| Parser | Formato | Separador | Encoding | Colunas |
+|--------|---------|-----------|----------|---------|
+| `nubank-card` | CSV com header | vírgula | UTF-8 | `date, title, amount` |
+| `nubank-bank` | CSV com header | vírgula | UTF-8 | `Data, Valor, Identificador, Descrição` |
+| `itau-card` | CSV com header | vírgula | Windows-1252 | `data, lançamento, valor` |
+| `itau-bank` | CSV sem header | ponto e vírgula | Windows-1252 | 3 colunas: data, descrição, valor |
+| `bradesco-bank` | CSV com header | ponto e vírgula | Windows-1252 | detectado automaticamente |
 
 ---
 
-## LLM Integration Module
+## 9. INTEGRAÇÕES LLM
 
-### Supported Providers
-| Provider  | Models (examples)                |
-|-----------|----------------------------------|
-| claude    | claude-sonnet-4-20250514         |
-| chatgpt   | gpt-4o                           |
-| gemini    | gemini-2.0-flash                 |
-| deepseek  | deepseek-chat                    |
+| Provider | Código | Modelo padrão |
+|----------|--------|---------------|
+| Anthropic | `claude` | `claude-sonnet-4-20250514` |
+| OpenAI | `chatgpt` | `gpt-4o` |
+| Google | `gemini` | `gemini-2.0-flash` |
+| DeepSeek | `deepseek` | `deepseek-chat` |
 
-### Analysis Flow
-1. User selects: period (from/to) + source type (card / bank / both) + specific accounts
-2. Service layer fetches transactions matching filters
-3. Service layer builds structured prompt with transaction summary
-4. Service layer calls selected LLM provider API
-5. LLM returns structured JSON: summary, alerts, suggestions
-6. Result stored in `ai_analyses` with full traceability
-7. React renders formatted analysis to user
+- API keys salvas em `user_llm_configs` (campo `api_key` texto ou `api_key_enc` bytea)
+- RLS garante que apenas o dono acessa sua key
+- Um único LLM padrão por usuário (`is_default = true`)
+- Toda análise é salva em `ai_analyses` independente de sucesso ou erro
 
-### LLM Response Structure (expected JSON)
-```json
-{
-  "summary": "string",
-  "alerts": [
-    { "category": "string", "amount": number, "message": "string" }
-  ],
-  "suggestions": [
-    { "title": "string", "description": "string", "estimated_saving": number }
-  ]
-}
+---
+
+## 10. MOTOR DE CLASSIFICAÇÃO
+
+- Regras em `category_rules` (globais: `user_id = NULL`; personalizadas: `user_id = <id>`)
+- Tipos de match: `contains`, `starts_with`, `exact`, `word`
+- Case insensitive, prioridade pelo campo `priority`
+- Regras do usuário têm precedência sobre globais
+- Implementado em `src/services/classification.service.ts`
+
+---
+
+## 11. IDENTIDADE VISUAL
+
+- Logo: `/public/LogoMGB.png` — usado com `src="/LogoMGB.png"` no Vite/Netlify
+- Cor primária: `blue-600` (`#2563EB`)
+- Fundo auth: `bg-gray-50`; cards auth: `bg-white rounded-2xl shadow-md`
+- Favicons: `favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`
+- Manifests: `site.webmanifest`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`
+
+---
+
+## 12. PADRÕES DO PROJETO
+
+- **Idioma:** português brasileiro para UI; inglês para código, variáveis, funções, arquivos
+- **Commits:** português
+- **Toasts:** `sonner` — `toast.success` / `toast.error`, posição `top-right`, `richColors`
+- **Formulários:** `react-hook-form` + `zod`, componentes shadcn/ui `<Form>`
+- **Exclusão:** sempre `AlertDialog` de confirmação; soft delete via `deleted_at`
+- **Gráficos:** `recharts` — apenas em componentes de Dashboard
+- **shadcn/ui:** adicionar via `npx shadcn@latest add <component>` → `src/components/ui/`
+- **RLS:** habilitado em todas as tabelas — nunca bypassar
+
+### Estrutura de componentes
 ```
-
-### Security Rules
-- API keys encrypted before insert, decrypted only inside service layer.
-- Keys never exposed to React layer.
-- RLS: only key owner can read/update their configs.
-- One default LLM per user enforced by database trigger.
-
----
-
-## Build Phases
-
-### Phase 1 — Foundation ✅ Schema ready
-- Supabase schema (core tables + LLM tables)
-- Bank and credit card registration UI
-
-### Phase 1b — LLM Integration ✅ Schema ready
-- user_llm_configs + ai_analyses tables
-- Trigger: single default LLM per user
-
-### Phase 2 — Project Bootstrap ✅ Structure ready
-- Vite + React + Tailwind + shadcn/ui
-- Supabase client configured
-- Routing and layout shell
-
-### Phase 3 — CSV Import ✅ Done
-- Upload and parse CSV files
-- Normalize to internal transaction format
-- Preserve origin traceability
-
-### Phase 4 — Classification Engine ✅ Done
-- Match descriptions to categories via rules
-- Manual override always available
-
-### Phase 5 — AI Analysis Screen ✅ Done
-- Filter: period + source type + accounts
-- LLM config panel in Settings
-- Display: summary, alerts, suggestions + history
-- Chat, Classification, Suggestions tabs implemented
-
-### Phase 6 — Consolidated Dashboard
-- Unified view: all banks + all cards
-- Filter by bank, card, category, period
-
-### Phase 7 — Budget ✅ Done
-- Monthly budget per category
-- Planned vs actual comparison (BudgetMatrix, BudgetTable, BudgetChart)
-
----
-
-## Key Library Conventions
-- **Forms:** `react-hook-form` + `zod` for validation. Use shadcn/ui `<Form>` wrappers.
-- **Toasts:** `sonner` (`toast.success`, `toast.error`) — Toaster is mounted in `App.tsx`.
-- **Charts:** `recharts` — used in Dashboard components only.
-- **Icons:** `lucide-react`.
-- **Adding shadcn/ui components:** `npx shadcn@latest add <component>` — output goes to `src/components/ui/`.
-
----
-
-## Coding Standards
-- English for all code, variables, functions, comments, and file names.
-- Portuguese only for user-facing UI text.
-- Component-based React (one component per file).
-- Service layer handles all Supabase and LLM API calls — never from components.
-- Always validate inputs in service layer before persisting.
-- Prefer explicit error handling over silent failures.
-- Use shadcn/ui components from `src/components/ui/` — do not edit them directly.
-- LLM calls must always save result to ai_analyses regardless of success/error.
-
----
-
-## CSV Import Rules
-All parsers must output this normalized object:
-```json
-{
-  "date": "YYYY-MM-DD",
-  "description": "string",
-  "amount": number,
-  "type": "debit | credit",
-  "origin_id": "bank_id or card_id",
-  "origin_type": "bank | card"
-}
+src/components/
+  ui/          ← shadcn/ui gerados (não editar)
+  layout/      ← AppLayout, Sidebar, Topbar, RequireAuth
+  ai/          ← AISettings + tabs/ (AnalysisTab, ChatTab, ClassificationTab, SuggestionsTab)
+  banks/       ← BankForm, BankList
+  budget/      ← BudgetChart, BudgetForm, BudgetKPICards, BudgetMatrix, BudgetTable
+  cards/       ← CardForm, CardList
+  categories/  ← CategoryForm, CategoryList, RulesManager
+  dashboard/   ← SummaryCards, charts, UncategorizedAlert
+  import/      ← ImportForm, ImportHistory
+  transactions/← TransactionList, CategoryOverride
 ```
 
 ---
 
-## Environment Variables (.env.local)
+## 13. VARIÁVEIS DE AMBIENTE
+
 ```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://inagloqzkzgubfqrlwxb.supabase.co
+VITE_SUPABASE_ANON_KEY=<anon_key>
 ```
-Never commit .env.local. Add to .gitignore.
+
+Arquivo: `.env.local` — nunca commitar.
 
 ---
 
-## FL Profile (Project Owner)
-- Systems analyst background (COBOL, BASIC, Clipper, Zim, HP-UX, DOS).
-- Current role: business consultant and systems architect.
-- Not an active programmer — acts as architect and decision-maker.
-- Prefers clear Portuguese explanations without unnecessary technical jargon.
-- All final decisions belong to FL.
+## 14. PROTOCOLO NOVO CHAT
+
+Para abrir novo chat com contexto completo:
+1. Copiar o conteúdo deste CLAUDE.md
+2. Colar no início do novo chat com:
+   > "Eva, novo chat do projeto MGB. Contexto completo abaixo:"
+3. Colar o CLAUDE.md
+4. Eva já tem todo o contexto para trabalhar

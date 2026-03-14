@@ -37,7 +37,9 @@ All dependencies are installed. The following is built and functional:
 
 **Pages (all functional):** Dashboard (with Recharts charts), Banks, Cards, Transactions, Import, Categories, Budget (placeholder), Analysis (placeholder), Settings (placeholder).
 
-**Not yet built:** `budget.service.ts`, `llm.service.ts`, `analysis.service.ts`, `LlmConfigForm`, `AnalysisForm/Result/History`, `BudgetTable/BudgetVsActual`.
+**Also built:** `budget.service.ts`, `llm.service.ts`, `analysis.service.ts`, `src/components/ai/` (AISettings, ChatTab, AnalysisTab, ClassificationTab, SuggestionsTab), `src/components/budget/` (BudgetChart, BudgetForm, BudgetKPICards, BudgetMatrix, BudgetTable).
+
+**Not yet built:** Settings page (LLM config UI wiring), anything marked as placeholder in future phases.
 
 ---
 
@@ -178,11 +180,12 @@ pfc-app/
 ## LLM Integration Module
 
 ### Supported Providers
-| Provider  | Models (examples)           |
-|-----------|-----------------------------|
-| gemini    | gemini-1.5-pro, gemini-2.0  |
-| openai    | gpt-4o, gpt-4-turbo         |
-| deepseek  | deepseek-chat               |
+| Provider  | Models (examples)                |
+|-----------|----------------------------------|
+| claude    | claude-sonnet-4-20250514         |
+| chatgpt   | gpt-4o                           |
+| gemini    | gemini-2.0-flash                 |
+| deepseek  | deepseek-chat                    |
 
 ### Analysis Flow
 1. User selects: period (from/to) + source type (card / bank / both) + specific accounts
@@ -238,18 +241,19 @@ pfc-app/
 - Match descriptions to categories via rules
 - Manual override always available
 
-### Phase 5 — AI Analysis Screen
+### Phase 5 — AI Analysis Screen ✅ Done
 - Filter: period + source type + accounts
 - LLM config panel in Settings
 - Display: summary, alerts, suggestions + history
+- Chat, Classification, Suggestions tabs implemented
 
 ### Phase 6 — Consolidated Dashboard
 - Unified view: all banks + all cards
 - Filter by bank, card, category, period
 
-### Phase 7 — Budget
+### Phase 7 — Budget ✅ Done
 - Monthly budget per category
-- Planned vs actual comparison
+- Planned vs actual comparison (BudgetMatrix, BudgetTable, BudgetChart)
 
 ---
 

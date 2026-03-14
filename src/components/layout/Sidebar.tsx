@@ -27,10 +27,9 @@ const navItems = [
 export function Sidebar() {
   return (
     <aside className="flex h-screen w-60 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border shrink-0">
-      <div className="flex h-16 items-center px-6 border-b border-sidebar-border">
-        <span className="text-lg font-semibold tracking-tight">
-          💰 Finanças
-        </span>
+      <div className="flex h-16 items-center gap-2 px-6 border-b border-sidebar-border">
+        <img src="/LogoMGB.png" className="w-7 h-7" alt="MGB Logo" />
+        <span className="text-lg font-semibold tracking-tight">MGB</span>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-4 px-3">

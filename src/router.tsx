@@ -11,6 +11,7 @@ import { Budget } from '@/pages/Budget'
 import { Settings } from '@/pages/Settings'
 import { Categories } from '@/pages/Categories'
 import { Login } from '@/pages/Login'
+import { Register } from '@/pages/Register'
 import { ForgotPassword } from '@/pages/ForgotPassword'
 import { ResetPassword } from '@/pages/ResetPassword'
 
@@ -21,6 +22,14 @@ export const router = createBrowserRouter([
     element: (
       <RedirectIfAuth>
         <Login />
+      </RedirectIfAuth>
+    ),
+  },
+  {
+    path: '/register',
+    element: (
+      <RedirectIfAuth>
+        <Register />
       </RedirectIfAuth>
     ),
   },

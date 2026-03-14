@@ -34,6 +34,16 @@ export async function updatePassword(newPassword: string) {
   if (error) throw new Error(error.message)
 }
 
+export async function signUpWithEmail(name: string, email: string, password: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: name } },
+  })
+  if (error) throw new Error(error.message)
+  return data
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut()
   if (error) throw new Error(error.message)

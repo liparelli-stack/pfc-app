@@ -1,0 +1,337 @@
+/*
+-- ===================================================
+-- Código: /src/index.css
+-- Versão: 2.0.0 (Super MA Ready)
+-- Data/Hora: 2025-12-10 04:05 America/Sao_Paulo
+-- Autor: FL / Execução via você EVA
+-- Objetivo: Estilos globais da aplicação AD + Tema Sépia + Correções Markdown
+--           + Inclusão Oficial do TEMA SUPER MA (vermelho) ativado por
+--           <html data-theme="super-ma">.
+-- ===================================================
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================= */
+/* Tema Base (Light/Dark padrão) */
+/* ============================= */
+@layer base {
+  body {
+    @apply bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-300 transition-colors duration-300;
+  }
+}
+
+/* ============================= */
+/* Tema SÉPIA (+30% quente)      */
+/* ============================= */
+@layer base {
+  :root[data-theme='sepia'] {
+    --app-bg: #eaddc5;
+    --app-surface: #f9f2e0;
+    --app-text: #4a3c2b;
+    --app-muted: #897864;
+    --app-border: #d4c6a9;
+    --app-shadow: 0 4px 12px rgba(74, 60, 43, 0.15);
+    --link: #a16207;
+    --link-hover: #854d0e;
+    --kb-mark: #fde047;
+  }
+
+  [data-theme='sepia'] body {
+    background: var(--app-bg);
+    color: var(--app-text);
+  }
+
+  /* Painéis */
+  [data-theme='sepia'] .bg-plate,
+  [data-theme='sepia'] .bg-plate-dark {
+    background-color: var(--app-surface) !important;
+    box-shadow: var(--app-shadow);
+  }
+
+  /* Bordas */
+  [data-theme='sepia'] .border-dark-shadow,
+  [data-theme='sepia'] .dark\:border-dark-dark-shadow {
+    border-color: var(--app-border) !important;
+  }
+
+  /* Neumorfismo */
+  [data-theme='sepia'] .neumorphic-convex {
+    box-shadow: 5px 5px 10px #d4c6a9, -5px -5px 10px #ffffff;
+  }
+  [data-theme='sepia'] .neumorphic-concave {
+    box-shadow: inset 5px 5px 10px #d4c6a9, inset -5px -5px 10px #ffffff;
+  }
+
+  /* Texto */
+  [data-theme='sepia'] .prose { color: var(--app-text); }
+  [data-theme='sepia'] .prose a { color: var(--link); }
+  [data-theme='sepia'] .prose a:hover { color: var(--link-hover); text-decoration: underline; }
+
+  [data-theme='sepia'] mark { background-color: var(--kb-mark); color: var(--app-text); }
+
+  /* Inputs */
+  [data-theme='sepia'] input,
+  [data-theme='sepia'] textarea,
+  [data-theme='sepia'] select,
+  [data-theme='sepia'] .app-input {
+    background: #fffbf0;
+    color: var(--app-text);
+    border: 1px solid var(--app-border);
+  }
+
+  /* Ajustes visuais */
+  [data-theme='sepia'] .text-gray-500 { color: var(--app-muted) !important; }
+  [data-theme='sepia'] .dark\:text-gray-400 { color: var(--app-muted) !important; }
+  [data-theme='sepia'] .text-gray-800 { color: var(--app-text) !important; }
+  [data-theme='sepia'] .dark\:text-white { color: var(--app-text) !important; }
+
+  /* ===== FIX SÉPIA: Toggle ativo ===== */
+  [data-theme='sepia'] .bg-primary {
+    background-color: #1c4c96 !important;
+    color: #ffffff !important;
+  }
+  [data-theme='sepia'] .bg-primary\/90 {
+    background-color: rgba(28, 76, 150, 0.90) !important;
+    color: #ffffff !important;
+  }
+  [data-theme='sepia'] .text-white { color: #ffffff !important; }
+  [data-theme='sepia'] .ring-primary\/60 {
+    --tw-ring-color: rgba(28, 76, 150, 0.6) !important;
+  }
+}
+
+/* ===================================================
+   FIX DARK: Azul coerente (igual botões)
+   =================================================== */
+.dark .bg-primary,
+.dark .bg-primary\/90 {
+  background-color: #2563eb !important; /* azul dos botões */
+  color: #ffffff !important;
+}
+
+.dark .ring-primary\/60 {
+  --tw-ring-color: rgba(37, 99, 235, 0.6) !important;
+}
+
+.dark .hover\:bg-primary:hover {
+  background-color: #1d4ed8 !important; /* azul 700 */
+}
+
+.dark .active\:bg-primary:active {
+  background-color: #1e40af !important; /* azul 800 */
+}
+
+/* ===================================================
+   Scrollbar Global
+   =================================================== */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.9);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 116, 139, 0.9);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.9) transparent;
+}
+
+/* ============================= */
+/* Neumorfismo                  */
+/* ============================= */
+@layer utilities {
+  .neumorphic-convex {
+    @apply shadow-neumorphic-convex dark:shadow-neumorphic-convex-dark;
+  }
+  .neumorphic-convex-strong {
+    @apply shadow-neumorphic-convex-strong dark:shadow-neumorphic-convex-strong-dark;
+  }
+  .neumorphic-concave {
+    @apply shadow-neumorphic-concave dark:shadow-neumorphic-concave-dark;
+  }
+}
+
+/* ===================================================
+   Markdown Preview Styles (.markdown-body)
+   Correção para renderização correta de elementos MD
+   =================================================== */
+@layer components {
+  .markdown-body {
+    @apply text-sm leading-relaxed;
+  }
+  .markdown-body h1 {
+    @apply text-3xl font-bold mt-6 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2;
+  }
+  .markdown-body h2 {
+    @apply text-2xl font-bold mt-5 mb-3 border-b border-gray-200 dark:border-gray-700 pb-1;
+  }
+  .markdown-body h3 {
+    @apply text-xl font-bold mt-4 mb-2;
+  }
+  .markdown-body h4 {
+    @apply text-lg font-bold mt-3 mb-2;
+  }
+  .markdown-body p {
+    @apply mb-4;
+  }
+  .markdown-body ul {
+    @apply list-disc pl-6 mb-4;
+  }
+  .markdown-body ol {
+    @apply list-decimal pl-6 mb-4;
+  }
+  .markdown-body li {
+    @apply mb-1;
+  }
+  .markdown-body blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400 my-4 bg-gray-50 dark:bg-gray-800/30 py-2 rounded-r;
+  }
+  .markdown-body hr {
+    @apply my-8 border-t-2 border-gray-200 dark:border-gray-700;
+  }
+  .markdown-body a {
+    @apply text-primary hover:underline;
+  }
+  .markdown-body code {
+    @apply bg-gray-100 dark:bg-gray-800 rounded px-1.5 py-0.5 font-mono text-sm text-pink-600 dark:text-pink-400;
+  }
+  .markdown-body pre {
+    @apply bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto mb-4;
+  }
+  .markdown-body pre code {
+    @apply bg-transparent p-0 text-gray-100;
+  }
+  .markdown-body table {
+    @apply w-full border-collapse mb-4;
+  }
+  .markdown-body th, .markdown-body td {
+    @apply border border-gray-300 dark:border-gray-700 px-3 py-2;
+  }
+  .markdown-body th {
+    @apply bg-gray-100 dark:bg-gray-800 font-semibold;
+  }
+  .markdown-body img {
+    @apply max-w-full h-auto rounded-lg my-4 shadow-md;
+  }
+  
+  /* Sepia overrides for markdown */
+  [data-theme='sepia'] .markdown-body blockquote {
+    @apply border-[#bcaaa4] text-[#5d4037] bg-[#fff8e1];
+  }
+  [data-theme='sepia'] .markdown-body hr {
+    @apply border-[#d7ccc8];
+  }
+  [data-theme='sepia'] .markdown-body code {
+    @apply bg-[#efebe9] text-[#d84315];
+  }
+  [data-theme='sepia'] .markdown-body pre {
+    @apply bg-[#3e2723] text-[#efebe9];
+  }
+  [data-theme='sepia'] .markdown-body pre code {
+    @apply text-[#efebe9];
+  }
+  [data-theme='sepia'] .markdown-body th {
+    @apply bg-[#efebe9];
+  }
+  [data-theme='sepia'] .markdown-body th, [data-theme='sepia'] .markdown-body td {
+    @apply border-[#d7ccc8];
+  }
+}
+
+/* Badge Dourado */
+@layer utilities {
+  .gold-badge {
+    @apply text-xs font-bold px-2 py-1 rounded-full bg-[#FFD700] text-gray-900 shadow-inner transition-all duration-300;
+  }
+  .dark\:gold-badge {
+    @apply dark:bg-[#FFD700]/90 dark:text-[#1a1a1a] dark:shadow-[inset_0_1px_4px_rgba(0,0,0,0.6)];
+  }
+  [data-theme='sepia'] .gold-badge {
+    background-color: #e6c85a !important;
+    color: #3d3325 !important;
+    box-shadow: inset 0 1px 4px rgba(61, 51, 37, 0.3);
+  }
+}
+
+/* ===================================================
+   SUPER MA THEME (Pastel Ultra-Claro / Base #FEFFF2)
+   Ativado quando: <html data-theme="super-ma">
+   =================================================== */
+
+:root[data-theme="super-ma"] {
+  /* Base escolhida pelo FL */
+  --superma-bg: #fefff2;          /* fundo geral ultra claro */
+  --superma-surface: #fcfde8;     /* sidebar/header */
+  --superma-bg-light: #fafcdc;    /* cards/painéis */
+
+  /* Destaques */
+  --superma-primary: #e8a4a4;          /* vermelho pastel suave */
+  --superma-primary-hover: #da8d8d;
+
+  /* Texto */
+  --superma-text: #4b3a3a;             /* contraste suave */
+  --superma-muted: #8a6f6f;            /* texto apagado */
+
+  /* Bordas */
+  --superma-border: #e8d2d2;
+}
+
+/* Corpo geral */
+[data-theme="super-ma"] body {
+  background-color: var(--superma-bg) !important;
+  color: var(--superma-text) !important;
+}
+
+/* Sidebar */
+[data-theme="super-ma"] .sidebar {
+  background-color: var(--superma-surface) !important;
+  color: var(--superma-text) !important;
+  border-right: 1px solid var(--superma-border) !important;
+}
+
+/* Header */
+[data-theme="super-ma"] .header {
+  background-color: var(--superma-surface) !important;
+  color: var(--superma-text) !important;
+  border-bottom: 1px solid var(--superma-border) !important;
+}
+
+/* Painéis / Cards */
+[data-theme="super-ma"] .card,
+[data-theme="super-ma"] .panel,
+[data-theme="super-ma"] .bg-plate,
+[data-theme="super-ma"] .bg-plate-dark {
+  background-color: var(--superma-bg-light) !important;
+  border: 1px solid var(--superma-border) !important;
+  color: var(--superma-text) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+/* Botões primários */
+[data-theme="super-ma"] .btn-primary,
+[data-theme="super-ma"] button.bg-primary {
+  background-color: var(--superma-primary) !important;
+  border-color: var(--superma-primary-hover) !important;
+  color: #3e2b2b !important;
+}
+
+[data-theme="super-ma"] .btn-primary:hover,
+[data-theme="super-ma"] button.bg-primary:hover {
+  background-color: var(--superma-primary-hover) !important;
+}
+
+/* Texto apagado */
+[data-theme="super-ma"] .text-gray-500,
+[data-theme="super-ma"] .text-gray-400 {
+  color: var(--superma-muted) !important;
+}

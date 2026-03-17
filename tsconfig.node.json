@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+
+    "strict": true,
+
+    /* Ambiente Node para arquivos de config */
+    "types": ["node"]
+  },
+  "include": ["vite.config.ts"]
+}

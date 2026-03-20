@@ -1,13 +1,17 @@
-# CLAUDE.md — CRM Appy v0.1.0
+# CLAUDE.md — CRM Appy v0.1.1
+> **Última atualização:** 2026-03-20 | Branch: `crmappy-v0101-m2003`
+> **Mantido por:** Eva (Claude Sonnet 4.6) + FL
 
-## Descricao do Sistema
+---
 
-**CRM Appy** e uma plataforma CRM moderna e completa para gestao de relacionamento com clientes, vendas, agenda e base de conhecimento. Possui design neumorfico, suporte multi-tenant, integracoes com IA (Google Gemini) e impersonacao de usuarios via Master Admin.
+## Descrição do Sistema
 
-- **Idioma da interface**: Portugues Brasileiro (pt-BR)
-- **Gerado com**: Dualite Alpha (AI design system)
-- **Deploy**: Netlify (SPA)
-- **Backend**: Supabase (PostgreSQL + Auth + Edge Functions)
+**CRM Appy** é uma plataforma CRM moderna e completa para gestão de relacionamento com clientes, vendas, agenda e base de conhecimento. Possui design system próprio (Dark / Light / Sépia), suporte multi-tenant, integrações com IA (Google Gemini) e impersonação de usuários via Master Admin.
+
+- **Idioma da interface:** Português Brasileiro (pt-BR)
+- **Gerado com:** Dualite Alpha (AI design system)
+- **Deploy:** Netlify (SPA)
+- **Backend:** Supabase (PostgreSQL + Auth + Edge Functions)
 
 ---
 
@@ -17,18 +21,18 @@
 |--------|-----------|
 | Framework | React 18.2 + TypeScript 5.2 |
 | Build | Vite 5.4 |
-| Estilizacao | Tailwind CSS 3.4 (design neumorfico) |
+| Estilização | Tailwind CSS 3.4 (design system próprio — ver seção Design System) |
 | Estado servidor | TanStack React Query 5 |
-| Formularios | React Hook Form 7 + Zod 4 |
+| Formulários | React Hook Form 7 + Zod 4 |
 | Componentes base | Radix UI (Select, Switch, Popover) |
-| Icones | Lucide React 0.395 |
-| Animacoes | Framer Motion 11 |
+| Ícones | Lucide React 0.395 |
+| Animações | Framer Motion 11 |
 | Drag & Drop | @dnd-kit/core + @dnd-kit/sortable |
-| Graficos | ECharts (echarts-for-react) |
-| Exportacao | xlsx, jsPDF + jspdf-autotable, docx, file-saver |
+| Gráficos | ECharts (echarts-for-react) |
+| Exportação | xlsx, jsPDF + jspdf-autotable, docx, file-saver |
 | Markdown | react-markdown + rehype-raw + remark-gfm |
-| Utilitarios | lodash-es, date-fns, clsx |
-| Banco de dados | Supabase (PostgreSQL 15) |
+| Utilitários | lodash-es, date-fns, clsx |
+| Banco de dados | Supabase (PostgreSQL 17.6) |
 | Auth | Supabase Auth (JWT, email+senha) |
 | Edge Functions | Deno (Supabase Functions) |
 | IA | Google Gemini API |
@@ -39,56 +43,53 @@
 ## Estrutura de Pastas
 
 ```
-crmappy-v0100/
+crmappy-v0101/
 ├── src/
-│   ├── pages/              # Paginas da aplicacao (13 paginas)
+│   ├── pages/              # Páginas da aplicação (13 páginas)
 │   ├── components/         # Componentes por feature + UI base
-│   │   ├── Dashboard/      # Widgets e metricas do dashboard
-│   │   ├── Cockpit/        # Pipeline de vendas
-│   │   ├── Vision360/      # Visao 360 do cliente (cards, kpis, skeletons)
-│   │   ├── Deals/          # Gestao de oportunidades
-│   │   ├── AgendaX/        # Timeline de agenda
-│   │   ├── AgendaTimeline/ # Visualizacao de linha do tempo
-│   │   ├── Catalogs/       # Catalogo de produtos/servicos
-│   │   ├── Budgets/        # Orcamentos (Kanban)
-│   │   ├── Knowledge/      # Base de conhecimento + markdown/
-│   │   ├── Lists/          # Listas customizaveis
-│   │   ├── Settings/       # Configuracoes
-│   │   ├── Support/        # Central de ajuda
-│   │   ├── Shared/         # Componentes reutilizaveis
-│   │   ├── UI/             # Componentes base (Button, Modal, Input…)
-│   │   ├── Charts/         # Wrappers ECharts
-│   │   ├── SuperMa/        # Modal Master Admin
+│   │   ├── Dashboard/
+│   │   ├── Cockpit/
+│   │   ├── Vision360/
+│   │   ├── Deals/
+│   │   ├── AgendaX/
+│   │   ├── AgendaTimeline/
+│   │   ├── Catalogs/
+│   │   ├── Budgets/
+│   │   ├── Knowledge/
+│   │   ├── Lists/
+│   │   ├── Settings/
+│   │   ├── Support/
+│   │   ├── Shared/
+│   │   ├── UI/             # ← card, button, badge, input (v0101)
+│   │   ├── Charts/
+│   │   ├── SuperMa/
 │   │   ├── Header.tsx
 │   │   ├── Sidebar.tsx
 │   │   └── DebugOverlay.tsx
-│   ├── services/           # Camada de negocio (~38 servicos)
-│   │   ├── ai/             # Gemini chat, vision360 AI, actions AI
-│   │   └── backup/         # Backup service, history, catalog
-│   ├── hooks/              # Custom hooks (~16 hooks)
-│   ├── types/              # Schemas Zod + tipos TypeScript
-│   ├── contexts/           # AuthContext, ToastContext, DebugContext
-│   ├── providers/          # ReactQueryProvider
-│   ├── lib/
-│   │   └── supabaseClient.ts
-│   ├── utils/              # Helpers (icons, status, exporters, errors)
-│   ├── schemas/            # Schemas de validacao extra
-│   ├── config/             # Constantes de configuracao
-│   ├── data/               # Dados estaticos / mock
-│   ├── superMa/            # Logica Master Admin (factory, service, types)
-│   ├── App.tsx             # Roteamento, providers, hotkeys, temas
-│   └── main.tsx            # Entry point React
+│   ├── services/
+│   ├── hooks/
+│   ├── types/
+│   ├── contexts/
+│   ├── providers/
+│   ├── lib/supabaseClient.ts
+│   ├── utils/
+│   ├── schemas/
+│   ├── config/
+│   ├── data/
+│   ├── superMa/
+│   ├── App.tsx
+│   └── main.tsx
 ├── supabase/
-│   ├── config.toml         # Config local Supabase
-│   ├── functions/          # Edge Functions (Deno)
+│   ├── config.toml
+│   ├── functions/
 │   │   ├── create-user-with-profile/
 │   │   ├── delete-user/
 │   │   ├── generate-backup-full/
 │   │   ├── ma-impersonation/
 │   │   └── _shared/cors.ts
-│   └── migrations/         # 32 arquivos SQL incrementais
+│   └── migrations/         # 35+ arquivos SQL + migration v0101
 ├── vite.config.ts
-├── tailwind.config.js
+├── tailwind.config.js      # ← tokens v0101 (próxima sessão)
 ├── tsconfig.app.json
 ├── netlify.toml
 ├── package.json
@@ -97,396 +98,337 @@ crmappy-v0100/
 
 ---
 
-## Padroes Arquiteturais
+## Design System v0101 — APROVADO ✅
+> Substituiu o Neumorfismo. Referências: Linear + Vercel + Raycast.
+> Aprovado em 2026-03-20 após 3 iterações + revisão Eva GPT.
 
-### Multi-Tenant
-- Todos os dados possuem `tenant_id` (FK → `org_tenants`)
-- Isolamento garantido por RLS no Supabase
-- Profiles: constraint unica `(tenant_id, auth_user_id)`
+### Fontes
+| Uso | Fonte | Pesos |
+|-----|-------|-------|
+| Interface | DM Sans | 300 / 400 / 500 |
+| Código / IDs | DM Mono | 400 / 500 |
 
-### Service Layer
-- Cada dominio tem `*Service.ts` dedicado em `src/services/`
-- Servicos encapsulam queries Supabase + logica de negocio
-- Consumidos por componentes via React Query ou hooks customizados
+> ⚠️ **Nunca usar font-weight 600 ou 700.** Destoa do padrão Linear/Vercel e fica pesado no dark mode.
 
-### React Query (Server State)
-- TanStack React Query v5 para cache e sincronizacao
-- QueryClient singleton configurado em `App.tsx`
-- Hooks de fetch encapsulados em `src/hooks/`
+### Temas suportados
+`dark` · `light` · `sépia` — mesma anatomia nos 3, só a escala de superfície muda.
 
-### Zod + React Hook Form
-- Todos os tipos de dominio definidos como schemas Zod em `src/types/`
-- Inferencia: `z.infer<typeof schema>`
-- Formularios validados com `react-hook-form` + Zod resolver
+### Paleta de cores
 
-### Context API (Client State)
-- `AuthContext`: sessao, usuario, currentProfileLite
-- `ToastContext`: notificacoes toast
-- `DebugContext`: overlay de debug (dev)
-- Hierarquia: `QueryClientProvider → ToastProvider → AuthProvider → AppContent`
+| Token | Light | Dark | Uso |
+|-------|-------|------|-----|
+| `--acc` | `#3b68f5` | `#4f7cff` | Ações primárias, links, seleção ativa |
+| `--green` | `#0f9e62` | `#3ecf8e` | Ganha / Concluído / Success |
+| `--amber` | `#b07408` | `#f59e0b` | Em espera / Warning / Morno |
+| `--red` | `#d94040` | `#f06060` | Perdido / Atrasado / Danger |
+| `--purple` | `#7c5cbf` | `#a78bfa` | AI Insight (exclusivo) |
 
-### Estrategia Factory (SuperMa)
-- `superMaFactory.ts` decide entre `superMaServiceDev` (mock) e `superMaServiceProd` (real)
-- Ativado por: `role = 'admin'` AND `is_master_admin = true`
+> Cores descartadas: `#2563EB` (Tailwind blue-600 — azul mais genérico do mercado).
 
-### Exportacao de Dados
-- Exportadores dedicados por formato: `csvExporter`, `excelExporter`, `pdfExporter`
-- Exportadores por dominio: `contactsExporter`, `budgetExporter`
+### Escala de superfícies
 
----
+**Dark mode:**
+```
+layer 0 → #0c0d10  (app background)
+layer 1 → #13151a  (cards base — shadow sh1 + border-top highlight)
+layer 2 → #1a1d24  (hover / active)
+layer 3 → #22262f  (selected / focus — accent ring)
+layer 4 → #2c313c  (elementos internos de card)
+```
 
-## Servicos Principais (`src/services/`)
+**Light mode:**
+```
+layer 0 → #f4f5f7
+layer 1 → #ffffff  (cards)
+layer 2 → #f8f9fb
+layer 3 → #eef0f4
+neutro  → #5a5e6a  (text-2)
+```
 
-| Arquivo | Dominio |
-|---------|---------|
-| `companiesService.ts` | Empresas/contas |
-| `contactsService.ts` | Contatos + canais |
-| `dealsService.ts` | Oportunidades |
-| `profilesService.ts` | Perfis de usuarios |
-| `cockpitService.ts` | Pipeline de vendas |
-| `vision360Service.ts` | Visao 360 + calculos |
-| `dashboardService.ts` | Agregacao dashboard |
-| `chatsService.ts` | Mensagens/chat |
-| `ticketsService.ts` | Tickets de suporte |
-| `agendaService.ts` | Eventos de calendario |
-| `budgetService.ts` | Orcamentos |
-| `tenantService.ts` | Organizacoes/tenants |
-| `tagsService.ts` | Tags |
-| `channelsService.ts` | Canais de comunicacao |
-| `knowledgeService.ts` | Base de conhecimento |
-| `integrationKeysService.ts` | Chaves de API |
-| `exportTablesService.ts` | Exportacao de dados |
-| `aiNotesService.ts` | Notas geradas por IA |
-| `geminiModelsService.ts` | Config modelos Gemini |
-| `maImpersonationClient.ts` | Cliente SuperMa |
-| `ai/geminiChatService.ts` | Chat Gemini |
-| `ai/vision360AiService.ts` | Insights IA 360 |
-| `ai/actionsAiService.ts` | Sugestoes de acoes IA |
-| `backup/backupService.ts` | Geracao de backup |
-| `backup/backupHistoryService.ts` | Historico de backups |
+**Sépia:**
+```
+background → #f5ead8
+text-1     → #3b2e1a
+text-2     → #6b5438
+text-3     → #9a7d5a
+border     → rgba(100,70,30,0.15)
+```
 
----
+### Borders
+```css
+/* Dark */
+--blo: rgba(255,255,255,0.06)   /* padrão */
+--bmd: rgba(255,255,255,0.11)   /* hover / emphasis */
+--bhi: rgba(255,255,255,0.17)   /* border-top highlight dos cards */
 
-## Edge Functions (`supabase/functions/`)
+/* Light */
+--blo: rgba(0,0,0,0.07)
+--bmd: rgba(0,0,0,0.10)
+--bhi: rgba(0,0,0,0.16)
+```
 
-| Funcao | Metodo | Descricao |
-|--------|--------|-----------|
-| `create-user-with-profile` | POST | Cria auth user + profile com rollback |
-| `delete-user` | DELETE | Remove auth user + profile |
-| `generate-backup-full` | POST | Gera backup completo do banco |
-| `ma-impersonation` | POST | Liga/desliga impersonacao Master Admin |
+> **Regra dos cards:** `border: 0.5px solid --bmd` + `border-top: 0.5px solid --bhi`
+> Simula luz vinda de cima — cria volume sem sombra pesada. Padrão Linear.
 
-Todas as functions compartilham `_shared/cors.ts` com headers padrao.
+### Shadows
+```css
+--sh1: 0 1px 3px rgba(0,0,0,0.32), 0 4px 16px rgba(0,0,0,0.22)   /* card base */
+--sh2: 0 2px 8px rgba(0,0,0,0.38), 0 8px 28px rgba(0,0,0,0.28)   /* hover */
+--sha: 0 0 0 1px var(--abrd), 0 4px 20px rgba(59,104,245,0.18)    /* focus/selected */
+```
 
----
+### Border-radius
+```css
+--r:   8px   /* botões, inputs, stages, action rows */
+--rlg: 12px  /* cards, cockpit card, sidebar, modais */
+--rxl: 16px  /* containers, wrapper externo */
+```
 
-## Autenticacao e Autorizacao
+### Transitions
+```css
+/* Global — aplicar em TODOS os elementos interativos */
+transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+```
 
-### Fluxo
-1. Login/signup via Supabase Auth (email + senha) em `AuthPage.tsx`
-2. `AuthContext` persiste sessao e busca `currentProfileLite` assincronamente
-3. RPC `bind_profile_after_login` vincula profile ao auth user
-4. Evento customizado `auth:userReady` e disparado apos profile carregado
-5. Rotas protegidas: sem sessao → `AuthPage`; com sessao → dashboard
+### Hover pattern
+```css
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh2);
+  border-color: var(--bhi);
+}
+/* Botão primário hover: opacity: 0.88 (não filter: brightness — some no dark) */
+```
 
-### Roles (profiles.role)
-- `admin`: acesso total; pode ser Master Admin se `is_master_admin = true`
-- `editor`: pode editar base de conhecimento (`kb_can_edit = true`)
-- `user`: acesso padrao
+### Focus / Acessibilidade
+```css
+/* Botões */
+:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 
-### Master Admin (SuperMa)
-- Hotkey: `Ctrl+Shift+|`
-- Requer: `role = 'admin'` E `is_master_admin = true`
-- Modal de selecao de usuario para impersonacao
-- Tema overlay: `data-theme="super-ma"`
-- Edge Function `ma-impersonation` realiza o swap de sessao
+/* Inputs */
+input:focus {
+  border-color: var(--acc);
+  box-shadow: 0 0 0 3px rgba(59,104,245,0.15);
+}
+```
+
+### Componentes — anatomia aprovada
+
+**Badges:** `border: 0.5px solid rgba(cor, 0.22)` + `background: cor-dim` + `color: cor`
+
+**Pipeline stages:** active com `border-bottom: 2px solid var(--acc)` + `background: layer2`
+
+**KPI cards:** valor em `color: #fff`, `font-weight: 500`, `letter-spacing: -0.03em`
+
+**Sidebar nav item active:** `background: acc-dim` + `border: 0.5px solid rgba(acc, 0.20)` + `color: acc`
+
+**Action rows:** hover `background: layer2` + `border-color: --bmd`
 
 ---
 
 ## Banco de Dados
 
-### Tabelas Principais
+### Infraestrutura
+| Item | Valor |
+|------|-------|
+| Project ID | `oadnblyoqmqvnfekisxp` |
+| Região | `us-east-2` (Ohio) |
+| PostgreSQL | 17.6 |
+| URL | `https://oadnblyoqmqvnfekisxp.supabase.co` |
+| Plano | Free |
+| Migrations no CLI | 0 registradas (banco construído manualmente — registrar na Fase 3) |
 
-| Tabela | Descricao |
+### Tabelas principais
+
+| Tabela | Descrição |
 |--------|-----------|
-| `org_tenants` | Organizacoes/empresas clientes |
-| `profiles` | Usuarios com tenant_id + role |
+| `org_tenants` | Organizações/empresas clientes |
+| `profiles` | Usuários com tenant_id + role |
 | `companies` | Contas/empresas do CRM |
-| `contacts` | Contatos com canais (email, phone, whatsapp…) |
-| `contact_channels` | Canais de comunicacao por contato |
-| `deals` | Oportunidades/negociacoes |
+| `contacts` | Contatos |
+| `contacts_channel` | Canais de contato — ⚠️ nome correto (não `contact_channels`) |
+| `deals` | Oportunidades/negociações |
 | `tickets` | Tickets de suporte |
+| `ticket_sequences` | Controle de numeração sequencial por tenant |
 | `chats` | Mensagens e chats |
-| `agenda` | Eventos de calendario |
-| `tags` | Tags de categorizacao |
-| `budget` | Orcamentos |
-| `channels` | Canais de comunicacao |
+| `agenda` | Eventos de calendário |
+| `tags` | Tags de categorização |
+| `budget` | Orçamentos |
+| `channels` | Canais de comunicação |
+| `integration_keys` | Chaves de API externas (Gemini, etc) |
+| `backups` | Registro histórico de backups |
+| `ma_impersonation_sessions` | Log de sessões de impersonação Master Admin |
+| `ai_notes` | Notas geradas por IA (com `search_tsv` full-text) |
 
-### Convencoes do Banco
-- Todas as tabelas tem `tenant_id` (multi-tenant)
-- Campos de auditoria em todas: `created_at`, `updated_at`, `created_by`, `updated_by`
-- Soft delete com `deleted_at` (onde aplicavel)
-- RLS habilitado em todas as tabelas
+### Convenções do banco
+- Todas as tabelas têm `tenant_id` (multi-tenant)
+- Campos de auditoria: `created_at`, `updated_at`, `created_by`, `updated_by`
+- Soft delete com `deleted_at` (onde aplicável)
+- RLS habilitado em **todas** as tabelas — é a linha de defesa primária
 - Triggers de auto-update: `app_set_updated_at`
-- Enums em Portugues: `aberta`, `ganha`, `perdida`, `em_espera`
+- Enums em Português: `aberta`, `ganha`, `perdida`, `em_espera`
 
-### Supabase Local
-- API: porta `54321`
-- Banco: porta `54322`
-- Studio: porta `54323`
-- Email testing (Inbucket): porta `54324`
-
----
-
-## Design System (Neumorfico)
-
-### Principio
-Design neumorfico com sombras suaves criando efeito de profundidade em superficies.
-
-### Tokens Tailwind Customizados
-
-```js
-// tailwind.config.js
-boxShadow: {
-  'neumorphic-convex': '6px 6px 12px #a9b1c0, -6px -6px 12px #ffffff',
-  'neumorphic-concave': 'inset 6px 6px 12px #a9b1c0, inset -6px -6px 12px #ffffff',
-  // dark mode
-  'dark-neumorphic-convex': '...',
-  'dark-neumorphic-concave': '...',
-}
-```
-
-### Cores Customizadas
-- `plate` / `plate-dark`: Cor de fundo dos paineis
-- `primary`: `#1c4c96` (azul primario)
-- Sombras: claro `#ffffff` / escuro `#a9b1c0`
-
-### Dark Mode
-- Ativado via classe CSS: `dark` no elemento raiz
-- Tailwind `darkMode: 'class'`
-- Toggle no Sidebar
-
-### Status Colors (statusHelper.ts)
-- Verde: concluido (`isDone = true`)
-- Vermelho: atrasado (data passada + nao concluido)
-- Azul: pendente
+### Status de segurança do banco
+| Item | Status |
+|------|--------|
+| Extensão `http` no schema correto (`extensions`) | ✅ CORRIGIDO em 2026-03-20 |
+| Leaked Password Protection | ⚠️ Indisponível no Free — ativar ao migrar para Pro |
+| RLS initplan (`auth.uid()` por linha) | ⏳ Fase 4 — afeta 17 políticas em 7 tabelas |
+| 20 FKs sem índice | ⏳ Fase 4 |
+| Políticas RLS duplicadas | ⏳ Fase 4 |
 
 ---
 
-## Convencoes de Codigo
+## Padrões Arquiteturais
 
-### Importacoes
-- Alias `@/` aponta para `src/`
-- Exemplo: `import { supabase } from '@/lib/supabaseClient'`
+### Multi-Tenant
+- Todos os dados têm `tenant_id` (FK → `org_tenants`)
+- RLS habilitado em todas as 15 tabelas — proteção primária
+- Filtro por `tenant_id` no código — camada adicional de boas práticas
+- **Nunca depender apenas do filtro no código**
 
-### Tipos
-- Schemas Zod em `src/types/*.ts`
-- Sempre exportar schema + tipo inferido:
-  ```ts
-  export const profileSchema = z.object({ ... })
-  export type Profile = z.infer<typeof profileSchema>
-  ```
+### Service Layer
+- `src/services/` — cada domínio tem `*Service.ts` dedicado
+- Serviços encapsulam queries Supabase + lógica de negócio
+- Funções puras, sem estado
 
-### Servicos
-- Cada servico e um modulo com funcoes puras (sem estado)
-- Funcoes nomeadas descritivamente: `getCompaniesByTenant`, `updateDealStatus`
-- Sempre filtrar por `tenant_id` nas queries
+### React Query (Server State)
+- TanStack React Query v5 para cache e sincronização
+- Hooks de fetch em `src/hooks/`
+- **Não usar useState + useEffect para fetch de dados**
 
-### Componentes
-- Organizados por feature dentro de `src/components/[Feature]/`
-- Componentes de UI base em `src/components/UI/`
-- Skeletons de loading junto ao componente: `src/components/Vision360/skeletons/`
-
-### Hooks
-- Prefixo `use`: `useAuth`, `useMediaQuery`, `useDashboardQuadro1`
-- Encapsulam React Query + side effects
-- Localizados em `src/hooks/`
-
-### Hotkeys (App.tsx)
-- `Ctrl+Shift+|`: Abre modal SuperMa
-- `Ctrl+Shift+0`: Toggle DebugOverlay
-
-### Icones
-- Sempre via `iconHelper.tsx` para canais de contato
-- Lucide React para icones gerais
+### Zod + React Hook Form
+- Schemas Zod em `src/types/*.ts` — fonte de verdade dos tipos
+- `z.infer<typeof schema>` — nunca criar interfaces manualmente para domínios com schema
 
 ---
 
-## Variaveis de Ambiente
+## Edge Functions
 
-Arquivo `.env` na raiz (prefixo `VITE_` obrigatorio para Vite):
-
-```env
-VITE_SUPABASE_URL="https://<project-ref>.supabase.co"
-VITE_SUPABASE_ANON_KEY="<anon-key-jwt>"
-```
-
-> A chave anonima e segura para client-side. RLS garante isolamento de dados.
-> Nunca commitar `service_role` key no frontend.
+| Função | Método | Descrição |
+|--------|--------|-----------|
+| `create-user-with-profile` | POST | Cria auth user + profile com rollback |
+| `delete-user` | DELETE | Remove auth user + profile |
+| `generate-backup-full` | POST | Gera backup completo — ⚠️ não cobre `ai_notes` e `ma_impersonation_sessions` (corrigir na Fase 3) |
+| `ma-impersonation` | POST | Liga/desliga impersonação Master Admin |
 
 ---
 
-## Comandos
+## Autenticação e Autorização
 
-```bash
-# Desenvolvimento
-npm run dev           # Inicia servidor de dev (Vite, porta 3000)
+### Roles
+- `admin`: acesso total; pode ser Master Admin se `is_master_admin = true`
+- `editor`: pode editar base de conhecimento (`kb_can_edit = true`)
+- `user`: acesso padrão
 
-# Build
-npm run build         # Compila TS + build Vite (output: dist/)
-
-# Preview
-npm run preview       # Serve build de producao localmente
-
-# Lint
-npm run lint          # ESLint com max-warnings 0
-
-# Supabase local
-supabase start        # Inicia stack Supabase local
-supabase stop         # Para stack local
-supabase db reset     # Reset + replay de todas as migrations
-supabase migration new <name>    # Nova migration
-supabase functions serve         # Serve Edge Functions localmente
-supabase functions deploy <name> # Deploy de uma Edge Function
-```
+### Master Admin (SuperMa)
+- Hotkey: `Ctrl+Shift+|`
+- Requer: `role = 'admin'` E `is_master_admin = true`
+- Edge Function `ma-impersonation` realiza o swap de sessão
 
 ---
 
 ## Pipeline de Vendas (Cockpit)
 
-Estagios do pipeline em ordem:
-1. **Captura**
-2. **Qualificacao**
-3. **Proposta**
-4. **Negociacao**
-5. **Fechamento**
+1. Captura → 2. Qualificação → 3. Proposta → 4. Negociação → 5. Fechamento
 
 Status de deals: `aberta` | `ganha` | `perdida` | `em_espera`
 
 ---
 
-## Integracao com IA
+## Variáveis de Ambiente
 
-- **Provedor**: Google Gemini API
-- **Servicos**:
-  - `geminiChatService.ts`: Chat assistente
-  - `vision360AiService.ts`: Insights sobre cliente 360
-  - `actionsAiService.ts`: Sugestoes de proximas acoes
-  - `aiNotesService.ts`: Notas auto-geradas
-- **Config de modelos**: `geminiModelsService.ts`
-- As chaves da API Gemini sao gerenciadas via `integrationKeysService.ts` (salvas no banco)
-
----
-
-## Deploy (Netlify)
-
-```toml
-# netlify.toml
-[build]
-  command = "npm install && npm run build"
-  publish = "dist"
-  environment: NODE_VERSION = "18"
-
-[dev]
-  command = "vite"
-  port = 3000
+```env
+VITE_SUPABASE_URL="https://oadnblyoqmqvnfekisxp.supabase.co"
+VITE_SUPABASE_ANON_KEY="<anon-key-jwt>"
 ```
 
-SPA: Todas as rotas redirecionam para `index.html` (configurado no Netlify).
+> Nunca commitar `service_role` key no frontend.
 
 ---
 
 ## Regras Importantes
 
 1. **Nunca commitar service_role key** do Supabase no frontend.
-2. **Sempre filtrar por tenant_id** em todas as queries — o RLS e permissivo no MVP, entao o filtro no codigo e a linha de defesa.
-3. **Schemas Zod sao a fonte de verdade** dos tipos — nao criar interfaces TypeScript manualmente para dominios que ja tem schema.
-4. **Servicos nao tem estado** — toda logica de estado fica em hooks ou componentes.
-5. **React Query e o padrao para dados remotos** — nao usar useState + useEffect para fetch de dados.
-6. **Design neumorfico** — usar as shadow utilities customizadas do Tailwind, nao sombras brutas inline.
-7. **Exportadores existem** — antes de criar logica de export, verificar `src/utils/*Exporter.ts`.
-8. **SuperMa requer confirmacao** — nunca alterar a logica de `is_master_admin` sem entender o impacto de seguranca.
-9. **Migrations sao incrementais** — nunca editar migrations existentes; sempre criar novas.
-10. **Edge Functions usam Deno** — sintaxe e imports sao diferentes do Node.js.
-11. **Alias `@/`** — sempre usar em vez de caminhos relativos longos (`../../..`).
-12. **Idioma** — strings de UI em Portugues Brasileiro; codigo e comentarios podem ser em ingles.
+2. **RLS é a proteção primária** — sempre habilitado em todas as tabelas. Filtro no código é camada adicional, não substituto.
+3. **Schemas Zod são a fonte de verdade** — não criar interfaces TypeScript manualmente para domínios que já têm schema.
+4. **Serviços não têm estado** — toda lógica de estado fica em hooks ou componentes.
+5. **React Query é o padrão para dados remotos** — não usar useState + useEffect para fetch.
+6. **Design system próprio** — usar as classes e variáveis do novo DS (v0101). Não usar sombras neumórficas.
+7. **Exportadores existem** — verificar `src/utils/*Exporter.ts` antes de criar lógica de export.
+8. **SuperMa requer confirmação** — nunca alterar `is_master_admin` sem entender o impacto de segurança.
+9. **Migrations são incrementais** — nunca editar migrations existentes; sempre criar novas.
+10. **Edge Functions usam Deno** — sintaxe e imports são diferentes do Node.js.
+11. **Alias `@/`** — sempre usar em vez de caminhos relativos longos.
+12. **Idioma** — strings de UI em Português Brasileiro; código e comentários podem ser em inglês.
+13. **Tabela `contacts_channel`** — esse é o nome correto no banco. `contact_channels` não existe.
+14. **font-weight máximo: 500** — nunca usar 600 ou 700 no design system.
 
 ---
 
-## COMPLEMENTO EVA — Verificado via MCP Supabase (2026-03-16)
+## COMPLEMENTO EVA — Sessão 2026-03-20
 
-### ⚠️ Correcoes em relacao ao CLAUDE.md gerado pelo Claude Code
+### ✅ Concluído
 
-#### Tabela com nome incorreto
-- ❌ `contact_channels` (documentado acima) — tabela NAO existe no banco
-- ✅ `contacts_channel` — nome real no banco (verificado via MCP)
+#### Quick Win — Extensão `http` movida para `extensions`
+- Migration `move_http_extension_to_extensions_schema` aplicada e verificada via MCP
+- Método: `DROP EXTENSION IF EXISTS http CASCADE` + `CREATE EXTENSION http SCHEMA extensions`
+- A extensão não suporta `SET SCHEMA` nativo — DROP+CREATE é o caminho correto
+- Verificado: `SELECT extname, nspname FROM pg_extension JOIN pg_namespace...` → `schema: extensions` ✅
 
-Ao referenciar no codigo, sempre usar `contacts_channel`.
+#### FASE 1 — Design System — Definição aprovada
+Após 3 iterações de preview (dark → light → refined → final) + revisão externa:
+- **Fontes:** DM Sans 300/400/500 + DM Mono 400/500
+- **Temas:** dark, light, sépia — mesma anatomia
+- **Accent aprovado:** `#3b68f5` (light) / `#4f7cff` (dark)
+- **Depth system:** 4 layers de superfície com border-top highlight e shadow progressiva
+- **Transition global:** `all 0.2s cubic-bezier(0.4,0,0.2,1)`
+- **Focus state:** `outline: 2px solid accent + offset 2px` / inputs com ring
+- **Hover KPI cards:** `translateY(-2px)` + shadow elevada
 
-#### Tabelas ausentes na documentacao
-As tabelas abaixo existem em producao mas nao foram documentadas:
-
-| Tabela | Descricao |
-|--------|-----------|
-| `contacts_channel` | Canais de contato — nome correto (ver correcao acima) |
-| `ticket_sequences` | Controle de numeracao sequencial de tickets por tenant |
-| `integration_keys` | Chaves de API externas (Gemini, etc) |
-| `backups` | Registro historico de backups gerados pela aplicacao |
-| `ma_impersonation_sessions` | Log de sessoes de impersonacao Master Admin |
-| `ai_notes` | Notas geradas automaticamente por IA — com `search_tsv` full-text |
-
-#### Correcao — Regra #2 (RLS)
-A regra original diz: *"o RLS e permissivo no MVP, entao o filtro no codigo e a linha de defesa"*
-
-⚠️ **Isso esta impreciso e e perigoso como instrucao para o Claude Code.**
-
-**Correcao:**
-- RLS esta habilitado em **todas** as 15 tabelas e e a linha de defesa primaria
-- O filtro por `tenant_id` no codigo e uma camada adicional de seguranca e boas praticas
-- **Nunca** depender apenas do filtro no codigo — o RLS deve ser sempre a protecao principal
-- Ao criar novas tabelas, sempre: `ALTER TABLE public.<tabela> ENABLE ROW LEVEL SECURITY` + policy correspondente
+#### Descartado (com motivo registrado)
+| Item | Motivo |
+|------|--------|
+| Neumorfismo | Identidade genérica — substituído por depth system próprio |
+| `font-weight: 600` | Pesado demais no dark mode, fora do padrão Linear/Vercel |
+| `#2563EB` Tailwind blue | Azul mais genérico do mercado SaaS |
+| `filter: brightness(1.05)` no hover | Some no dark mode — substituído por `opacity: 0.88` |
 
 ---
 
-### Informacoes de Infraestrutura (via MCP)
+### Backlog v0101 — Status atualizado
 
-| Item | Valor |
-|------|-------|
-| Project ID | `oadnblyoqmqvnfekisxp` |
-| Regiao | `us-east-2` (Ohio) |
-| PostgreSQL | 17.6 |
-| URL | `https://oadnblyoqmqvnfekisxp.supabase.co` |
-| Migrations registradas no CLI | 0 (banco construido manualmente) |
-| Migrations no repositorio | 35+ arquivos (mai/2025 → dez/2025) |
-| Edge Functions deployadas | 4 |
-| Plano | Free |
-
----
-
-### Backlog v0101 — Referencia rapida
-
-Ver documento completo: `auditoria_360_crmappy_v0100_20260316.md`
-
-**Ordem de ataque:**
-1. ⚡ Quick Win: mover extensao `http` para schema `extensions` (5 min)
-2. 🎨 FASE 1 — Design System Premium (migrar Neumorfismo para identidade propria)
-3. 🏗️ FASE 2 — Refatoracao `EditActionForm.tsx` + melhorias solicitadas pelo usuario
-4. 🔧 FASE 3 — Arquitetura restante + migrations CLI
-5. 🗄️ FASE 4 — Banco (RLS, indices, politicas duplicadas)
-
-**Tickets ativos:**
-- SUP-000001: CRUD no Cockpit — editar empresa/contatos/canais durante ligacao
-- SUP-000005: Bug — status da acao nao salva como Concluida
-- SUP-000006: Bug — agendamento nao aparece no icone do dia
-- SUP-000004: Fechamento mensal de negocios (ganhos/perdidos por mes)
-- Card "Empresas com Acoes Ativas" — lista longa demais (+20/30 empresas)
-- Hub de Gestao — ultima entrega apos tudo concluido
+| Item | Status |
+|------|--------|
+| ⚡ Extensão `http` → schema `extensions` | ✅ DONE 2026-03-20 |
+| 🎨 Design System — definição e aprovação | ✅ DONE 2026-03-20 |
+| 🎨 Design System — `tailwind.config.js` com tokens | ⏳ **PRÓXIMO** |
+| 🎨 Design System — componentes base (`card`, `button`, `badge`, `input`) | ⏳ aguarda tokens |
+| 🎨 Design System — `Sidebar.tsx` | ⏳ aguarda componentes base |
+| 🎨 Design System — `Cockpit card` | ⏳ aguarda sidebar |
+| 🏗️ Refatoração `EditActionForm.tsx` | ⏳ FASE 2 |
+| 🐛 SUP-000005 — status da ação não salva como Concluída | ⏳ FASE 2 |
+| 🐛 SUP-000006 — agendamento não aparece no ícone do dia | ⏳ FASE 2 |
+| 🆕 SUP-000001 — CRUD inline no cockpit | ⏳ FASE 2 |
+| 🆕 UX — Card "Empresas com Ações Ativas" (lista longa) | ⏳ FASE 2 |
+| 🆕 SUP-000004 — Fechamento mensal de negócios | ⏳ FASE 2 |
+| 🔧 Registrar migrations no Supabase CLI | ⏳ FASE 3 |
+| 🔧 Atualizar `generate-backup-full` (+2 tabelas) | ⏳ FASE 3 |
+| 🗄️ Corrigir RLS initplan — 17 políticas | ⏳ FASE 4 |
+| 🗄️ Criar 20 índices para FKs sem cobertura | ⏳ FASE 4 |
+| 🗄️ Consolidar políticas RLS duplicadas | ⏳ FASE 4 |
+| 🗄️ Remover índice duplicado `contacts_channel` | ⏳ FASE 4 |
+| 🟢 Hub de Gestão | ⏳ última entrega |
 
 ---
 
-### Protocolo Novo Chat — CRMappy
+### Protocolo Novo Chat — CRMappy v0101
 
 ```
-"Eva, novo chat do projeto CRMappy v0101. Contexto completo abaixo:"
-[colar este CLAUDE.md completo incluindo o complemento Eva]
+"Eva, novo chat do projeto CRMappy v0101.
+Branch: crmappy-v0101-m2003
+Última sessão: 2026-03-20 — design system aprovado, quick win do banco feito.
+Próximo passo: gerar tailwind.config.js com tokens + componentes base UI.
+Contexto completo abaixo:"
+[colar este CLAUDE.md completo]
 ```

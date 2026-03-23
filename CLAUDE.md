@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **CRM Appy v0.1.1** | Última atualização: 2026-03-23 | Branch: `crmappy-v0101-m2003`
+> **CRM Appy v0.1.1** | Última atualização: 2026-03-23 | Branch: `crmappy-v0101-m2303`
 
 ---
 
@@ -431,22 +431,38 @@ Após 3 iterações de preview (dark → light → refined → final) + revisão
 
 ---
 
-### Backlog v0101 — Status atualizado
+### Backlog v0101 — Referência rápida
+
+**FASE 1 — Design System Premium:**
 
 | Item | Status |
 |------|--------|
 | ⚡ Extensão `http` → schema `extensions` | ✅ DONE 2026-03-20 |
-| 🎨 Design System — definição e aprovação | ✅ DONE 2026-03-20 |
-| 🎨 Design System — `tailwind.config.js` com tokens | ✅ DONE 2026-03-20 |
-| 🎨 Design System — componentes base (`card`, `button`, `badge`, `input`) | ✅ DONE 2026-03-20 |
-| 🎨 Design System — `Sidebar.tsx` + `Header.tsx` | ✅ DONE 2026-03-20 |
-| 🎨 Design System — migração global páginas (via index.css) | ⏳ **PRÓXIMO — Claude Code** |
+| 🎨 Definição e aprovação do DS v0101 | ✅ DONE 2026-03-20 |
+| 🎨 Tokens Tailwind (`tailwind.config.js`) | ✅ DONE 2026-03-20 |
+| 🎨 Componentes base UI, Sidebar, Header | ✅ DONE 2026-03-20 |
+| 🎨 Dark mode — descontinuado temporariamente (toggle removido) | ✅ DONE 2026-03-23 |
+| 🎨 Cockpit sépia — inputs, botões, ícones normalizados | ✅ DONE 2026-03-23 |
+| 🎨 Cockpit light — faixas sépia removidas (commit `a664971`) | ✅ DONE 2026-03-23 |
+| 🎨 Cockpit — inline `backgroundColor` removido (ConversationHistoryCard, NotesSection, CockpitPage) | ✅ DONE 2026-03-23 |
+| 🎨 Cockpit light — contraste dos cards (bg `#f4f5f7` = fundo, sem distinção → usar `#ffffff`) | ⏳ PRÓXIMO |
+| 🎨 Demais páginas — Dashboard, Vision360, Settings, etc. | ⏳ PRÓXIMO |
+
+**FASE 2 — Bugs e Features:**
+
+| Item | Status |
+|------|--------|
 | 🏗️ Refatoração `EditActionForm.tsx` | ⏳ FASE 2 |
 | 🐛 SUP-000005 — status da ação não salva como Concluída | ⏳ FASE 2 |
 | 🐛 SUP-000006 — agendamento não aparece no ícone do dia | ⏳ FASE 2 |
 | 🆕 SUP-000001 — CRUD inline no cockpit | ⏳ FASE 2 |
 | 🆕 UX — Card "Empresas com Ações Ativas" (lista longa) | ⏳ FASE 2 |
 | 🆕 SUP-000004 — Fechamento mensal de negócios | ⏳ FASE 2 |
+
+**FASE 3–4 — Infra e banco:**
+
+| Item | Status |
+|------|--------|
 | 🔧 Registrar migrations no Supabase CLI | ⏳ FASE 3 |
 | 🔧 Atualizar `generate-backup-full` (+2 tabelas) | ⏳ FASE 3 |
 | 🗄️ Corrigir RLS initplan — 17 políticas | ⏳ FASE 4 |
@@ -455,42 +471,16 @@ Após 3 iterações de preview (dark → light → refined → final) + revisão
 | 🗄️ Remover índice duplicado `contacts_channel` | ⏳ FASE 4 |
 | 🟢 Hub de Gestão | ⏳ última entrega |
 
----
+### Decisões técnicas — Temas
 
----
-
-### FASE 1 — Design System — Implementação (sessão tarde 2026-03-20)
-
-#### Arquivos entregues e aplicados em `~/projetos/crmappy-v0101`
-
-| Arquivo | Destino | O que fez |
-|---------|---------|-----------|
-| `tailwind.config.js` | raiz | Tokens completos: cores, shadows, radius, tipografia, 3 temas |
-| `index.html` | raiz | Import Google Fonts DM Sans + DM Mono |
-| `src/index.css` | src/ | Body dark migrado, sépia cobre tokens DS, neumorfismo legado mantido |
-| `src/App.tsx` | src/ | Wrapper `bg-dark-bg`, prop `theme` passada ao Header |
-| `src/components/UI/Button.tsx` | src/components/UI/ | 4 variantes + loading + ícones |
-| `src/components/UI/Card.tsx` | src/components/UI/ | Depth system + subcomponentes KPI |
-| `src/components/UI/Badge.tsx` | src/components/UI/ | 5 variantes + semânticos CRMappy |
-| `src/components/UI/Input.tsx` | src/components/UI/ | Focus ring, label, erro, Textarea |
-| `src/components/Sidebar.tsx` | src/components/ | 3 temas via objeto `t`, divisores corrigidos |
-| `src/components/Header.tsx` | src/components/ | 3 temas via objeto `t`, prop `theme` adicionada |
-
-#### Decisões técnicas desta sessão
-- **Estratégia de 3 temas:** objeto `t` com classes condicionais por tema — não depende do prefixo `dark:` do Tailwind (que só funciona com classe `.dark` no `<html>`). Sépia usa CSS vars `var(--app-*)` definidas no `index.css`.
-- **Neumorfismo legado:** mantido no `index.css` e `tailwind.config.js` — não quebra componentes ainda não migrados.
+- **Estratégia de temas:** objeto `t` com classes condicionais por tema em cada componente — não usa prefixo `dark:` do Tailwind (requer `.dark` no `<html>`). Sépia usa CSS vars `var(--app-*)` definidas no `index.css`.
+- **Neumorfismo legado:** mantido no `index.css` e `tailwind.config.js` para não quebrar componentes ainda não migrados.
 - **Divisores:** usar `h-px` + `bg-*` — `border-t-[0.5px]` não é classe Tailwind válida.
-- **Header recebe prop `theme`:** necessário para colorização correta nos 3 modos.
-- **Light mode:** Sidebar e Header corretos. Páginas internas ainda usam `bg-plate` (legado) — migrar via `index.css` no próximo passo.
+- **Header recebe prop `theme`:** necessário para colorização correta.
+- **Inline `style={{ backgroundColor }}`:** proibido — substitui CSS vars do tema e quebra theming. Usar classes Tailwind com `t` object.
 
-#### Próximo passo — Claude Code
-Migração global sobrescrevendo classes neumórficas no `index.css`:
-```css
-/* Estratégia: redefinir .neumorphic-* para renderizar com DS v0101 */
-/* Cobre todos os componentes sem tocar em cada arquivo individualmente */
-.neumorphic-convex  → shadow-sh1 + bg dark-s1
-.neumorphic-concave → bg dark-s2 + border 0.5px
-.bg-plate           → #f4f5f7 (light) / já coberto pelo dark mode
-```
-Após: ajuste fino nas páginas críticas (Cockpit, Dashboard, Vision360).
+## Branch ativa
+
+`crmappy-v0101-m2303` (criada em 23/03/2026)
+Branch anterior estável: `crmappy-v0101-m2003` (commit `a664971`)
 

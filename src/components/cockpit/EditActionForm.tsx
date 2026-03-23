@@ -71,7 +71,6 @@ import React, {
   useEffect,
   useMemo,
   useState,
-  useRef,
 } from "react";
 import clsx from "clsx";
 import { useForm, Controller, useWatch } from "react-hook-form";
@@ -99,17 +98,11 @@ import type { CompanyDetails, ContactWithChannels } from "@/types/cockpit";
 import ScheduleActionModal from "@/components/cockpit/ScheduleActionModal";
 import { TimePickerRHF } from "@/components/ui/TimePicker";
 import { useTagsManager } from "@/components/cockpit/hooks/useTagsManager";
-import {
-  analyzeRegisterActionWithAi,
-  type RegisterActionPayload,
-  type ActionAiAnalysis,
-} from "@/services/ai/actionsAiService";
-
-// [3.11.0] IA → AI Notes (sem alterar aiNotesService)
-import { createAiNote } from "@/services/aiNotesService";
+import type { ActionAiAnalysis } from "@/services/ai/actionsAiService";
+import { useActionAI } from "@/components/cockpit/hooks/useActionAI";
 
 import type { Dir } from "@/config/actionConstants";
-import { ACTION_GROUPS, byId, COLOR_PRESETS } from "@/config/actionConstants";
+import { ACTION_GROUPS, COLOR_PRESETS } from "@/config/actionConstants";
 import { getContrastColor, darkenHex } from "@/utils/colors";
 import { reconstructSelectionId, toTripleFromSelection } from "@/utils/actionMappers";
 import { resolveActionLabel } from "@/utils/actionHelpers";
@@ -638,275 +631,24 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     []
   );
 
-  /* --------------------- IA: estado local de análise --------------------- */
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState<string | null>(null);
-  const [aiResult, setAiResult] = useState<ActionAiAnalysis | null>(null);
-  const [aiRequested, setAiRequested] = useState(false);
-  const lastAiTriggerRef = useRef<number | undefined>(undefined);
-
-  // [3.11.0] helper local de fingerprint (best-effort, anti-duplicidade via metadata)
-  const buildFingerprint = (input: string) => {
-    try {
-      return btoa(unescape(encodeURIComponent(input))).slice(0, 120);
-    } catch {
-      return String(Date.now());
-    }
-  };
-
-  // [3.11.1] bridge Cockpit → ai_notes (persistência silenciosa) + body COMPLETO
-  const persistAiAnalysisToNotes = async (
-    payload: RegisterActionPayload,
-    analysis: ActionAiAnalysis
-  ) => {
-    try {
-      const sentimentPlainLabel = (s: ActionAiAnalysis["sentiment"]) => {
-        if (s === "positivo") return "Positivo";
-        if (s === "negativo") return "Negativo";
-        if (s === "neutro") return "Neutro";
-        return "n/d";
-      };
-
-      const urgencyPlainLabel = (u: ActionAiAnalysis["urgency"]) => {
-        if (u === "alta") return "Alta";
-        if (u === "media") return "Média";
-        if (u === "baixa") return "Baixa";
-        return "n/d";
-      };
-
-      const parts: string[] = [];
-      parts.push("✨");
-      parts.push(`Sentimento: ${sentimentPlainLabel(analysis.sentiment)}`);
-      parts.push(`Urgência: ${urgencyPlainLabel(analysis.urgency)}`);
-      parts.push("");
-
-      if (analysis.summary?.trim()) {
-        parts.push(analysis.summary.trim());
-        parts.push("");
-      }
-
-      if (analysis.next_steps?.length) {
-        parts.push("Próximas ações:");
-        analysis.next_steps.forEach((s) => {
-          if (s && s.trim()) parts.push(`- ${s.trim()}`);
-        });
-        parts.push("");
-      }
-
-      if (analysis.checklist?.length) {
-        parts.push("Checklist:");
-        analysis.checklist.forEach((c) => {
-          if (c && c.trim()) parts.push(`- ${c.trim()}`);
-        });
-        parts.push("");
-      }
-
-      if (analysis.suggested_tags?.length) {
-        const formatted = analysis.suggested_tags
-          .map((t) => (t || "").trim())
-          .filter((t) => t.length > 0)
-          .join(", ");
-        if (formatted) parts.push(`Tags sugeridas: ${formatted}`);
-      }
-
-      const body =
-        parts.join("\n").trim() ||
-        payload.descricao?.trim() ||
-        "Análise gerada automaticamente pela IA.";
-
-      const fingerprintSource = [
-        payload.assunto,
-        payload.descricao,
-        analysis.summary,
-        (analysis.next_steps || []).join("|"),
-        (analysis.checklist || []).join("|"),
-        (analysis.suggested_tags || []).join("|"),
-      ].join("::");
-
-      await createAiNote({
-        title: payload.assunto?.trim() || "Análise de Ação",
-        body,
-        tags: analysis.suggested_tags ?? [],
-        metadata: {
-          origin: "cockpit_register_action_ai",
-          acao: payload.acaoLabel,
-          status: payload.status,
-          contato: payload.contatoNome,
-          data: payload.data,
-          hora: payload.hora,
-          temperatura: payload.temperatura,
-          prioridade: payload.prioridade,
-          fingerprint: buildFingerprint(fingerprintSource),
-        },
-      } as any);
-    } catch (err) {
-      // Falha silenciosa: não afetar UX
-      console.error("Falha ao persistir AI Note automaticamente:", err);
-    }
-  };
-
-  const resolveStatusLabel = (isDone: boolean | undefined | null): string =>
-    isDone ? "Concluída" : "Andamento";
-
-  const resolveContatoNome = (contactId: string | null | undefined): string => {
-    if (!contactId) return "";
-    const c = contacts.find((ct) => ct.id === contactId);
-    return c?.full_name ?? "";
-  };
-
-  // Dispara análise de IA sempre que o gatilho externo mudar
-  useEffect(() => {
-    if (aiTrigger === undefined) return;
-    if (lastAiTriggerRef.current === aiTrigger) return;
-    lastAiTriggerRef.current = aiTrigger;
-
-    const runAi = async () => {
-      const data = getValues();
-
-      // Se não houver descrição, ainda deixamos a IA tentar (usando assunto),
-      // mas avisamos o usuário.
-      if (!data.body || !data.body.trim()) {
-        addToast(
-          "Preencha ao menos alguns detalhes em 'Descreva a Ação ou Conversa' para uma análise melhor.",
-          "info"
-        );
-      }
-
-      const payload: RegisterActionPayload = {
-        acaoLabel: resolveActionLabel(data.action),
-        status: resolveStatusLabel(data.is_done),
-        contatoNome: resolveContatoNome(data.contact_id),
-        assunto: data.subject || "",
-        etiquetas: tags,
-        data: data.calendar_at || "",
-        hora: data.on_time || "",
-        temperatura: data.temperature || "Neutra",
-        prioridade: normalizePriority(data.priority) || "Normal",
-        descricao: data.body || "",
-      };
-
-      setAiRequested(true);
-      setAiLoading(true);
-      setAiError(null);
-
-      try {
-        const result = await analyzeRegisterActionWithAi(payload);
-        if (!result) {
-          setAiError("Não foi possível obter análise da IA.");
-          setAiResult(null);
-          addToast("Não foi possível obter análise da IA.", "error");
-          return;
-        }
-        setAiResult(result);
-
-        // Auto-save silencioso em ai_notes (não depende do "Colar ✨")
-        await persistAiAnalysisToNotes(payload, result);
-      } catch (err: any) {
-        console.error("Erro na análise de IA:", err);
-        setAiError("Erro ao analisar a ação com IA.");
-        setAiResult(null);
-        addToast("Erro ao analisar a ação com IA.", "error");
-      } finally {
-        setAiLoading(false);
-      }
-    };
-
-    void runAi();
-  }, [aiTrigger, getValues, contacts, tags, normalizePriority, addToast]);
-
-  const sentimentToLabel = (s: ActionAiAnalysis["sentiment"]) => {
-    if (s === "positivo") return "Sentimento: Positivo";
-    if (s === "negativo") return "Sentimento: Negativo";
-    if (s === "neutro") return "Sentimento: Neutro";
-    return "Sentimento: n/d";
-  };
-
-  const urgencyToLabel = (u: ActionAiAnalysis["urgency"]) => {
-    if (u === "alta") return "Urgência: Alta";
-    if (u === "media") return "Urgência: Média";
-    if (u === "baixa") return "Urgência: Baixa";
-    return "Urgência: n/d";
-  };
-
-  // Labels "limpos" para uso dentro do bloco colado
-  const sentimentPlainLabel = (s: ActionAiAnalysis["sentiment"]) => {
-    if (s === "positivo") return "Positivo";
-    if (s === "negativo") return "Negativo";
-    if (s === "neutro") return "Neutro";
-    return "n/d";
-  };
-
-  const urgencyPlainLabel = (u: ActionAiAnalysis["urgency"]) => {
-    if (u === "alta") return "Alta";
-    if (u === "media") return "Média";
-    if (u === "baixa") return "Baixa";
-    return "n/d";
-  };
-
-  const buildAiPasteBlock = (analysis: ActionAiAnalysis): string => {
-    const parts: string[] = [];
-
-    parts.push("---");
-    parts.push("");
-    parts.push("✨");
-    parts.push(`Sentimento: ${sentimentPlainLabel(analysis.sentiment)}`);
-    parts.push(`Urgência: ${urgencyPlainLabel(analysis.urgency)}`);
-    parts.push("");
-
-    if (analysis.summary && analysis.summary.trim()) {
-      parts.push(analysis.summary.trim());
-      parts.push("");
-    }
-
-    if (analysis.next_steps && analysis.next_steps.length > 0) {
-      parts.push("Próximas ações:");
-      analysis.next_steps.forEach((step) => {
-        if (step && step.trim()) {
-          parts.push(`- ${step.trim()}`);
-        }
-      });
-      parts.push("");
-    }
-
-    if (analysis.checklist && analysis.checklist.length > 0) {
-      parts.push("Checklist:");
-      analysis.checklist.forEach((item) => {
-        if (item && item.trim()) {
-          parts.push(`- ${item.trim()}`);
-        }
-      });
-      parts.push("");
-    }
-
-    if (analysis.suggested_tags && analysis.suggested_tags.length > 0) {
-      const formattedTags = analysis.suggested_tags
-        .map((t) => (t || "").trim())
-        .filter((t) => t.length > 0)
-        .join(", ");
-      if (formattedTags) {
-        parts.push(`Tags sugeridas: ${formattedTags}`);
-        parts.push("");
-      }
-    }
-
-    parts.push("---");
-
-    return parts.join("\n");
-  };
-
-  const handlePasteFromAi = () => {
-    if (!aiResult) {
-      addToast("Nenhuma sugestão da IA disponível para colar.", "info");
-      return;
-    }
-
-    const currentBody = getValues("body") ?? "";
-    const block = buildAiPasteBlock(aiResult);
-    const newBody = `${currentBody}\n\n${block}`;
-
-    setValue("body", newBody, { shouldDirty: true });
-    // Fechar painel da IA seria opcional; por ora mantemos aberto para referência visual.
-  };
+  /* --------------------- IA --------------------- */
+  const {
+    aiRequested,
+    aiLoading,
+    aiError,
+    aiResult,
+    sentimentToLabel,
+    urgencyToLabel,
+    handlePasteFromAi,
+  } = useActionAI({
+    aiTrigger,
+    getValues,
+    getBodyValue: () => getValues("body") ?? "",
+    setBodyValue: (v) => setValue("body", v, { shouldDirty: true }),
+    contacts,
+    tags,
+    addToast,
+  });
 
   return (
     <div className="space-y-4">

@@ -9,6 +9,7 @@
 
 import { supabaseClient } from "@/lib/supabaseClient";
 import type { Tag, TagOrigin } from "@/types/tag";
+import { normalizeText } from "@/utils/textNormalization";
 
 const TABLE_NAME = "tags";
 
@@ -60,7 +61,11 @@ export async function searchTags(
     .limit(limit);
 
   if (q && q.trim().length > 0) {
-    query = query.ilike("name", `%${q.trim()}%`);
+    const raw = q.trim();
+    // Busca pelo nome original (case-insensitive) OU pelo slug normalizado
+    // (sem acentos), para que "licitacao" encontre "LICITAÇÃO".
+    const normalized = normalizeText(raw).replace(/\s+/g, "-");
+    query = query.or(`name.ilike.%${raw}%,slug.ilike.%${normalized}%`);
   }
 
   if (!includeSystem || !includeUser) {

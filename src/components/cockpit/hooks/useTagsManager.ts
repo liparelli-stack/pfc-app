@@ -3,6 +3,7 @@ import type { MutableRefObject } from "react";
 import type { Tag as TagEntity } from "@/types/tag";
 import { searchTags, createTag, getTagsBySlugs } from "@/services/tagsService";
 import { COLOR_PRESETS } from "@/config/actionConstants";
+import { normalizeText } from "@/utils/textNormalization";
 
 interface UseTagsManagerParams {
   editingChatId?: string | null;
@@ -124,7 +125,7 @@ export function useTagsManager({
   const tagPanelRef = useRef<HTMLDivElement | null>(null);
 
   const lowerSelectedTags = useMemo(
-    () => new Set(tags.map((s) => s.toLowerCase())),
+    () => new Set(tags.map((s) => normalizeText(s))),
     [tags]
   );
 
@@ -198,7 +199,7 @@ export function useTagsManager({
 
   // ----- Handlers -----
   const handleTagAdd = (slug: string) => {
-    const norm = slug.toLowerCase();
+    const norm = normalizeText(slug);
     if (lowerSelectedTags.has(norm)) {
       setTagSearch("");
       return;
@@ -248,11 +249,12 @@ export function useTagsManager({
       const q = tagSearch.trim();
       if (!q) return;
 
+      const normQ = normalizeText(q);
       const existing =
         tagSuggestions.find(
           (t) =>
-            t.slug.toLowerCase() === q.toLowerCase() ||
-            t.name.toLowerCase() === q.toLowerCase()
+            normalizeText(t.slug) === normQ ||
+            normalizeText(t.name) === normQ
         ) || null;
 
       if (existing) {

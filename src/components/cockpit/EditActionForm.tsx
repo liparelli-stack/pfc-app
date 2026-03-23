@@ -72,7 +72,6 @@ import React, {
   useMemo,
   useState,
   useRef,
-  KeyboardEvent,
 } from "react";
 import clsx from "clsx";
 import { useForm, Controller, useWatch } from "react-hook-form";
@@ -99,8 +98,7 @@ import type { CompanyDetails, ContactWithChannels } from "@/types/cockpit";
 
 import ScheduleActionModal from "@/components/cockpit/ScheduleActionModal";
 import { TimePickerRHF } from "@/components/ui/TimePicker";
-import type { Tag as TagEntity } from "@/types/tag";
-import { searchTags, createTag, getTagsBySlugs } from "@/services/tagsService";
+import { useTagsManager } from "@/components/cockpit/hooks/useTagsManager";
 import {
   analyzeRegisterActionWithAi,
   type RegisterActionPayload,
@@ -266,237 +264,31 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
   const [budgetDraft, setBudgetDraft] = useState<UIBudgetDraft | null>(null);
 
   // --------------------- Tags (Etiquetas) ---------------------
-  const [tags, setTags] = useState<string[]>(() => {
-    const raw = (editingChat as any)?.tags;
-    if (!raw) return [];
-    if (Array.isArray(raw)) {
-      return raw.filter((t): t is string => typeof t === "string");
-    }
-    return [];
+  const {
+    tags,
+    tagMapBySlug,
+    lowerSelectedTags,
+    isTagPanelOpen,
+    tagSearch,
+    tagSuggestions,
+    tagLoading,
+    tagCreating,
+    tagError,
+    pendingColor,
+    effectivePendingColor,
+    tagButtonRef,
+    tagPanelRef,
+    handleTagAdd,
+    handleTagRemove,
+    handleTagCreate,
+    handleTagSearchKeyDown,
+    setTagSearch,
+    setIsTagPanelOpen,
+    setPendingColor,
+  } = useTagsManager({
+    editingChatId: editingChat?.id,
+    editingChatTags: (editingChat as any)?.tags,
   });
-
-  useEffect(() => {
-    const raw = (editingChat as any)?.tags;
-    if (!raw) {
-      setTags([]);
-      return;
-    }
-    if (Array.isArray(raw)) {
-      setTags(raw.filter((t) => typeof t === "string") as string[]);
-      return;
-    }
-    setTags([]);
-  }, [editingChat]);
-
-  // Detalhes das tags (nome, cor) para chips
-  const [tagEntities, setTagEntities] = useState<TagEntity[]>([]);
-
-  const tagMapBySlug = useMemo(() => {
-    const map = new Map<string, TagEntity>();
-    tagEntities.forEach((t) => {
-      map.set(t.slug.toLowerCase(), t);
-    });
-    return map;
-  }, [tagEntities]);
-
-  const ensureTagInEntities = (tag: TagEntity) => {
-    setTagEntities((prev) => {
-      const exists = prev.some((t) => t.id === tag.id);
-      if (exists) return prev;
-      return [...prev, tag];
-    });
-  };
-
-  // 🔎 Em edição: se o chat já tem tags (slugs), buscar entidades completas (nome/cor) em public.tags
-  useEffect(() => {
-    if (!editingChat?.tags || !Array.isArray(editingChat.tags)) return;
-
-    const slugs = editingChat.tags.filter(
-      (t): t is string => typeof t === "string" && t.trim().length > 0
-    );
-    if (slugs.length === 0) return;
-
-    let active = true;
-
-    const loadTagsForEditingChat = async () => {
-      try {
-        const fetched = await getTagsBySlugs(slugs);
-        if (!active || !fetched?.length) return;
-
-        setTagEntities((prev) => {
-          const map = new Map(prev.map((t) => [t.id, t]));
-          fetched.forEach((t) => map.set(t.id, t));
-          return Array.from(map.values());
-        });
-      } catch (err) {
-        console.error("Erro ao carregar tags do chat (edição):", err);
-      }
-    };
-
-    void loadTagsForEditingChat();
-
-    return () => {
-      active = false;
-    };
-  }, [editingChat?.id, editingChat?.tags]);
-
-  // Estados da janela de tagging
-  const [isTagPanelOpen, setIsTagPanelOpen] = useState(false);
-  const [tagSearch, setTagSearch] = useState("");
-  const [tagSuggestions, setTagSuggestions] = useState<TagEntity[]>([]);
-  const [tagLoading, setTagLoading] = useState(false);
-  const [tagCreating, setTagCreating] = useState(false);
-  const [tagError, setTagError] = useState<string | null>(null);
-  const [pendingColor, setPendingColor] = useState<string | null>(null);
-  const [autoColorIndex, setAutoColorIndex] = useState(0);
-
-  const tagButtonRef = useRef<HTMLButtonElement | null>(null);
-  const tagPanelRef = useRef<HTMLDivElement | null>(null);
-
-  const lowerSelectedTags = useMemo(
-    () => new Set(tags.map((s) => s.toLowerCase())),
-    [tags]
-  );
-
-  // Fechar janela ao clicar fora
-  useEffect(() => {
-    if (!isTagPanelOpen) return;
-
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        tagPanelRef.current &&
-        !tagPanelRef.current.contains(e.target as Node) &&
-        tagButtonRef.current &&
-        !tagButtonRef.current.contains(e.target as Node)
-      ) {
-        setIsTagPanelOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isTagPanelOpen]);
-
-  // Buscar tags na tabela public.tags ao digitar
-  useEffect(() => {
-    if (!isTagPanelOpen) return;
-
-    const q = tagSearch.trim();
-    if (!q) {
-      setTagSuggestions([]);
-      setTagError(null);
-      return;
-    }
-
-    let active = true;
-
-    async function run() {
-      setTagLoading(true);
-      setTagError(null);
-      try {
-        const found = await searchTags({
-          q,
-          limit: 20,
-          includeUser: true,
-          includeSystem: false,
-        });
-        if (!active) return;
-        setTagSuggestions(found);
-        // Alimenta cache local de entidades
-        setTagEntities((prev) => {
-          const map = new Map(prev.map((t) => [t.id, t]));
-          found.forEach((t) => map.set(t.id, t));
-          return Array.from(map.values());
-        });
-      } catch (err: any) {
-        if (!active) return;
-        console.error("Erro ao buscar tags:", err);
-        setTagError("Erro ao buscar tags.");
-      } finally {
-        if (active) setTagLoading(false);
-      }
-    }
-
-    const handle = window.setTimeout(run, 250);
-    return () => {
-      active = false;
-      window.clearTimeout(handle);
-    };
-  }, [tagSearch, isTagPanelOpen]);
-
-  const handleTagAdd = (slug: string) => {
-    const norm = slug.toLowerCase();
-    if (lowerSelectedTags.has(norm)) {
-      setTagSearch("");
-      return;
-    }
-    setTags((prev) => [...prev, slug]);
-    setTagSearch("");
-  };
-
-  const handleTagRemove = (slug: string) => {
-    setTags((prev) => prev.filter((s) => s !== slug));
-  };
-
-  const handleTagCreate = async () => {
-    const name = tagSearch.trim();
-    if (!name) return;
-
-    setTagCreating(true);
-    setTagError(null);
-
-    try {
-      let colorToUse = pendingColor;
-      if (!colorToUse) {
-        const idx = autoColorIndex % COLOR_PRESETS.length;
-        colorToUse = COLOR_PRESETS[idx];
-        setAutoColorIndex((prev) => (prev + 1) % COLOR_PRESETS.length);
-      }
-
-      const tag = await createTag({
-        name,
-        color: colorToUse,
-        origin: "user",
-      });
-
-      ensureTagInEntities(tag);
-      handleTagAdd(tag.slug);
-    } catch (err: any) {
-      console.error("Erro ao criar tag:", err);
-      setTagError("Não foi possível criar a tag.");
-    } finally {
-      setTagCreating(false);
-    }
-  };
-
-  const handleTagSearchKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const q = tagSearch.trim();
-      if (!q) return;
-
-      const existing =
-        tagSuggestions.find(
-          (t) =>
-            t.slug.toLowerCase() === q.toLowerCase() ||
-            t.name.toLowerCase() === q.toLowerCase()
-        ) || null;
-
-      if (existing) {
-        handleTagAdd(existing.slug);
-        return;
-      }
-
-      void handleTagCreate();
-    }
-
-    if (e.key === "Escape") {
-      setIsTagPanelOpen(false);
-    }
-  };
-
-  const effectivePendingColor =
-    pendingColor ?? COLOR_PRESETS[autoColorIndex % COLOR_PRESETS.length];
 
   const openCreateDraft = () => {
     setBudgetDraft({

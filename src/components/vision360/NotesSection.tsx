@@ -139,20 +139,7 @@ const NotesSection: React.FC<Props> = ({ companyId, notes = [], onNotesChange })
             </p>
             <button
               onClick={() => setIsAddOpen(true)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                backgroundColor: '#3b68f5',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '7px 15px',
-                fontSize: '13px',
-                fontWeight: '400',
-                cursor: 'pointer',
-                opacity: 1,
-              }}
+              className="inline-flex items-center gap-1.5 bg-[#3b68f5] text-white border-0 rounded-[8px] py-[7px] px-[15px] text-[13px] font-normal cursor-pointer"
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
             >
@@ -161,14 +148,14 @@ const NotesSection: React.FC<Props> = ({ companyId, notes = [], onNotesChange })
             </button>
           </div>
 
-          <div className="rounded-xl p-4 neumorphic-convex">
+          <div className="bg-light-s1 dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-xl p-4">
             {Array.isArray(notes) && notes.length > 0 ? (
               <ul className="space-y-3">
                 {[...notes]
                   .map((n, idx) => ({ ...n, _idx: idx }))
                   .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
                   .map(item => (
-                    <li key={`${item._idx}-${item.data}`} className="rounded-lg p-3 bg-plate/60 dark:bg-plate-dark/60">
+                    <li key={`${item._idx}-${item.data}`} className="rounded-lg p-3 bg-white dark:bg-dark-s2">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <div className="text-sm text-gray-500 dark:text-gray-400">

@@ -48,10 +48,10 @@ const QualificationBadge = ({ value }: { value?: number | null }) => {
 const LegalAndCnpjInline = ({ legalName, taxId }: { legalName?: string | null; taxId?: string | null }) => {
   if (!legalName && !taxId) return null;
   return (
-    <div className="mt-1 text-[12px] text-gray-700 dark:text-gray-200 flex items-baseline justify-between gap-6">
+    <div className="mt-1 text-[12px] text-gray-700 dark:text-dark-t1 flex items-baseline justify-between gap-6">
       <span className="font-medium">{legalName ?? '—'}</span>
       <span>
-        <span className="text-gray-500 dark:text-gray-400">CNPJ/CPF: </span>
+        <span className="text-gray-500 dark:text-dark-t2">CNPJ/CPF: </span>
         <span className="font-medium">{taxId ?? '—'}</span>
       </span>
     </div>
@@ -71,28 +71,28 @@ const AddressInlineRow = ({
 }) => {
   if (!address && !city && !state && !zip) return null;
   return (
-    <div className="mt-1 text-sm text-gray-700 dark:text-gray-200 flex flex-wrap items-center gap-x-6">
+    <div className="mt-1 text-sm text-gray-700 dark:text-dark-t1 flex flex-wrap items-center gap-x-6">
       {address && (
         <span>
-          <span className="text-gray-500 dark:text-gray-400">Endereço: </span>
+          <span className="text-gray-500 dark:text-dark-t2">Endereço: </span>
           {address.trim()}
         </span>
       )}
       {city && (
         <span>
-          <span className="text-gray-500 dark:text-gray-400">Cidade: </span>
+          <span className="text-gray-500 dark:text-dark-t2">Cidade: </span>
           {city}
         </span>
       )}
       {state && (
         <span>
-          <span className="text-gray-500 dark:text-gray-400">UF: </span>
+          <span className="text-gray-500 dark:text-dark-t2">UF: </span>
           {state}
         </span>
       )}
       {zip && (
         <span>
-          <span className="text-gray-500 dark:text-gray-400">CEP: </span>
+          <span className="text-gray-500 dark:text-dark-t2">CEP: </span>
           {zip}
         </span>
       )}
@@ -113,7 +113,7 @@ const GeneralContactsInlineRow = ({
   const normalizedWebsite =
     website && website.trim() ? (/^https?:\/\//i.test(website) ? website : `https://${website}`) : null;
   return (
-    <div className="mt-1 text-sm text-gray-700 dark:text-gray-200 flex flex-wrap items-center gap-x-6">
+    <div className="mt-1 text-sm text-gray-700 dark:text-dark-t1 flex flex-wrap items-center gap-x-6">
       {phone && (
         <span className="inline-flex items-center gap-1">
           <Phone size={14} />
@@ -223,7 +223,7 @@ export default function CompanyProfileCardFull({ companyId }: CompanyProfileCard
   const [showNotes, setShowNotes] = useState(false);
 
   return (
-    <div className="bg-plate dark:bg-plate-dark p-4 rounded-2xl neumorphic-convex mb-4">
+    <div className="bg-plate dark:bg-dark-s1 p-4 rounded-2xl neumorphic-convex mb-4">
       {/* Cabeçalho e dados principais — NÃO ALTERADOS */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
@@ -261,7 +261,7 @@ export default function CompanyProfileCardFull({ companyId }: CompanyProfileCard
               'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition',
               notesCount > 0
                 ? 'bg-red-500/10 text-red-700 hover:bg-red-500/20'
-                : 'bg-gray-500/10 text-gray-600 dark:text-gray-300 hover:bg-gray-500/20',
+                : 'bg-gray-500/10 text-gray-600 dark:text-dark-t1 hover:bg-gray-500/20',
             ].join(' ')}
             title={notesCount > 0 ? `Notas (${notesCount})` : 'Sem notas'}
           >
@@ -273,7 +273,7 @@ export default function CompanyProfileCardFull({ companyId }: CompanyProfileCard
         {showNotes && (
           <div
             id="company-notes-panel"
-            className="mt-2 rounded-xl border border-gray-300/60 dark:border-white/10 bg-white/60 dark:bg-white/5 p-3"
+            className="mt-2 rounded-xl border border-gray-300/60 dark:border-white/10 bg-white/60 dark:bg-dark-s1/5 p-3"
           >
             <SectionTitle>Notas</SectionTitle>
             {notesCount === 0 ? (
@@ -281,22 +281,22 @@ export default function CompanyProfileCardFull({ companyId }: CompanyProfileCard
             ) : (
               <ul className="space-y-2">
                 {notesNormalized.map((n, idx) => (
-                  <li key={idx} className="rounded-lg bg-plate/60 dark:bg-white/5 p-2">
-                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[12px] text-gray-600 dark:text-gray-300">
+                  <li key={idx} className="rounded-lg bg-plate/60 dark:bg-dark-s1/5 p-2">
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[12px] text-gray-600 dark:text-dark-t1">
                       {n.data && (
                         <span>
-                          <span className="text-gray-500 dark:text-gray-400">Data: </span>
+                          <span className="text-gray-500 dark:text-dark-t2">Data: </span>
                           {n.data}
                         </span>
                       )}
                       {n.assunto && (
                         <span>
-                          <span className="text-gray-500 dark:text-gray-400">Assunto: </span>
+                          <span className="text-gray-500 dark:text-dark-t2">Assunto: </span>
                           {n.assunto}
                         </span>
                       )}
                     </div>
-                    <div className="mt-1 text-sm whitespace-pre-wrap text-gray-800 dark:text-gray-100">{n.nota}</div>
+                    <div className="mt-1 text-sm whitespace-pre-wrap text-gray-800 dark:text-dark-t1">{n.nota}</div>
                   </li>
                 ))}
               </ul>

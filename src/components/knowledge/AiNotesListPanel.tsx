@@ -104,7 +104,7 @@ const AiNotesListPanel: React.FC<Props> = ({
       {/* Modal de confirmação */}
       {deleteTargetId && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-40">
-          <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 max-w-sm w-full neumorphic-convex">
+          <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 max-w-sm w-full neumorphic-convex">
             <h4 className="text-lg font-bold mb-3">
               Excluir nota
             </h4>

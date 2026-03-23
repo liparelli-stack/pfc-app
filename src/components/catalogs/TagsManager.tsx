@@ -149,7 +149,7 @@ const TagsManager: React.FC = () => {
       <div className="space-y-6">
         <section className="neumorphic-convex rounded-2xl p-4 sm:p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Gerenciador de Etiquetas</h2>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1">Gerenciador de Etiquetas</h2>
             <Button onClick={handleOpenCreate} variant="primary">
               <Plus className="h-5 w-5 mr-2" />
               Adicionar Nova Etiqueta
@@ -171,7 +171,7 @@ const TagsManager: React.FC = () => {
             </div>
           ) : filteredTags.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-gray-500 dark:text-dark-t2">
                 {searchTerm ? 'Nenhum resultado encontrado.' : 'Nenhuma etiqueta encontrada. Crie uma nova!'}
               </p>
             </div>
@@ -179,7 +179,7 @@ const TagsManager: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200/60 dark:border-gray-700/60">
+                  <tr className="text-left text-gray-500 dark:text-dark-t2 border-b border-gray-200/60 dark:border-white/10/60">
                     <th className="py-2 px-3 font-semibold">Nome / Slug</th>
                     <th className="py-2 px-3 font-semibold">Cor</th>
                     <th className="py-2 px-3 font-semibold">Grupo</th>
@@ -190,18 +190,18 @@ const TagsManager: React.FC = () => {
                 </thead>
                 <tbody>
                   {filteredTags.map(tag => (
-                    <tr key={tag.id} className="border-b border-gray-200/60 dark:border-gray-700/60 hover:bg-black/5 dark:hover:bg-white/5">
+                    <tr key={tag.id} className="border-b border-gray-200/60 dark:border-white/10/60 hover:bg-black/5 dark:hover:bg-white/5">
                       <td className="py-3 px-3">
-                        <div className="font-bold text-gray-800 dark:text-gray-100">{tag.name}</div>
+                        <div className="font-bold text-gray-800 dark:text-dark-t1">{tag.name}</div>
                         <div className="text-xs text-gray-500 font-mono">{tag.slug}</div>
                       </td>
                       <td className="py-3 px-3">
                         <ColorCell color={tag.color} />
                       </td>
-                      <td className="py-3 px-3 text-gray-600 dark:text-gray-300">
+                      <td className="py-3 px-3 text-gray-600 dark:text-dark-t1">
                         {tag.tag_group || '—'}
                       </td>
-                      <td className="py-3 px-3 text-gray-600 dark:text-gray-300">
+                      <td className="py-3 px-3 text-gray-600 dark:text-dark-t1">
                         <span className={clsx(
                           'px-2 py-1 text-xs rounded-md',
                           tag.origin === 'system' 

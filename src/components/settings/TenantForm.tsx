@@ -108,8 +108,8 @@ export const TenantForm = ({
   const title = isEditMode ? 'Editar Organização' : 'Cadastrar Organização';
 
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-4 sm:p-8 neumorphic-convex">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-4 sm:p-8 neumorphic-convex">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1 mb-6">
         {title}
       </h2>
 

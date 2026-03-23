@@ -60,8 +60,8 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-plate dark:bg-plate-dark">
-      <div className="w-full max-w-sm p-8 space-y-6 bg-plate dark:bg-plate-dark rounded-2xl neumorphic-convex">
+    <div className="flex items-center justify-center min-h-screen bg-plate dark:bg-dark-s1">
+      <div className="w-full max-w-sm p-8 space-y-6 bg-plate dark:bg-dark-s1 rounded-2xl neumorphic-convex">
 
         <h1 className="text-2xl font-bold text-center">Defina sua nova senha</h1>
 

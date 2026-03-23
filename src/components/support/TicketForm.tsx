@@ -103,8 +103,8 @@ const TicketForm: React.FC<TicketFormProps> = ({ onSave, onCancel }) => {
   };
 
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-8 neumorphic-convex">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-8 neumorphic-convex">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1 mb-6">
         Abrir Novo Chamado
       </h2>
 
@@ -122,7 +122,7 @@ const TicketForm: React.FC<TicketFormProps> = ({ onSave, onCancel }) => {
         />
 
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">
+          <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1">
             Descrição
           </label>
           <Controller
@@ -132,7 +132,7 @@ const TicketForm: React.FC<TicketFormProps> = ({ onSave, onCancel }) => {
               <textarea
                 {...field}
                 rows={6}
-                className="w-full p-3 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:bg-white dark:focus:bg-gray-700 outline-none"
+                className="w-full p-3 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave focus:bg-white dark:focus:bg-gray-700 outline-none"
               />
             )}
           />
@@ -174,13 +174,13 @@ const TicketForm: React.FC<TicketFormProps> = ({ onSave, onCancel }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2 text-gray-600 dark:text-gray-300">
+          <label className="block text-sm font-medium mb-2 text-gray-600 dark:text-dark-t1">
             Anexos
           </label>
 
-          <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-primary transition-colors">
+          <div className="relative border-2 border-dashed border-gray-300 dark:border-white/10 rounded-lg p-6 text-center hover:border-primary transition-colors">
             <Upload className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-2 text-sm text-gray-600 dark:text-dark-t2">
               Arraste e solte ou clique para selecionar
             </p>
             <input

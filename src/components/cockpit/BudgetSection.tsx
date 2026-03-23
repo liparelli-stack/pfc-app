@@ -162,7 +162,7 @@ export default function BudgetSection({
   return (
     <div className="mt-4 p-4 border-t border-dashed border-dark-shadow dark:border-dark-dark-shadow space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-md font-bold text-gray-700 dark:text-gray-200">
+        <h4 className="text-md font-bold text-gray-700 dark:text-dark-t1">
           Orçamentos
         </h4>
         {!draft && (
@@ -185,7 +185,7 @@ export default function BudgetSection({
               it.id ??
               `${it.description}-${it.amount}-${it.updated_at ?? "pending"}`
             }
-            className="flex items-center justify-between rounded-lg px-3 py-2 bg-plate dark:bg-plate-dark border border-dark-shadow dark:border-dark-dark-shadow"
+            className="flex items-center justify-between rounded-lg px-3 py-2 bg-plate dark:bg-dark-s1 border border-dark-shadow dark:border-dark-dark-shadow"
           >
             <div className="min-w-0">
               <div className="text-sm font-medium truncate">
@@ -241,7 +241,7 @@ export default function BudgetSection({
             <div>
               <label className="block text-sm font-medium mb-1">Status*</label>
               <select
-                className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
                 value={currentStatus}
                 onChange={(e) =>
                   set("status", e.target.value as BudgetDraft["status"])

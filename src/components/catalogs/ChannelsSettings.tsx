@@ -169,8 +169,8 @@ const ChannelsSettings = () => {
   // [--BLOCO--] Skeleton apenas no boot
   if (isLoading && !booted) {
     return (
-      <div className="bg-plate dark:bg-plate-dark rounded-2xl p-8 neumorphic-convex space-y-4">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+      <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-8 neumorphic-convex space-y-4">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1 mb-6">
           Canais de Comunicação
         </h2>
         {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}
@@ -180,8 +180,8 @@ const ChannelsSettings = () => {
 
   // [--BLOCO--] UI
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-4 sm:p-8 neumorphic-convex">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-4 sm:p-8 neumorphic-convex">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1 mb-6">
         Canais de Comunicação
       </h2>
 
@@ -227,7 +227,7 @@ const ChannelsSettings = () => {
               </div>
 
               {/* Updated at */}
-              <div className="text-xs text-gray-500 dark:text-gray-400 text-right">
+              <div className="text-xs text-gray-500 dark:text-dark-t2 text-right">
                 Últ. atualização: <br /> {formatDate(field.updated_at)}
               </div>
 

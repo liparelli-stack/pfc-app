@@ -47,7 +47,7 @@ const StatusBadge: React.FC<{ status: 'Ativo' | 'Inativo' }> = ({ status }) => {
         'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
         isActive
           ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
-          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+          : 'bg-gray-100 text-gray-800 dark:bg-dark-s2 dark:text-dark-t1'
       )}
     >
       {status}
@@ -92,7 +92,7 @@ const UserListTable: React.FC<UserListTableProps> = ({ users, loading }) => {
     <div className="overflow-x-auto neumorphic-convex rounded-2xl p-4">
       <table className="w-full min-w-[800px] text-sm">
         <thead>
-          <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200/60 dark:border-gray-700/60">
+          <tr className="text-left text-gray-500 dark:text-dark-t2 border-b border-gray-200/60 dark:border-white/10/60">
             <th scope="col" className="py-3 px-4 font-semibold">Nome</th>
             <th scope="col" className="py-3 px-4 font-semibold">Email</th>
             <th scope="col" className="py-3 px-4 font-semibold">Departamento</th>
@@ -105,11 +105,11 @@ const UserListTable: React.FC<UserListTableProps> = ({ users, loading }) => {
         <tbody>
           {users.map((user) => (
             // 5. UI/UX: Efeito de hover e 6. Boas Práticas: key única
-            <tr key={user.id} className="border-b border-gray-200/60 dark:border-gray-700/60 hover:bg-gray-50 dark:hover:bg-white/5">
-              <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-100">{user.nome}</td>
-              <td className="py-3 px-4 text-gray-600 dark:text-gray-300">{user.email}</td>
-              <td className="py-3 px-4 text-gray-600 dark:text-gray-300">{user.departamento}</td>
-              <td className="py-3 px-4 text-gray-600 dark:text-gray-300">{user.cargo}</td>
+            <tr key={user.id} className="border-b border-gray-200/60 dark:border-white/10/60 hover:bg-gray-50 dark:hover:bg-white/5">
+              <td className="py-3 px-4 font-medium text-gray-800 dark:text-dark-t1">{user.nome}</td>
+              <td className="py-3 px-4 text-gray-600 dark:text-dark-t1">{user.email}</td>
+              <td className="py-3 px-4 text-gray-600 dark:text-dark-t1">{user.departamento}</td>
+              <td className="py-3 px-4 text-gray-600 dark:text-dark-t1">{user.cargo}</td>
               <td className="py-3 px-4">
                 <StatusBadge status={user.status} />
               </td>

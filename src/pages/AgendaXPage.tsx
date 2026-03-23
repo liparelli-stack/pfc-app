@@ -106,7 +106,7 @@ const AgendaXPage = () => {
               </button>
 
               <span
-                className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-200/70 dark:bg-white/10 text-gray-700 dark:text-gray-200"
+                className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-200/70 dark:bg-dark-s1/10 text-gray-700 dark:text-dark-t1"
                 title={modeTooltip}
                 aria-label={modeTooltip}
               >

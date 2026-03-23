@@ -96,7 +96,7 @@ const DealsPage: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Filtros + Ações (ícones) */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-4 rounded-2xl neumorphic-convex bg-plate dark:bg-plate-dark">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-4 rounded-2xl neumorphic-convex bg-plate dark:bg-dark-s1">
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           {/* Empresa por nome */}
           <Select label="Empresa (por nome)" onChange={(e) => setFilter({ companyName: e.target.value })}>

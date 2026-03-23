@@ -323,7 +323,7 @@ const ConversationLogCard: React.FC<Props> = ({ editingChat, onCancelEdit, onSav
 
   if (isLoading) {
     return (
-      <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex space-y-4">
+      <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex space-y-4">
         <Skeleton className="h-8 w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Skeleton className="h-10 w-full" />
@@ -340,14 +340,14 @@ const ConversationLogCard: React.FC<Props> = ({ editingChat, onCancelEdit, onSav
 
   return (
     <>
-      <section className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex">
+      <section className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+          <h3 className="text-xl font-bold text-gray-800 dark:text-dark-t1">
             {isEditing ? `Editar ${kindLabel}` : 'Registrar Oportunidade'}
           </h3>
 
           {isEditing && (
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-dark-t1">
               <input type="checkbox" checked={editIsDone} onChange={e => setEditIsDone(e.target.checked)} />
               Concluída
             </label>
@@ -406,7 +406,7 @@ const ConversationLogCard: React.FC<Props> = ({ editingChat, onCancelEdit, onSav
           />
 
           <div>
-            <label htmlFor="body" className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">
+            <label htmlFor="body" className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1">
               {isEditing ? 'Descrição / Observações (editar)*' : 'Descreva o que foi Conversado*'}
             </label>
             <Controller
@@ -417,7 +417,7 @@ const ConversationLogCard: React.FC<Props> = ({ editingChat, onCancelEdit, onSav
                   id="body"
                   placeholder="Detalhe os pontos principais, decisões e próximos passos..."
                   rows={5}
-                  className="w-full px-4 py-2.5 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:bg-white dark:focus:bg-gray-700 transition-colors duration-200 outline-none"
+                  className="w-full px-4 py-2.5 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave focus:bg-white dark:focus:bg-gray-700 transition-colors duration-200 outline-none"
                   {...field}
                 />
               )}
@@ -454,7 +454,7 @@ const ConversationLogCard: React.FC<Props> = ({ editingChat, onCancelEdit, onSav
           {/* Rodapé unificado */}
           <div className="mt-6 pt-4 border-t border-dark-shadow dark:border-dark-dark-shadow flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-wrap">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <span className="font-semibold text-sm text-gray-700 dark:text-gray-300 flex-shrink-0">
+              <span className="font-semibold text-sm text-gray-700 dark:text-dark-t1 flex-shrink-0">
                 Agendar Próxima Ação:
               </span>
               <div className="flex flex-wrap gap-2">

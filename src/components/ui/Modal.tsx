@@ -120,7 +120,7 @@ export const Modal: React.FC<ModalProps> = ({
         className={[
           'relative z-[1410]',
           'w-full', sizeToClass[size],
-          'bg-plate dark:bg-plate-dark rounded-2xl neumorphic-convex',
+          'bg-plate dark:bg-dark-s1 rounded-2xl neumorphic-convex',
           'p-6 md:p-8',
           'max-h-[85vh] overflow-y-auto',
           'pointer-events-auto focus:outline-none shadow-xl',

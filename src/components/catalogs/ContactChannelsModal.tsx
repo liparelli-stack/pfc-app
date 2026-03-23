@@ -249,7 +249,7 @@ const ContactChannelsModal: React.FC<Props> = ({ contactId, open, onClose }) => 
 
       {/* Modal */}
       <div
-        className="relative z-[121] w-[min(1024px,95vw)] max-h-[90vh] overflow-hidden rounded-2xl bg-plate dark:bg-plate-dark neumorphic-convex"
+        className="relative z-[121] w-[min(1024px,95vw)] max-h-[90vh] overflow-hidden rounded-2xl bg-plate dark:bg-dark-s1 neumorphic-convex"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -309,7 +309,7 @@ const ContactChannelsModal: React.FC<Props> = ({ contactId, open, onClose }) => 
               {error && <div className="mb-4 text-sm text-red-500" role="alert">{error}</div>}
 
               {rows.length === 0 && !loading && (
-                <div className="w-full bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex flex items-center justify-between">
+                <div className="w-full bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex flex items-center justify-between">
                   <p className="text-gray-400">Nenhum canal adicionado para este contato.</p>
                   <Button type="button" variant="primary" onClick={add} disabled={saving} aria-label="Adicionar primeiro canal">
                     <Plus className="h-4 w-4 mr-1" aria-hidden="true" />
@@ -399,7 +399,7 @@ const ContactChannelsModal: React.FC<Props> = ({ contactId, open, onClose }) => 
                           htmlFor={`preferred-${item.id}`}
                           className="flex items-center justify-between rounded-lg px-3 py-2 neumorphic-convex cursor-pointer"
                         >
-                          <span className="text-sm text-gray-600 dark:text-gray-300 pr-3">Preferencial</span>
+                          <span className="text-sm text-gray-600 dark:text-dark-t1 pr-3">Preferencial</span>
                           <Switch
                             id={`preferred-${item.id}`}
                             checked={!!item.is_preferred}
@@ -437,9 +437,9 @@ const ContactChannelsModal: React.FC<Props> = ({ contactId, open, onClose }) => 
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-3 border-t border-dark-shadow/40 dark:border-dark-dark-shadow/40 bg-plate/60 dark:bg-plate-dark/60 backdrop-blur">
+        <div className="px-4 py-3 border-t border-dark-shadow/40 dark:border-dark-dark-shadow/40 bg-plate/60 dark:bg-dark-s1/60 backdrop-blur">
           <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-500 dark:text-gray-400 mr-auto">
+            <span className="text-xs text-gray-500 dark:text-dark-t2 mr-auto">
               Fechar salva alterações. Itens novos vazios são descartados automaticamente.
             </span>
             <Button

@@ -77,7 +77,7 @@ import React, {
 import clsx from "clsx";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Tag as TagIcon } from "lucide-react";
+import { Tag as TagIcon, PlusCircle } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
 
 import { Input } from "@/components/ui/Input";
@@ -339,7 +339,7 @@ const SegmentedToggle = ({
         "px-4 text-sm font-semibold flex items-center",
         value === "left"
           ? leftActiveClass
-          : "bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-200"
+          : "bg-plate dark:bg-dark-s1 text-gray-700 dark:text-dark-t1"
       )}
     >
       {leftLabel}
@@ -351,7 +351,7 @@ const SegmentedToggle = ({
         "px-4 text-sm font-semibold flex items-center",
         value === "right"
           ? rightActiveClass
-          : "bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-200"
+          : "bg-plate dark:bg-dark-s1 text-gray-700 dark:text-dark-t1"
       )}
     >
       {rightLabel}
@@ -1490,7 +1490,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="input-field h-11 dark:bg-dark-s2 dark:text-dark-t1 dark:border-dark-bmd"
                   value={field.value}
                   onChange={field.onChange}
                 >
@@ -1513,6 +1513,16 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
                 {...field}
                 error={fieldState.error?.message}
                 className="h-11"
+                style={{
+                  fontSize: '14px',
+                  color: '#3b2e1a',
+                  backgroundColor: '#fffdf9',
+                  border: '0.5px solid rgba(59,42,20,0.15)',
+                  borderRadius: '8px',
+                  boxShadow: 'none',
+                  padding: '8px 12px',
+                  width: '100%',
+                }}
               />
             )}
           />
@@ -1530,7 +1540,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
               <textarea
                 rows={4}
                 placeholder="Detalhes, notas, próximos passos..."
-                className="w-full px-4 py-2.5 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:bg-white dark:focus:bg-gray-700 outline-none"
+                className="input-field dark:bg-dark-s2 dark:text-dark-t1 dark:border-dark-bmd dark:focus:border-accent dark:focus:shadow-focus-accent"
                 {...field}
                 value={field.value ?? ""}
               />
@@ -1631,26 +1641,39 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
         <div className="relative">
           <label className="block text-sm font-medium mb-1">Etiquetas</label>
           <div className="flex items-start gap-3">
-            <Button
-              type="button"
-              variant="default"
-              className="!px-3 !py-2 h-11 w-11 flex items-center justify-center"
+            <div
+              ref={tagButtonRef as any}
               title="Etiqueta"
               aria-label="Etiqueta"
-              ref={tagButtonRef}
               onClick={() => {
                 setIsTagPanelOpen((prev) => !prev);
                 setTagSearch("");
                 setTagSuggestions([]);
                 setTagError(null);
               }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
+              style={{
+                backgroundColor: '#3b68f5',
+                color: '#ffffff',
+                width: '32px',
+                height: '32px',
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                opacity: 1,
+              }}
             >
               <TagIcon className="h-4 w-4" />
-            </Button>
+            </div>
 
-            <div className="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave flex flex-wrap gap-2 items-center">
+            <div className="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave flex flex-wrap gap-2 items-center">
               {tags.length === 0 && (
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="text-xs text-gray-500 dark:text-dark-t2">
                   Use o botão de etiqueta para pesquisar ou criar novas
                   etiquetas que resumam o assunto ou contexto da ação.
                 </span>
@@ -1806,7 +1829,22 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
             name="calendar_at"
             control={control}
             render={({ field }) => (
-              <Input type="date" label="Data*" {...field} className="h-11" />
+              <Input
+                type="date"
+                label="Data*"
+                {...field}
+                className="h-11"
+                style={{
+                  fontSize: '14px',
+                  color: '#3b2e1a',
+                  backgroundColor: '#fffdf9',
+                  border: '0.5px solid rgba(59,42,20,0.15)',
+                  borderRadius: '8px',
+                  boxShadow: 'none',
+                  padding: '8px 12px',
+                  width: '100%',
+                }}
+              />
             )}
           />
 
@@ -1825,7 +1863,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="input-field h-11 dark:bg-dark-s2 dark:text-dark-t1 dark:border-dark-bmd"
                   value={field.value ?? "Neutra"}
                   onChange={(e) => field.onChange(e.target.value || "Neutra")}
                 >
@@ -1846,7 +1884,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="input-field h-11 dark:bg-dark-s2 dark:text-dark-t1 dark:border-dark-bmd"
                   value={field.value ?? "Normal"}
                   onChange={(e) => field.onChange(e.target.value || "Normal")}
                 >
@@ -1862,36 +1900,61 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
         </div>
 
         {/* Rodapé: + Próxima ação / Cancelar / Salvar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-            <Button
-              type="button"
-              variant="ghost"
-              className="px-3 py-2 text-sm"
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-white/10">
+          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-dark-t2">
+            <button
               onClick={handleOpenNextAction}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                cursor: 'pointer',
+                backgroundColor: '#3b68f5',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '6px 14px 6px 8px',
+                color: '#ffffff',
+                fontSize: '13px',
+                fontWeight: '400',
+              }}
             >
-              + Próxima ação
-            </Button>
+              <PlusCircle size={16} color="#ffffff" />
+              <span>Próxima ação</span>
+            </button>
             <span className="max-w-xs">
               A próxima ação será criada encadeada a esta, mantendo o contexto
               de empresa, contato e temperatura.
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="ghost"
+            <button
               onClick={onCancel}
-              className="px-4"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                backgroundColor: 'transparent',
+                border: '0.5px solid rgba(59,42,20,0.15)',
+                borderRadius: '8px',
+                padding: '7px 15px',
+                color: '#9a7d5a',
+                fontSize: '13px',
+                fontWeight: '400',
+                opacity: 1,
+              }}
             >
               Cancelar
-            </Button>
+            </button>
             <Button
               type="submit"
               variant="primary"
               className="px-4"
               disabled={formState.isSubmitting}
               title={isEditing ? "Editar ação existente" : "Registrar nova ação"}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
             >
               {formState.isSubmitting ? "Salvando..." : "Salvar ação"}
             </Button>

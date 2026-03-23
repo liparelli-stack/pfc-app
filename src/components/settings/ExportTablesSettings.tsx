@@ -72,7 +72,7 @@ const ExportTablesSettings: React.FC = () => {
 
   const renderSwitch = (label: string, key: keyof ExportSelection) => (
     <label className="flex items-center justify-between gap-3 py-2">
-      <span className="text-sm font-medium text-gray-800 dark:text-gray-100">{label}</span>
+      <span className="text-sm font-medium text-gray-800 dark:text-dark-t1">{label}</span>
       <input
         type="checkbox"
         className="h-5 w-10 rounded-full cursor-pointer accent-primary"
@@ -86,10 +86,10 @@ const ExportTablesSettings: React.FC = () => {
     <div className="flex flex-col gap-6">
       <section className="neumorphic-convex rounded-2xl p-4 sm:p-6 space-y-4">
         <header className="space-y-1">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1">
             Exportação de Tabelas
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-gray-600 dark:text-dark-t1">
             Gere arquivos CSV puros contendo todas as colunas das tabelas disponíveis
             para este tenant.
           </p>
@@ -98,7 +98,7 @@ const ExportTablesSettings: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Empresas */}
           <div className="neumorphic-concave rounded-2xl p-4 space-y-2">
-            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">
+            <h3 className="text-base font-semibold text-gray-800 dark:text-dark-t1 mb-2">
               Empresas
             </h3>
             {renderSwitch('Empresas', 'companies')}
@@ -108,7 +108,7 @@ const ExportTablesSettings: React.FC = () => {
 
           {/* Ações */}
           <div className="neumorphic-concave rounded-2xl p-4 space-y-2">
-            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">
+            <h3 className="text-base font-semibold text-gray-800 dark:text-dark-t1 mb-2">
               Ações
             </h3>
             {renderSwitch('Ações & Tarefas', 'chats')}
@@ -117,7 +117,7 @@ const ExportTablesSettings: React.FC = () => {
 
           {/* Gestão */}
           <div className="neumorphic-concave rounded-2xl p-4 space-y-2">
-            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">
+            <h3 className="text-base font-semibold text-gray-800 dark:text-dark-t1 mb-2">
               Gestão
             </h3>
             {renderSwitch('Pessoas', 'profiles')}

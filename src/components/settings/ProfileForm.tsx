@@ -69,7 +69,7 @@ const LabeledSwitch = ({ control, name, label, valueMap, ...rest }: any) => (
     name={name}
     render={({ field }) => (
       <div className="flex items-center justify-between rounded-lg p-3 neumorphic-convex">
-        <label htmlFor={name} className="font-medium text-sm text-gray-600 dark:text-gray-300 pr-4">
+        <label htmlFor={name} className="font-medium text-sm text-gray-600 dark:text-dark-t1 pr-4">
           {label}
         </label>
         <Switch
@@ -177,7 +177,7 @@ const ProfileForm: React.FC<Props> = ({
     <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-6">
       {/* ===================== Dados Pessoais ===================== */}
       <section className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">Dados Pessoais</h3>
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">Dados Pessoais</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Controller
             control={control}
@@ -238,7 +238,7 @@ const ProfileForm: React.FC<Props> = ({
 
       {/* --------------- Permissões e Configurações --------------- */}
       <section className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
           Permissões e Configurações
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

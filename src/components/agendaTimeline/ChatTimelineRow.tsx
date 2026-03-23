@@ -221,7 +221,7 @@ const ChatTimelineRow: React.FC<Props> = ({ chat, header, openMode = true, now }
       </div>
 
       {chat.body ? (
-        <div className={`text-xs text-gray-700 dark:text-gray-200 mt-1 ${openMode ? 'whitespace-pre-wrap' : 'line-clamp-2'}`}>
+        <div className={`text-xs text-gray-700 dark:text-dark-t1 mt-1 ${openMode ? 'whitespace-pre-wrap' : 'line-clamp-2'}`}>
           {chat.body}
         </div>
       ) : null}

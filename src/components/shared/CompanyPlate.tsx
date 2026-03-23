@@ -86,7 +86,7 @@ const InfoItem: React.FC<{
 }> = ({ icon: Icon, label, value, href }) => {
   if (!value) return null;
   const content = (
-    <span className="inline-flex items-center gap-2 text-sm leading-tight text-gray-700 dark:text-gray-300">
+    <span className="inline-flex items-center gap-2 text-sm leading-tight text-gray-700 dark:text-dark-t1">
       <Icon className="h-4 w-4 text-gray-500 flex-shrink-0" />
       {label && <span className="font-medium">{label}:</span>}
       <span>{value}</span>
@@ -136,7 +136,7 @@ const CompanyPlate: React.FC<CompanyPlateProps> = ({ company, onClickCompany }) 
     : owner?.toString().trim() || null;
 
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex space-y-4">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex space-y-4">
       {/* Header: Nome + status + rating */}
       <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
@@ -145,7 +145,7 @@ const CompanyPlate: React.FC<CompanyPlateProps> = ({ company, onClickCompany }) 
             <div className="flex items-center gap-2">
               <h2
                 className={clsx(
-                  "text-2xl font-bold text-gray-800 dark:text-white truncate",
+                  "text-2xl font-bold text-gray-800 dark:text-dark-t1 truncate",
                   onClickCompany && "cursor-pointer hover:opacity-90"
                 )}
                 onClick={onClickCompany}
@@ -172,12 +172,12 @@ const CompanyPlate: React.FC<CompanyPlateProps> = ({ company, onClickCompany }) 
                 key={i}
                 className={clsx(
                   "h-5 w-5",
-                  i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300 dark:text-gray-600"
+                  i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300 dark:text-dark-t3"
                 )}
               />
             ))}
           </div>
-          <span className="text-sm text-gray-600 dark:text-gray-300" title="Nota numérica">
+          <span className="text-sm text-gray-600 dark:text-dark-t1" title="Nota numérica">
             {`Nota: ${rating}/5`}
           </span>
         </div>
@@ -199,7 +199,7 @@ const CompanyPlate: React.FC<CompanyPlateProps> = ({ company, onClickCompany }) 
       <div className="border-t border-dark-shadow/40 dark:border-dark-dark-shadow/40"></div>
 
       {/* Auditoria temporal */}
-      <footer className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <footer className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-600 dark:text-dark-t2">
         <span className="inline-flex items-center gap-2">
           <CalendarClock className="h-4 w-4" />
           <span>

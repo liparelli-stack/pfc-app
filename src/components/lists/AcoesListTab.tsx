@@ -311,7 +311,7 @@ const AcoesListTab: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200/60 dark:border-gray-700/60">
+                <tr className="text-left text-gray-500 dark:text-dark-t2 border-b border-gray-200/60 dark:border-white/10/60">
                   <SortableHeader label="Data" sortKey="calendar_at" currentSort={params.sortBy} currentOrder={params.sortOrder} onSort={setSort} />
                   <SortableHeader label="Situação" sortKey="is_done" currentSort={params.sortBy} currentOrder={params.sortOrder} onSort={setSort} />
                   <SortableHeader label="Canal" sortKey="channel_type" currentSort={params.sortBy} currentOrder={params.sortOrder} onSort={setSort} />
@@ -326,7 +326,7 @@ const AcoesListTab: React.FC = () => {
               </thead>
               <tbody>
                 {items.map(item => (
-                  <tr key={item.id} className="border-b border-gray-200/60 dark:border-gray-700/60 hover:bg-black/5 dark:hover:bg-white/5">
+                  <tr key={item.id} className="border-b border-gray-200/60 dark:border-white/10/60 hover:bg-black/5 dark:hover:bg-white/5">
                     <td className="py-3 px-3 align-top">
                       <div>{formatDate(item.calendar_at)}</div>
                       <div className="text-xs text-gray-500">{formatTime(item.on_time)}</div>
@@ -341,7 +341,7 @@ const AcoesListTab: React.FC = () => {
                     <td className="py-3 px-3 align-top">
                       <div className="flex flex-col">
                         <div className="font-bold">{item.subject || 'Sem Assunto'}</div>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{item.body}</p>
+                        <p className="text-xs text-gray-600 dark:text-dark-t2 mt-1 line-clamp-2">{item.body}</p>
                       </div>
                     </td>
                     <td className="py-3 px-3 align-top">

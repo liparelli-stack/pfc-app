@@ -275,7 +275,7 @@ interface ChatsTimelineProps {
 const Tabs = ['dia', 'historico', 'ambos'] as const;
 
 const SkeletonRow = () => (
-  <div className="animate-pulse h-4 w-full bg-gray-200 dark:bg-gray-800 rounded mb-2" />
+  <div className="animate-pulse h-4 w-full bg-gray-200 dark:bg-dark-s2 rounded mb-2" />
 );
 
 const QUICK_FILTERS: Array<{ key: QuickFilter; label: string }> = [
@@ -498,7 +498,7 @@ const ChatsTimeline = ({
         </div>
 
         {c.body ? (
-          <div className={`text-xs text-gray-700 dark:text-gray-200 mt-1 ${openMode ? 'whitespace-pre-wrap' : 'line-clamp-2'}`}>
+          <div className={`text-xs text-gray-700 dark:text-dark-t1 mt-1 ${openMode ? 'whitespace-pre-wrap' : 'line-clamp-2'}`}>
             {c.body}
           </div>
         ) : null}
@@ -542,7 +542,7 @@ const ChatsTimeline = ({
   }, [histFiltered, groupByDate]);
 
   return (
-    <div className="bg-plate dark:bg-plate-dark p-4 rounded-2xl neumorphic-convex">
+    <div className="bg-plate dark:bg-dark-s1 p-4 rounded-2xl neumorphic-convex">
       <div className="mb-3 space-y-2">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div className="flex overflow-hidden rounded-xl neumorphic-convex">
@@ -624,7 +624,7 @@ const ChatsTimeline = ({
 
           {groupByDate && !loadingDay && (
             <div>
-              <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+              <div className="text-xs font-medium text-gray-600 dark:text-dark-t1 mb-1">
                 📅 {formatDateOnly(dayISO)}
               </div>
               {dayItemsSorted.length === 0 ? (
@@ -654,7 +654,7 @@ const ChatsTimeline = ({
               ) : (
                 histGroups.map(g => (
                   <div key={g.day} className="mb-3">
-                    <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    <div className="text-xs font-medium text-gray-600 dark:text-dark-t1 mb-1">
                       📅 {formatDateOnly(g.day)}
                     </div>
                     {g.rows.map(c => <Row key={c.id} c={c} />)}
@@ -691,7 +691,7 @@ const ChatsTimeline = ({
           {!loadingDay && !groupByDate && dayItemsSorted.map((c) => <Row key={`d-${c.id}`} c={c} />)}
           {!loadingDay && groupByDate && (
             <div className="mb-2">
-              <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+              <div className="text-xs font-medium text-gray-600 dark:text-dark-t1 mb-1">
                 📅 {formatDateOnly(dayISO)}
               </div>
               {dayItemsSorted.length === 0 ? (
@@ -716,7 +716,7 @@ const ChatsTimeline = ({
               ) : (
                 histGroups.map(g => (
                   <div key={`hg-${g.day}`} className="mb-3">
-                    <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    <div className="text-xs font-medium text-gray-600 dark:text-dark-t1 mb-1">
                       📅 {formatDateOnly(g.day)}
                     </div>
                     {g.rows.map(c => <Row key={`hg-${g.day}-${c.id}`} c={c} />)}

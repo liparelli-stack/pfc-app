@@ -27,23 +27,23 @@ type Props = {
 const HistoryAndOpportunities: React.FC<Props> = ({ companyId, companyDetails }) => {
   if (!companyId) {
     return (
-      <section className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex text-center text-gray-500 dark:text-gray-400">
+      <section className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex text-center text-gray-500 dark:text-dark-t2">
         <p>Nenhuma empresa selecionada para exibir histórico.</p>
       </section>
     );
   }
 
   return (
-    <section className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex space-y-6">
+    <section className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex space-y-6">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Clock className="h-6 w-6 text-primary" />
-          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-dark-t1">
             Visão Atual e Histórica
           </h3>
         </div>
         {companyDetails?.trade_name && (
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          <span className="text-sm text-gray-500 dark:text-dark-t2">
             {companyDetails.trade_name}
           </span>
         )}

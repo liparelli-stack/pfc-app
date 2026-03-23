@@ -96,7 +96,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
         'p-1.5 rounded-md transition-all duration-200 flex items-center justify-center',
         active
           ? 'bg-primary text-white shadow-inner'
-          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700',
+          : 'text-gray-600 dark:text-dark-t1 hover:bg-gray-200 dark:hover:bg-dark-s3',
         disabled && 'opacity-40 cursor-not-allowed'
       )}
     >
@@ -165,8 +165,8 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = ({
         className={clsx(
           'p-1.5 rounded-md flex items-center gap-1',
           isOpen
-            ? 'bg-gray-200 dark:bg-gray-700 text-primary'
-            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+            ? 'bg-gray-200 dark:bg-dark-s2 text-primary'
+            : 'text-gray-600 dark:text-dark-t1 hover:bg-gray-200 dark:hover:bg-dark-s3'
         )}
       >
         <Icon className="h-4 w-4" />
@@ -174,13 +174,13 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl z-50">
+        <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-dark-s2 border border-gray-300 dark:border-white/10 rounded-lg shadow-xl z-50">
           {items.map((item, i) => (
             <button
               key={i}
               type="button"
               onClick={handleItemClick(item.onClick)}
-              className="px-3 py-2 w-full text-left text-xs flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="px-3 py-2 w-full text-left text-xs flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-dark-s3"
             >
               {item.icon}
               {item.color && (
@@ -357,7 +357,7 @@ export const MarkdownToolbar: React.FC<MarkdownToolbarProps> = ({
     };
 
   return (
-    <div className="flex flex-col gap-2 p-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+    <div className="flex flex-col gap-2 p-2 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-dark-s2">
       {/* ------------------------------------------------------------------
          Linha superior: grupos ESQUERDA / DIREITA
       ------------------------------------------------------------------ */}
@@ -369,7 +369,7 @@ export const MarkdownToolbar: React.FC<MarkdownToolbarProps> = ({
             type="text"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
-            className="bg-orange-50/80 dark:bg-slate-800/70 border border-orange-100 dark:border-slate-700 rounded-md px-3 py-1 text-sm font-medium w-56 text-gray-900 dark:text-gray-100 placeholder:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-colors"
+            className="bg-orange-50/80 dark:bg-slate-800/70 border border-orange-100 dark:border-slate-700 rounded-md px-3 py-1 text-sm font-medium w-56 text-gray-900 dark:text-dark-t1 placeholder:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-colors"
             placeholder="Sem título.md"
           />
 
@@ -393,30 +393,30 @@ export const MarkdownToolbar: React.FC<MarkdownToolbarProps> = ({
               <button
                 type="button"
                 onClick={handleExportClick}
-                className="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+                className="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-dark-s3"
                 title="Exportar"
               >
                 <Download className="h-4 w-4" />
               </button>
-              <div className="absolute left-0 top-full mt-1 hidden group-hover:block bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50 min-w-[160px]">
+              <div className="absolute left-0 top-full mt-1 hidden group-hover:block bg-white dark:bg-dark-s2 shadow-lg rounded-md border border-gray-200 dark:border-white/10 z-50 min-w-[160px]">
                 <button
                   type="button"
                   onClick={handleExportType('md')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-xs hover:bg-gray-100 dark:hover:bg-dark-s3"
                 >
                   Markdown (.md)
                 </button>
                 <button
                   type="button"
                   onClick={handleExportType('pdf')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-xs hover:bg-gray-100 dark:hover:bg-dark-s3"
                 >
                   PDF (.pdf)
                 </button>
                 <button
                   type="button"
                   onClick={handleExportType('docx')}
-                  className="w-full text-left px-4 py-2 text-xs hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-xs hover:bg-gray-100 dark:hover:bg-dark-s3"
                 >
                   Word (.docx)
                 </button>

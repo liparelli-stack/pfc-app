@@ -79,12 +79,12 @@ const AppointmentItem: React.FC<{ appointment: AgendaAppointment }> = ({ appoint
   const { company, contact } = appointment;
 
   return (
-    <div className="flex flex-col gap-3 p-3 rounded-lg neumorphic-convex bg-plate dark:bg-plate-dark">
+    <div className="flex flex-col gap-3 p-3 rounded-lg neumorphic-convex bg-plate dark:bg-dark-s1">
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0 mt-1">{getChannelIcon(appointment.channel_type)}</div>
         <div className="flex-1">
-          <p className="font-semibold text-gray-800 dark:text-gray-100">{appointment.subject || 'Sem assunto'}</p>
-          <div className="flex items-center gap-4 mt-1 text-sm text-gray-600 dark:text-gray-400">
+          <p className="font-semibold text-gray-800 dark:text-dark-t1">{appointment.subject || 'Sem assunto'}</p>
+          <div className="flex items-center gap-4 mt-1 text-sm text-gray-600 dark:text-dark-t2">
             <span>{appointment.on_time || 'Dia todo'}</span>
             <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${status.color}`}>
               {status.label}
@@ -95,25 +95,25 @@ const AppointmentItem: React.FC<{ appointment: AgendaAppointment }> = ({ appoint
       {(company || contact) && (
         <div className="mt-2 pt-3 border-t border-dark-shadow/40 dark:border-dark-dark-shadow/40 space-y-2 text-sm">
           {company && (
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+            <div className="flex items-center gap-2 text-gray-600 dark:text-dark-t2">
               <Building className="h-4 w-4 flex-shrink-0" />
               <span className="font-medium">{company.trade_name}</span>
             </div>
           )}
           {contact && (
             <>
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-dark-t2">
                 <User className="h-4 w-4 flex-shrink-0" />
                 <span>{contact.full_name}</span>
               </div>
               {contact.phone && (
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-dark-t2">
                   <Phone className="h-4 w-4 flex-shrink-0" />
                   <span>{contact.phone}</span>
                 </div>
               )}
               {contact.email && (
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-dark-t2">
                   <Mail className="h-4 w-4 flex-shrink-0" />
                   <a href={`mailto:${contact.email}`} className="hover:underline">{contact.email}</a>
                 </div>
@@ -193,11 +193,11 @@ const AgendaPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Agenda Inteligente</h1>
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-dark-t1">Agenda Inteligente</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Coluna do Calendário */}
-        <div className="lg:col-span-2 bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex">
+        <div className="lg:col-span-2 bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold capitalize">
               {currentDate.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })}
@@ -209,7 +209,7 @@ const AgendaPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-2 text-center font-medium text-gray-500 dark:text-gray-400 mb-2">
+          <div className="grid grid-cols-7 gap-2 text-center font-medium text-gray-500 dark:text-dark-t2 mb-2">
             {weekdays.map(day => <div key={day}>{day}</div>)}
           </div>
 
@@ -223,7 +223,7 @@ const AgendaPage: React.FC = () => {
               const dayDate = new Date(year, month, day);
               
               // [--REGRA--] Lógica de cor agregada para o dia do calendário
-              let dayColorClass = 'bg-gray-500/10 text-gray-500 dark:text-gray-400 border-gray-500/20'; // Default para dia passado sem tarefas
+              let dayColorClass = 'bg-gray-500/10 text-gray-500 dark:text-dark-t2 border-gray-500/20'; // Default para dia passado sem tarefas
               if (dayAppointments.length > 0) {
                 const isAnyOverdue = dayAppointments.some(a => !a.is_done && new Date(a.calendar_at + 'T00:00:00') < today);
                 const areAllDone = dayAppointments.every(a => a.is_done);
@@ -252,7 +252,7 @@ const AgendaPage: React.FC = () => {
                 >
                   <span className="text-lg font-bold">{day}</span>
                   {dayAppointments.length > 0 && (
-                    <span className="absolute bottom-1 right-1 text-xs font-bold px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                    <span className="absolute bottom-1 right-1 text-xs font-bold px-1.5 py-0.5 rounded-full bg-black/10 dark:bg-dark-s1/10">
                       {dayAppointments.length}
                     </span>
                   )}
@@ -263,7 +263,7 @@ const AgendaPage: React.FC = () => {
         </div>
 
         {/* Coluna de Compromissos */}
-        <div className="lg:col-span-1 bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex">
+        <div className="lg:col-span-1 bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex">
           <h2 className="text-xl font-bold mb-4">
             Compromissos de {selectedDay ? `${selectedDay} de ${currentDate.toLocaleString('pt-BR', { month: 'long' })}` : 'Nenhum dia selecionado'}
           </h2>
@@ -278,7 +278,7 @@ const AgendaPage: React.FC = () => {
               {selectedDayAppointments.map(app => <AppointmentItem key={app.id} appointment={app} />)}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-48 text-center text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center h-48 text-center text-gray-500 dark:text-dark-t2">
               <p>Nenhum compromisso para este dia.</p>
             </div>
           )}

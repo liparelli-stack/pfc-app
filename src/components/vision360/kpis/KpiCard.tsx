@@ -33,12 +33,12 @@ const KpiCard: React.FC<Props> = ({ title, value, subtitle, className, children 
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">
+          <div className="text-xs font-medium text-gray-500 dark:text-dark-t2 truncate">
             {title}
           </div>
-          <div className="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">{value}</div>
+          <div className="mt-1 text-2xl font-semibold text-gray-900 dark:text-dark-t1">{value}</div>
           {subtitle ? (
-            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{subtitle}</div>
+            <div className="mt-1 text-xs text-gray-500 dark:text-dark-t2">{subtitle}</div>
           ) : null}
         </div>
         {children ? <div className="shrink-0">{children}</div> : null}

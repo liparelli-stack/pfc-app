@@ -391,7 +391,7 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
     <form onSubmit={handleSubmit(onSubmit, onSubmitError)} className="space-y-6">
       {/* Dados Principais */}
       <section className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
           Dados da Empresa
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -474,14 +474,14 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
 
       {/* Classificação e Dono */}
       <section className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
           Classificação
         </h3>
 
         {/* Linha 1: Qualificação + Responsável */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">
+            <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1">
               Qualificação
             </label>
             <Controller
@@ -545,7 +545,7 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
 
       {/* Endereço */}
       <section className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
           Endereço
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -587,7 +587,7 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
 
       {/* Notas (Histórico) */}
       <section className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
           Notas (histórico)
         </h3>
 
@@ -598,12 +598,12 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
         ) : (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-dark-t1">
                 Registre fatos e decisões. O assunto é classificado automaticamente por regras
                 determinísticas.
               </p>
-              <Button type="button" variant="primary" onClick={() => setIsAddOpen(true)}>
-                <PlusCircle className="h-4 w-4 mr-2" />
+              <Button type="button" variant="primary" onClick={() => setIsAddOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <PlusCircle className="h-4 w-4" />
                 Adicionar nota
               </Button>
             </div>
@@ -620,18 +620,18 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
                     .map(item => (
                       <li
                         key={`${item._idx}-${item.data}`}
-                        className="rounded-lg p-3 bg-plate/60 dark:bg-plate-dark/60"
+                        className="rounded-lg p-3 bg-plate/60 dark:bg-dark-s1/60"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-sm text-gray-500 dark:text-dark-t2">
                               <span className="font-medium">
                                 {item.assunto || 'Geral'}
                               </span>
                               <span className="mx-2">•</span>
                               <span>{fmtDateTimeBR(item.data)}</span>
                             </div>
-                            <div className="text-gray-800 dark:text-gray-100 whitespace-pre-wrap break-words mt-1">
+                            <div className="text-gray-800 dark:text-dark-t1 whitespace-pre-wrap break-words mt-1">
                               {item.nota || '—'}
                             </div>
                           </div>
@@ -658,7 +658,7 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
                     ))}
                 </ul>
               ) : (
-                <div className="text-center text-gray-500 dark:text-gray-400 py-4">
+                <div className="text-center text-gray-500 dark:text-dark-t2 py-4">
                   Nenhuma nota registrada.
                 </div>
               )}
@@ -669,13 +669,13 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
 
       {/* Outros (Status) */}
       <section className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
           Outros
         </h3>
         <div className="flex items-center justify-between rounded-lg p-3 neumorphic-convex max-w-xs">
           <label
             htmlFor="status"
-            className="font-medium text-sm text-gray-600 dark:text-gray-300 pr-4"
+            className="font-medium text-sm text-gray-600 dark:text-dark-t1 pr-4"
           >
             Status Ativo
           </label>
@@ -733,11 +733,11 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
       {/* Modal: Adicionar Nota */}
       <Modal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} title="Adicionar nota">
         <div className="space-y-3">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700 dark:text-dark-t1">
             Nota
           </label>
           <textarea
-            className="w-full min-h-[120px] rounded-lg p-3 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-gray-700 outline-none"
+            className="w-full min-h-[120px] rounded-lg p-3 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-white/10 outline-none"
             value={newNoteText}
             onChange={e => setNewNoteText(e.target.value)}
             placeholder="Descreva a nota. Ex.: 'Cliente solicitou novo budget anual para 2026.'"
@@ -757,22 +757,22 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
       <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title="Editar nota">
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-medium text-gray-700 dark:text-dark-t1">
               Nota
             </label>
             <textarea
-              className="w-full min-h-[120px] rounded-lg p-3 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-gray-700 outline-none"
+              className="w-full min-h-[120px] rounded-lg p-3 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-white/10 outline-none"
               value={editNoteText}
               onChange={e => setEditNoteText(e.target.value)}
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-lg p-3 bg-black/5 dark:bg.white/5 dark:bg-white/5">
+          <div className="flex items-center justify-between rounded-lg p-3 bg-black/5 dark:bg.white/5 dark:bg-dark-s1/5">
             <div>
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              <div className="text-sm font-medium text-gray-700 dark:text-dark-t1">
                 Recalcular assunto automaticamente
               </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">
+              <div className="text-xs text-gray-600 dark:text-dark-t2">
                 Se ativo, o assunto será recalculado pelas regras determinísticas ao salvar.
               </div>
             </div>
@@ -786,7 +786,7 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
           {!editRecompute && (
             <div className="space-y-2">
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="text-sm font-medium text-gray-700 dark:text-dark-t1">
                   Assunto (manual)
                 </label>
                 <Select
@@ -803,7 +803,7 @@ const CompanyForm: React.FC<Props> = ({ initialData, onSave, onDelete, onClear }
 
               {suggestionSubjects.length > 0 && (
                 <div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  <div className="text-xs text-gray-600 dark:text-dark-t2 mb-1">
                     Sugestões de assunto (clique para aplicar):
                   </div>
                   <div className="flex flex-wrap gap-2">

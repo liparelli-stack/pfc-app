@@ -112,12 +112,12 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onOpenChannels, onDe
   ].join(' ').trim();
 
   return (
-    <div className="w-full bg-plate dark:bg-plate-dark rounded-2xl p-4 neumorphic-convex flex flex-col gap-3">
+    <div className="w-full bg-plate dark:bg-dark-s1 rounded-2xl p-4 neumorphic-convex flex flex-col gap-3">
       {/* Cabeçalho */}
       <div className="flex items-start sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h4 className="text-lg font-bold text-gray-800 dark:text-white">{contact.full_name}</h4>
+            <h4 className="text-lg font-bold text-gray-800 dark:text-dark-t1">{contact.full_name}</h4>
             {contact.contact_guard && (
               <span
                 className={clsx(
@@ -136,7 +136,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onOpenChannels, onDe
               </span>
             )}
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>
+          <p className="text-sm text-gray-600 dark:text-dark-t2">{subtitle}</p>
         </div>
 
         {/* Ações: [Editar] [Canais] [•status] [Excluir] */}
@@ -211,7 +211,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onOpenChannels, onDe
                 aria-label={chipAria}
                 className={clsx(
                   "flex items-center gap-2 px-2.5 py-1 rounded-full text-xs border",
-                  "bg-plate dark:bg-plate-dark border-dark-shadow/30 dark:border-dark-dark-shadow/30"
+                  "bg-plate dark:bg-dark-s1 border-dark-shadow/30 dark:border-dark-dark-shadow/30"
                 )}
                 title={[
                   label,
@@ -221,7 +221,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onOpenChannels, onDe
               >
                 <span className="inline-flex items-center gap-1">
                   {icon}
-                  <span className="font-semibold text-gray-700 dark:text-gray-200">{label}:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-t1">{label}:</span>
                 </span>
 
                 {/* Valor (clicável quando e-mail ou link) */}
@@ -230,14 +230,14 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onOpenChannels, onDe
                     href={href}
                     target={isLink ? "_blank" : undefined}
                     rel={isLink ? "noopener noreferrer" : undefined}
-                    className="underline underline-offset-2 decoration-1 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-sm text-gray-600 dark:text-gray-300"
+                    className="underline underline-offset-2 decoration-1 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-sm text-gray-600 dark:text-dark-t1"
                     title={isEmail ? 'Abrir e-mail' : 'Abrir link em nova aba'}
                     aria-label={isEmail ? `Enviar e-mail para ${shown}` : `Abrir ${shown} em nova aba`}
                   >
                     {shown}
                   </a>
                 ) : (
-                  shown && <span className="text-gray-600 dark:text-gray-300">{shown}</span>
+                  shown && <span className="text-gray-600 dark:text-dark-t1">{shown}</span>
                 )}
 
                 {/* Indicador de preferência do CANAL: bolinha laranja viva */}

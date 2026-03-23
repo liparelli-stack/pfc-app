@@ -61,7 +61,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalCount, pageSi
 
   return (
     <div className="flex items-center justify-between mt-4">
-      <span className="text-sm text-gray-600 dark:text-gray-400">
+      <span className="text-sm text-gray-600 dark:text-dark-t2">
         Total de {totalCount} registros
       </span>
       <div className="flex items-center gap-2">

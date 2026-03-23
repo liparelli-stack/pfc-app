@@ -269,7 +269,7 @@ const CockpitPage: React.FC = () => {
     <div className="flex flex-col md:flex-row gap-8 h-full">
       {/* Painel lateral */}
       <aside className="md:w-1/3 lg:w-1/4 flex-shrink-0">
-        <div className="relative isolate z-[200] overflow-visible p-4 rounded-2xl neumorphic-convex bg-plate dark:bg-plate-dark h-full">
+        <div className="cockpit-sidebar-bg relative isolate z-[200] overflow-visible p-4 rounded-2xl dark:bg-dark-s1 h-full" style={{ border: '0.5px solid rgba(59,42,20,0.10)', boxShadow: '0 1px 3px rgba(59,42,20,0.08), 0 4px 16px rgba(59,42,20,0.06)' }}>
           {/* Caixa de busca */}
           <div className="mb-3 relative" ref={searchBoxRef}>
             <div className="relative">
@@ -330,16 +330,16 @@ const CockpitPage: React.FC = () => {
                     BUSCA
                   </span>
                 </div>
-                <div className="h-px bg-black/5 dark:bg-white/10 mx-2 mb-2" />
+                <div className="h-px bg-black/5 dark:bg-dark-s1/10 mx-2 mb-2" />
 
                 {isSearching && (
-                  <div className="flex items-center gap-2 px-3 py-2 text-xs text-gray-600 dark:text-gray-300">
+                  <div className="flex items-center gap-2 px-3 py-2 text-xs text-gray-600 dark:text-dark-t1">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Buscando...
                   </div>
                 )}
                 {!isSearching && searchResults.length === 0 && (
-                  <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-300">
+                  <div className="px-3 py-2 text-xs text-gray-500 dark:text-dark-t1">
                     Nenhuma empresa encontrada.
                   </div>
                 )}
@@ -350,7 +350,7 @@ const CockpitPage: React.FC = () => {
                       id={listboxId}
                       role="listbox"
                       aria-label="Resultados de empresas"
-                      className="text-xs text-gray-700 dark:text-gray-200"
+                      className="text-xs text-gray-700 dark:text-dark-t1"
                     >
                       {searchResults.map((c, idx) => (
                         <li key={c.id} role="option" aria-selected={idx === activeIndex}>
@@ -427,7 +427,7 @@ const CockpitPage: React.FC = () => {
               />
 
               {/* Card do bloco de Notas — sem cabeçalho duplicado */}
-              <section className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex">
+              <section className="cockpit-card-bg dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex">
                 <NotesSection
                   companyId={selectedCompanyId!}
                   notes={(selectedCompanyDetails as any)?.notes}
@@ -435,11 +435,13 @@ const CockpitPage: React.FC = () => {
                 />
               </section>
 
-              <ConversationHistoryCard companyId={selectedCompanyId} />
+              <div>
+                <ConversationHistoryCard companyId={selectedCompanyId} />
+              </div>
             </>
           ) : (
             !isLoadingCompanies && (
-              <div className="flex items-center justify-center h-full p-8 rounded-2xl neumorphic-convex bg-plate dark:bg-plate-dark">
+              <div className="flex items-center justify-center h-full p-8 rounded-2xl dark:bg-dark-s1">
                 <p className="text-gray-500">Selecione uma empresa para ver os detalhes.</p>
               </div>
             )

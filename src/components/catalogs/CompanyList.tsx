@@ -416,7 +416,7 @@ const CompanyList: React.FC = () => {
           </div>
 
           <div className="lg:col-span-2">
-            <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">
+            <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1">
               Exportações
             </label>
             <div className="flex items-center gap-2 h-11">

@@ -56,7 +56,7 @@ const SupportPage: React.FC = () => {
         return (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Meus Chamados</h1>
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-dark-t1">Meus Chamados</h1>
               <Button onClick={handleCreateNew} variant="primary">
                 <Plus className="h-5 w-5 mr-2" />
                 Abrir Chamado

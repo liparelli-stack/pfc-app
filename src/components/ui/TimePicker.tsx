@@ -96,8 +96,9 @@ export const TimePicker: React.FC<TimePickerProps> = ({
           disabled={disabled}
           className={clsx(
             "w-full h-11 px-3 rounded-lg text-left",
-            "bg-plate dark:bg-plate-dark neumorphic-concave",
-            "focus:outline-none focus:ring-2 focus:ring-primary/50",
+            "bg-gray-50 dark:bg-dark-s2 border border-gray-200 dark:border-dark-bmd",
+            "dark:text-dark-t1",
+            "focus:outline-none focus:ring-2 focus:ring-accent/30 dark:focus:ring-accent/30",
             "flex items-center justify-between"
           )}
         >
@@ -113,17 +114,19 @@ export const TimePicker: React.FC<TimePickerProps> = ({
             align={align}
             sideOffset={sideOffset}
             className={clsx(
-              "z-[3000] rounded-xl shadow-lg border border-dark-shadow dark:border-dark-dark-shadow",
-              "bg-plate dark:bg-plate-dark p-2"
+              "z-[3000] rounded-xl border border-gray-200 dark:border-dark-bmd",
+              "shadow-sh1 [[data-theme='sepia']_&]:shadow-[0_4px_16px_rgba(0,0,0,0.10)]",
+              "[[data-theme='sepia']_&]:border-[rgba(59,42,20,0.15)]",
+              "bg-white dark:bg-dark-s1 p-2"
             )}
           >
             <div className="grid grid-cols-2 gap-2 min-w-[220px]">
               {/* Coluna Horas */}
               <div
-                className="rounded-lg neumorphic-inset overflow-auto"
+                className="rounded-lg bg-gray-50 dark:bg-dark-s2 overflow-auto"
                 style={{ maxHeight: dropdownMaxHeight }}
               >
-                <div className="sticky top-0 z-10 px-2 py-1 text-xs font-semibold opacity-70 bg-plate dark:bg-plate-dark">
+                <div className="sticky top-0 z-10 px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-dark-s3 dark:text-dark-t2">
                   Hora
                 </div>
                 <ul className="py-1 text-[12px]">
@@ -132,8 +135,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                       <button
                         type="button"
                         className={clsx(
-                          "w-full text-left px-3 py-2 hover:bg-primary/10 rounded-md",
-                          hTmp === h && "bg-primary/20 font-semibold"
+                          "w-full text-left px-3 py-2 rounded-[6px]",
+                          "text-gray-600 dark:text-dark-t2 [[data-theme='sepia']_&]:text-[#3b2e1a]",
+                          "hover:bg-gray-200 dark:hover:bg-dark-s3 dark:hover:text-dark-t1",
+                          "[[data-theme='sepia']_&]:hover:bg-[#3b68f5] [[data-theme='sepia']_&]:hover:text-white",
+                          hTmp === h && "bg-blue-50 dark:bg-accent/[0.12] font-medium text-blue-700 dark:text-accent",
+                          hTmp === h && "[[data-theme='sepia']_&]:bg-[rgba(59,104,245,0.10)] [[data-theme='sepia']_&]:text-[#3b68f5] [[data-theme='sepia']_&]:font-medium"
                         )}
                         onClick={() => setHTmp(h)}
                       >
@@ -146,10 +153,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
               {/* Coluna Minutos */}
               <div
-                className="rounded-lg neumorphic-inset overflow-auto"
+                className="rounded-lg bg-gray-50 dark:bg-dark-s2 overflow-auto"
                 style={{ maxHeight: dropdownMaxHeight }}
               >
-                <div className="sticky top-0 z-10 px-2 py-1 text-xs font-semibold opacity-70 bg-plate dark:bg-plate-dark">
+                <div className="sticky top-0 z-10 px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-dark-s3 dark:text-dark-t2">
                   Minuto
                 </div>
                 <ul className="py-1 text-[12px]">
@@ -158,8 +165,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                       <button
                         type="button"
                         className={clsx(
-                          "w-full text-left px-3 py-2 hover:bg-primary/10 rounded-md",
-                          mTmp === m && "bg-primary/20 font-semibold"
+                          "w-full text-left px-3 py-2 rounded-[6px]",
+                          "text-gray-600 dark:text-dark-t2 [[data-theme='sepia']_&]:text-[#3b2e1a]",
+                          "hover:bg-gray-200 dark:hover:bg-dark-s3 dark:hover:text-dark-t1",
+                          "[[data-theme='sepia']_&]:hover:bg-[#3b68f5] [[data-theme='sepia']_&]:hover:text-white",
+                          mTmp === m && "bg-blue-50 dark:bg-accent/[0.12] font-medium text-blue-700 dark:text-accent",
+                          mTmp === m && "[[data-theme='sepia']_&]:bg-[rgba(59,104,245,0.10)] [[data-theme='sepia']_&]:text-[#3b68f5] [[data-theme='sepia']_&]:font-medium"
                         )}
                         onClick={() => setMTmp(m)}
                       >
@@ -181,7 +192,15 @@ export const TimePicker: React.FC<TimePickerProps> = ({
               <div className="flex gap-2">
                 <button
                   type="button"
-                  className="px-3 py-1.5 rounded-md neumorphic-convex hover:neumorphic-concave text-sm"
+                  style={{
+                    background: 'transparent',
+                    border: '1px solid #c4a882',
+                    borderRadius: '8px',
+                    color: '#9a7d5a',
+                    padding: '7px 15px',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                  }}
                   onClick={() => {
                     setHTmp(hSel);
                     setMTmp(mSel);
@@ -192,7 +211,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 </button>
                 <button
                   type="button"
-                  className="px-3 py-1.5 rounded-md bg-primary text-white text-sm shadow-md"
+                  className="bg-[#3b68f5] text-white rounded-lg text-[13px] font-medium px-[15px] py-[7px] transition-all duration-200 hover:opacity-[0.88]"
                   onClick={confirmAndClose}
                 >
                   Aplicar
@@ -200,7 +219,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
               </div>
             </div>
 
-            <Popover.Arrow className="fill-plate dark:fill-plate-dark" />
+            <Popover.Arrow className="fill-white dark:fill-dark-s1" />
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>

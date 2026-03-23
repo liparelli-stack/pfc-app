@@ -27,7 +27,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, name, error, children, className, disabled, ...props }, ref) => {
     const selectClasses = clsx(
       "w-full pl-4 pr-10 py-2.5 rounded-lg",
-      "bg-plate dark:bg-plate-dark neumorphic-concave",
+      "bg-plate dark:bg-dark-s1 neumorphic-concave",
       "focus:bg-white dark:focus:bg-gray-700",
       "transition-colors duration-200 outline-none",
       "appearance-none", // remove caret nativo para usar o custom
@@ -40,7 +40,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       <div className="w-full">
         <label
           htmlFor={name}
-          className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300"
+          className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1"
         >
           {label}
         </label>
@@ -63,7 +63,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             aria-hidden="true"
             className={clsx(
               "pointer-events-none absolute inset-y-0 right-3",
-              "flex items-center text-gray-500 dark:text-gray-400"
+              "flex items-center text-gray-500 dark:text-dark-t2"
             )}
           >
             {/* SVG caret (chevron down) para evitar dependência extra */}

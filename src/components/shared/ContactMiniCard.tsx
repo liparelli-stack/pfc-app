@@ -129,12 +129,12 @@ const ContactMiniCard: React.FC<Props> = ({ contact }) => {
   }, [hookChannels, contact]);
 
   return (
-    <div className="w-full bg-plate dark:bg-plate-dark rounded-2xl p-4 neumorphic-convex flex flex-col gap-3">
+    <div className="w-full bg-plate dark:bg-dark-s1 rounded-2xl p-4 neumorphic-convex flex flex-col gap-3">
       {/* Cabeçalho */}
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h4 className="text-lg font-bold text-gray-800 dark:text-white">{contact.full_name}</h4>
+            <h4 className="text-lg font-bold text-gray-800 dark:text-dark-t1">{contact.full_name}</h4>
             {contact.contact_guard && (
               <span
                 className={clsx(
@@ -153,7 +153,7 @@ const ContactMiniCard: React.FC<Props> = ({ contact }) => {
               </span>
             )}
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>
+          <p className="text-sm text-gray-600 dark:text-dark-t2">{subtitle}</p>
         </div>
         <StatusDot active={!isInactive} />
       </div>
@@ -174,7 +174,7 @@ const ContactMiniCard: React.FC<Props> = ({ contact }) => {
                 className={clsx(
                   "w-full inline-flex items-center gap-2 text-sm leading-tight px-3 py-1.5 rounded-full",
                   "border",
-                  "bg-plate dark:bg-plate-dark",
+                  "bg-plate dark:bg-dark-s1",
                   "border-dark-shadow/30 dark:border-dark-dark-shadow/30"
                 )}
                 role="listitem"
@@ -187,7 +187,7 @@ const ContactMiniCard: React.FC<Props> = ({ contact }) => {
                   .join("")
                   .trim()}
               >
-                <span className="inline-flex items-center gap-1.5 text-gray-700 dark:text-gray-200">
+                <span className="inline-flex items-center gap-1.5 text-gray-700 dark:text-dark-t1">
                   {getChannelIcon(ch.type)}
                   <span className="font-semibold">{label}:</span>
                 </span>
@@ -197,13 +197,13 @@ const ContactMiniCard: React.FC<Props> = ({ contact }) => {
                     href={href}
                     target={isLink ? "_blank" : undefined}
                     rel={isLink ? "noopener noreferrer" : undefined}
-                    className="underline underline-offset-2 decoration-1 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/40 rounded-sm text-gray-700 dark:text-gray-300"
+                    className="underline underline-offset-2 decoration-1 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/40 rounded-sm text-gray-700 dark:text-dark-t1"
                     title={isEmail ? "Abrir e-mail" : "Abrir link em nova aba"}
                   >
                     {shown}
                   </a>
                 ) : (
-                  <span className="text-gray-700 dark:text-gray-300">{shown}</span>
+                  <span className="text-gray-700 dark:text-dark-t1">{shown}</span>
                 )}
 
                 {/* Bolinha laranja: preferencial */}

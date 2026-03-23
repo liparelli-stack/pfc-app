@@ -29,7 +29,7 @@ const DealColumn: React.FC<DealColumnProps> = ({ stage, deals, onDrop, onEditDea
 
   return (
     <div
-      className="w-[360px] flex-shrink-0 rounded-2xl p-3 neumorphic-convex bg-plate dark:bg-plate-dark"
+      className="w-[360px] flex-shrink-0 rounded-2xl p-3 neumorphic-convex bg-plate dark:bg-dark-s1"
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDrop}
     >

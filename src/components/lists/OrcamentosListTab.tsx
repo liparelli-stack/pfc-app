@@ -85,7 +85,7 @@ const OrcamentosSummary: React.FC<{
 }> = ({ totalsByCompany, totalsByStatus }) => (
   <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
     <div className="neumorphic-convex rounded-2xl p-4">
-      <h3 className="font-semibold mb-2 text-gray-700 dark:text-gray-200">
+      <h3 className="font-semibold mb-2 text-gray-700 dark:text-dark-t1">
         Total por Empresa
       </h3>
       <div className="space-y-1 text-sm">
@@ -98,7 +98,7 @@ const OrcamentosSummary: React.FC<{
       </div>
     </div>
     <div className="neumorphic-convex rounded-2xl p-4">
-      <h3 className="font-semibold mb-2 text-gray-700 dark:text-gray-200">
+      <h3 className="font-semibold mb-2 text-gray-700 dark:text-dark-t1">
         Total por Status
       </h3>
       <div className="space-y-1 text-sm">
@@ -117,7 +117,7 @@ const OrcamentosTable: React.FC<{ items: FlattenedBudget[] }> = ({ items }) => (
   <div className="overflow-x-auto">
     <table className="w-full text-sm">
       <thead>
-        <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200/60 dark:border-gray-700/60">
+        <tr className="text-left text-gray-500 dark:text-dark-t2 border-b border-gray-200/60 dark:border-white/10/60">
           <th className="py-2 px-3 font-semibold">Empresa</th>
           <th className="py-2 px-3 font-semibold">Contato</th>
           <th className="py-2 px-3 font-semibold">Descrição</th>
@@ -131,7 +131,7 @@ const OrcamentosTable: React.FC<{ items: FlattenedBudget[] }> = ({ items }) => (
         {items.map((item) => (
           <tr
             key={`${item.chatId}-${item.id || item.description}`}
-            className="border-b border-gray-200/60 dark:border-gray-700/60 hover:bg-black/5 dark:hover:bg-white/5"
+            className="border-b border-gray-200/60 dark:border-white/10/60 hover:bg-black/5 dark:hover:bg-white/5"
           >
             <td className="py-3 px-3 align-top font-medium">
               {item.companyName}

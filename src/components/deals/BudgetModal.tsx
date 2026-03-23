@@ -167,7 +167,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, companyId, c
           ) : (
             <ul className="space-y-2 max-h-80 overflow-auto pr-1">
               {list.map(d => (
-                <li key={d.id} className="p-2 rounded-lg neumorphic-convex bg-plate dark:bg-plate-dark">
+                <li key={d.id} className="p-2 rounded-lg neumorphic-convex bg-plate dark:bg-dark-s1">
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-sm">{d.name}</span>
                     <span className="text-xs text-gray-500">{(d.amount ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>

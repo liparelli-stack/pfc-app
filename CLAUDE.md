@@ -1,6 +1,33 @@
-# CLAUDE.md — CRM Appy v0.1.1
-> **Última atualização:** 2026-03-20 | Branch: `crmappy-v0101-m2003`
-> **Mantido por:** Eva (Claude Sonnet 4.6) + FL
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+> **CRM Appy v0.1.1** | Última atualização: 2026-03-23 | Branch: `crmappy-v0101-m2003`
+
+---
+
+## Comandos
+
+```bash
+npm run dev       # Dev server (Vite, porta 3000)
+npm run build     # tsc + vite build → dist/
+npm run lint      # ESLint (TypeScript + React, zero warnings)
+npm run preview   # Preview do build de produção
+```
+
+> Não há test runner configurado (Vitest/Jest). Para adicionar, instalar Vitest.
+
+---
+
+## Fluxo de dados
+
+```
+Page → Hook (src/hooks/use*.ts) → Service (src/services/*Service.ts) → Supabase (RLS) → PostgreSQL
+```
+
+- **Hooks** gerenciam cache via React Query; nunca use `useState + useEffect` para fetch.
+- **Services** são funções puras sem estado.
+- **RLS é a proteção primária** — filtro no código é camada adicional, não substituto.
 
 ---
 
@@ -89,7 +116,7 @@ crmappy-v0101/
 │   │   └── _shared/cors.ts
 │   └── migrations/         # 35+ arquivos SQL + migration v0101
 ├── vite.config.ts
-├── tailwind.config.js      # ← tokens v0101 (próxima sessão)
+├── tailwind.config.js      # ← tokens v0101 ✅ APLICADO
 ├── tsconfig.app.json
 ├── netlify.toml
 ├── package.json
@@ -111,7 +138,8 @@ crmappy-v0101/
 > ⚠️ **Nunca usar font-weight 600 ou 700.** Destoa do padrão Linear/Vercel e fica pesado no dark mode.
 
 ### Temas suportados
-`dark` · `light` · `sépia` — mesma anatomia nos 3, só a escala de superfície muda.
+`light` · `sépia` — ativos. `dark` descontinuado temporariamente na v0101 (fallback → sépia no localStorage).
+A troca de tema alterna apenas entre light e sépia (`toggleTheme` em `App.tsx`).
 
 ### Paleta de cores
 
@@ -281,6 +309,12 @@ input:focus {
 
 ## Padrões Arquiteturais
 
+### Navegação (sem React Router)
+A aplicação usa navegação por estado (`activeView: string`) em `App.tsx` — um switch `renderContent()` mapeia strings para componentes de página. Não há React Router. Para adicionar uma nova página:
+1. Criar o componente em `src/pages/`
+2. Importar e adicionar um `case` em `renderContent()`
+3. Adicionar o item no `Sidebar.tsx`
+
 ### Multi-Tenant
 - Todos os dados têm `tenant_id` (FK → `org_tenants`)
 - RLS habilitado em todas as 15 tabelas — proteção primária
@@ -325,6 +359,7 @@ input:focus {
 - Hotkey: `Ctrl+Shift+|`
 - Requer: `role = 'admin'` E `is_master_admin = true`
 - Edge Function `ma-impersonation` realiza o swap de sessão
+- DebugOverlay: `Ctrl+Shift+0` — painel de debug interno (apenas devs)
 
 ---
 
@@ -366,7 +401,7 @@ VITE_SUPABASE_ANON_KEY="<anon-key-jwt>"
 
 ---
 
-## COMPLEMENTO EVA — Sessão 2026-03-20
+## Histórico de Decisões — Sessão 2026-03-20
 
 ### ✅ Concluído
 
@@ -402,10 +437,10 @@ Após 3 iterações de preview (dark → light → refined → final) + revisão
 |------|--------|
 | ⚡ Extensão `http` → schema `extensions` | ✅ DONE 2026-03-20 |
 | 🎨 Design System — definição e aprovação | ✅ DONE 2026-03-20 |
-| 🎨 Design System — `tailwind.config.js` com tokens | ⏳ **PRÓXIMO** |
-| 🎨 Design System — componentes base (`card`, `button`, `badge`, `input`) | ⏳ aguarda tokens |
-| 🎨 Design System — `Sidebar.tsx` | ⏳ aguarda componentes base |
-| 🎨 Design System — `Cockpit card` | ⏳ aguarda sidebar |
+| 🎨 Design System — `tailwind.config.js` com tokens | ✅ DONE 2026-03-20 |
+| 🎨 Design System — componentes base (`card`, `button`, `badge`, `input`) | ✅ DONE 2026-03-20 |
+| 🎨 Design System — `Sidebar.tsx` + `Header.tsx` | ✅ DONE 2026-03-20 |
+| 🎨 Design System — migração global páginas (via index.css) | ⏳ **PRÓXIMO — Claude Code** |
 | 🏗️ Refatoração `EditActionForm.tsx` | ⏳ FASE 2 |
 | 🐛 SUP-000005 — status da ação não salva como Concluída | ⏳ FASE 2 |
 | 🐛 SUP-000006 — agendamento não aparece no ícone do dia | ⏳ FASE 2 |
@@ -422,13 +457,40 @@ Após 3 iterações de preview (dark → light → refined → final) + revisão
 
 ---
 
-### Protocolo Novo Chat — CRMappy v0101
+---
 
+### FASE 1 — Design System — Implementação (sessão tarde 2026-03-20)
+
+#### Arquivos entregues e aplicados em `~/projetos/crmappy-v0101`
+
+| Arquivo | Destino | O que fez |
+|---------|---------|-----------|
+| `tailwind.config.js` | raiz | Tokens completos: cores, shadows, radius, tipografia, 3 temas |
+| `index.html` | raiz | Import Google Fonts DM Sans + DM Mono |
+| `src/index.css` | src/ | Body dark migrado, sépia cobre tokens DS, neumorfismo legado mantido |
+| `src/App.tsx` | src/ | Wrapper `bg-dark-bg`, prop `theme` passada ao Header |
+| `src/components/UI/Button.tsx` | src/components/UI/ | 4 variantes + loading + ícones |
+| `src/components/UI/Card.tsx` | src/components/UI/ | Depth system + subcomponentes KPI |
+| `src/components/UI/Badge.tsx` | src/components/UI/ | 5 variantes + semânticos CRMappy |
+| `src/components/UI/Input.tsx` | src/components/UI/ | Focus ring, label, erro, Textarea |
+| `src/components/Sidebar.tsx` | src/components/ | 3 temas via objeto `t`, divisores corrigidos |
+| `src/components/Header.tsx` | src/components/ | 3 temas via objeto `t`, prop `theme` adicionada |
+
+#### Decisões técnicas desta sessão
+- **Estratégia de 3 temas:** objeto `t` com classes condicionais por tema — não depende do prefixo `dark:` do Tailwind (que só funciona com classe `.dark` no `<html>`). Sépia usa CSS vars `var(--app-*)` definidas no `index.css`.
+- **Neumorfismo legado:** mantido no `index.css` e `tailwind.config.js` — não quebra componentes ainda não migrados.
+- **Divisores:** usar `h-px` + `bg-*` — `border-t-[0.5px]` não é classe Tailwind válida.
+- **Header recebe prop `theme`:** necessário para colorização correta nos 3 modos.
+- **Light mode:** Sidebar e Header corretos. Páginas internas ainda usam `bg-plate` (legado) — migrar via `index.css` no próximo passo.
+
+#### Próximo passo — Claude Code
+Migração global sobrescrevendo classes neumórficas no `index.css`:
+```css
+/* Estratégia: redefinir .neumorphic-* para renderizar com DS v0101 */
+/* Cobre todos os componentes sem tocar em cada arquivo individualmente */
+.neumorphic-convex  → shadow-sh1 + bg dark-s1
+.neumorphic-concave → bg dark-s2 + border 0.5px
+.bg-plate           → #f4f5f7 (light) / já coberto pelo dark mode
 ```
-"Eva, novo chat do projeto CRMappy v0101.
-Branch: crmappy-v0101-m2003
-Última sessão: 2026-03-20 — design system aprovado, quick win do banco feito.
-Próximo passo: gerar tailwind.config.js com tokens + componentes base UI.
-Contexto completo abaixo:"
-[colar este CLAUDE.md completo]
-```
+Após: ajuste fino nas páginas críticas (Cockpit, Dashboard, Vision360).
+

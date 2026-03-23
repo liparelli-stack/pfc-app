@@ -154,7 +154,7 @@ const PeopleSettings: React.FC = () => {
       <div className="flex flex-col gap-4">
         <section className="neumorphic-convex rounded-2xl p-4 sm:p-6 space-y-4">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Pessoas</h2>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1">Pessoas</h2>
             <Button onClick={() => setIsAddModalOpen(true)} variant="primary">
               <Plus className="h-5 w-5 mr-2" />
               Adicionar Pessoa

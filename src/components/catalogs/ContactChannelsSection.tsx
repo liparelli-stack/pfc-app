@@ -92,7 +92,7 @@ const ContactChannelsSection: React.FC<Props> = ({ contactId }) => {
   return (
     <section className="neumorphic-convex rounded-2xl p-4 sm:p-6 mt-6">
       <div className="flex items-center justify-between gap-3 mb-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white">Canais de Comunicação</h3>
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1">Canais de Comunicação</h3>
         <div className="flex items-center gap-2">
           <Button type="button" variant="default" onClick={refresh} disabled={loading || saving}>
             Recarregar
@@ -107,10 +107,10 @@ const ContactChannelsSection: React.FC<Props> = ({ contactId }) => {
       {error && <div className="mb-4 text-sm text-red-500">{error}</div>}
 
       {loading ? (
-        <div className="text-sm text-gray-500 dark:text-gray-400">Carregando canais…</div>
+        <div className="text-sm text-gray-500 dark:text-dark-t2">Carregando canais…</div>
       ) : isEmpty ? (
-        <div className="w-full bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex flex items-center justify-between">
-          <p className="text-gray-500 dark:text-gray-400">Nenhum canal adicionado.</p>
+        <div className="w-full bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex flex items-center justify-between">
+          <p className="text-gray-500 dark:text-dark-t2">Nenhum canal adicionado.</p>
           <Button type="button" variant="primary" onClick={handleAdd} disabled={saving}>
             <Plus className="h-4 w-4 mr-1" />
             Adicionar Canal
@@ -180,17 +180,17 @@ const ContactChannelsSection: React.FC<Props> = ({ contactId }) => {
 
                   {/* Switches */}
                   <div className="col-span-12 lg:col-span-4">
-                     <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">Opções</label>
+                     <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1">Opções</label>
                      <div className="grid grid-cols-2 gap-2 h-[46px]">
                         <div className="flex items-center justify-between rounded-lg px-3 py-2 neumorphic-convex">
-                            <span className="text-sm text-gray-600 dark:text-gray-300 pr-3">Principal</span>
+                            <span className="text-sm text-gray-600 dark:text-dark-t1 pr-3">Principal</span>
                             <Switch
                                 checked={!!(drafts[item.id]?.is_primary ?? item.is_primary)}
                                 onCheckedChange={(checked) => setDraft(item.id, { is_primary: checked })}
                             />
                         </div>
                         <div className="flex items-center justify-between rounded-lg px-3 py-2 neumorphic-convex">
-                            <span className="text-sm text-gray-600 dark:text-gray-300 pr-3">Ativo</span>
+                            <span className="text-sm text-gray-600 dark:text-dark-t1 pr-3">Ativo</span>
                             <Switch
                                 checked={!!(drafts[item.id]?.active ?? item.active)}
                                 onCheckedChange={(checked) => setDraft(item.id, { active: checked })}
@@ -273,7 +273,7 @@ const ContactChannelsSection: React.FC<Props> = ({ contactId }) => {
       )}
 
       {/* Rodapé */}
-      <div className="mt-4 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+      <div className="mt-4 flex items-center gap-3 text-xs text-gray-500 dark:text-dark-t2">
         {saving && <span>Salvando…</span>}
         {!saving && !loading && <span>{channels.length} canal(is)</span>}
       </div>

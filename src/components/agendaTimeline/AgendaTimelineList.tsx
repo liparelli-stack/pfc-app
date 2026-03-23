@@ -34,7 +34,7 @@ type Tab = 'dia' | 'historico' | 'ambos';
 const Tabs: Tab[] = ['dia', 'historico', 'ambos'];
 
 const SkeletonRow = () => (
-  <div className="animate-pulse h-4 w-full bg-gray-200 dark:bg-gray-800 rounded mb-2" />
+  <div className="animate-pulse h-4 w-full bg-gray-200 dark:bg-dark-s2 rounded mb-2" />
 );
 
 const QUICK_FILTERS: Array<{ key: QuickFilter; label: string }> = [
@@ -188,7 +188,7 @@ const AgendaTimelineList = ({
   };
 
   return (
-    <div className="bg-plate dark:bg-plate-dark p-4 rounded-2xl neumorphic-convex">
+    <div className="bg-plate dark:bg-dark-s1 p-4 rounded-2xl neumorphic-convex">
       <div className="mb-3 space-y-2">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div className="flex overflow-hidden rounded-xl neumorphic-convex">
@@ -269,7 +269,7 @@ const AgendaTimelineList = ({
               ) : (
                 dayGroups.map((g) => (
                   <div key={`dg-${g.day}`} className="mb-3">
-                    <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    <div className="text-xs font-medium text-gray-600 dark:text-dark-t1 mb-1">
                       📅 {formatDateOnly(g.day)}
                     </div>
                     {g.rows.map((c) => (
@@ -303,7 +303,7 @@ const AgendaTimelineList = ({
               ) : (
                 histGroups.map((g) => (
                   <div key={g.day} className="mb-3">
-                    <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    <div className="text-xs font-medium text-gray-600 dark:text-dark-t1 mb-1">
                       📅 {formatDateOnly(g.day)}
                     </div>
                     {g.rows.map((c) => (
@@ -345,7 +345,7 @@ const AgendaTimelineList = ({
             <div className="mt-2">
               {groupByDateSorted([...dayFiltered, ...histFiltered]).map((g) => (
                 <div key={`ag-${g.day}`} className="mb-3">
-                  <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                  <div className="text-xs font-medium text-gray-600 dark:text-dark-t1 mb-1">
                     📅 {formatDateOnly(g.day)}
                   </div>
                   {g.rows.map((c) => (

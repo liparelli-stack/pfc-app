@@ -312,10 +312,10 @@ const AddPersonModal: React.FC<AddPersonModalProps> = ({
                   onChange={(e) => field.onChange(e.target.checked)}
                 />
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
+                  <span className="text-sm font-medium text-gray-800 dark:text-dark-t1">
                     MFA habilitado
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-gray-500 dark:text-dark-t2">
                     Exigir segundo fator de autenticação para este usuário.
                   </span>
                 </div>
@@ -334,10 +334,10 @@ const AddPersonModal: React.FC<AddPersonModalProps> = ({
                   onChange={(e) => field.onChange(e.target.checked)}
                 />
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
+                  <span className="text-sm font-medium text-gray-800 dark:text-dark-t1">
                     Pode editar KC
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-gray-500 dark:text-dark-t2">
                     Permite que este usuário altere conteúdos da base de conhecimento.
                   </span>
                 </div>

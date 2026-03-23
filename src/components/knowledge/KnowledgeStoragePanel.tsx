@@ -233,7 +233,7 @@ const KnowledgeStoragePanel: React.FC<Props> = ({ tenantSlug }) => {
   // ============================================================
 
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex">
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div>
@@ -241,7 +241,7 @@ const KnowledgeStoragePanel: React.FC<Props> = ({ tenantSlug }) => {
             <HardDrive className="h-5 w-5" />
             Armazenamento de arquivos
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-500 dark:text-dark-t2 mt-1">
             Gerencie arquivos da sua Base de Conhecimento.{' '}
             O arquivo padrão <code>{defaultKbFilename}</code> não pode ser excluído,
             somente alterado.
@@ -281,7 +281,7 @@ const KnowledgeStoragePanel: React.FC<Props> = ({ tenantSlug }) => {
       <div className="rounded-2xl bg-white/70 dark:bg-slate-900/60 shadow-inner overflow-hidden">
         <div className="max-h-[calc(100vh-320px)] overflow-y-auto">
           <table className="min-w-full text-sm">
-            <thead className="bg-black/5 dark:bg-white/5">
+            <thead className="bg-black/5 dark:bg-dark-s1/5">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold">Arquivo</th>
                 <th className="px-4 py-3 text-left font-semibold">Atualizado em</th>
@@ -314,7 +314,7 @@ const KnowledgeStoragePanel: React.FC<Props> = ({ tenantSlug }) => {
                     <td className="px-4 py-3">{file.name}</td>
 
                     {/* Atualizado */}
-                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 text-gray-500 dark:text-dark-t2">
                       {file.updatedAt ? file.updatedAt.toLocaleString() : '—'}
                     </td>
 
@@ -382,10 +382,10 @@ const KnowledgeStoragePanel: React.FC<Props> = ({ tenantSlug }) => {
       {/* Modal de Exclusão */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-40">
-          <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 max-w-md w-full neumorphic-convex">
+          <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 max-w-md w-full neumorphic-convex">
             <h3 className="text-lg font-bold mb-3">Confirmar exclusão</h3>
 
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-gray-600 dark:text-dark-t1">
               Deseja excluir o arquivo <strong>{deleteTarget.name}</strong>?{' '}
               Esta ação não pode ser desfeita.
             </p>

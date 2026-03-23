@@ -132,7 +132,7 @@ const ContactsFilterBar: React.FC<ContactsFilterBarProps> = ({
             <Button onClick={onClearFilters} variant="default" className="text-sm !py-2 !px-3 flex items-center gap-2" title="Limpar Filtros">
               <Eraser className="h-4 w-4" />
             </Button>
-            <div className="h-8 w-px bg-gray-300 dark:bg-gray-700 mx-1 hidden sm:block"></div>
+            <div className="h-8 w-px bg-gray-300 dark:bg-dark-s2 mx-1 hidden sm:block"></div>
             <Button onClick={onExportPDF} variant="default" className="text-sm !py-2 !px-3 flex items-center gap-2" isLoading={isExporting} disabled={isExporting || !hasData}>
               <FileText className="h-4 w-4 text-red-500" /> PDF
             </Button>

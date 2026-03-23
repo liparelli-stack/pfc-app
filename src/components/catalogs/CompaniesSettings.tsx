@@ -185,7 +185,7 @@ const CompaniesSettings: React.FC = () => {
 
   return (
     <>
-      <div className="bg-plate dark:bg-plate-dark rounded-2xl shadow-inner p-4 sm:p-8 space-y-6">
+      <div className="bg-plate dark:bg-dark-s1 rounded-2xl shadow-inner p-4 sm:p-8 space-y-6">
         {/* Busca / filtros */}
         <section className="neumorphic-convex rounded-2xl p-4 sm:p-5">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
@@ -225,7 +225,7 @@ const CompaniesSettings: React.FC = () => {
 
               {showSuggestions && Array.isArray(suggestions) && (
                 <div
-                  className="absolute z-20 w-full mt-1 bg-plate dark:bg-plate-dark rounded-lg neumorphic-convex shadow-lg max-h-60 overflow-y-auto"
+                  className="absolute z-20 w-full mt-1 bg-plate dark:bg-dark-s1 rounded-lg neumorphic-convex shadow-lg max-h-60 overflow-y-auto"
                   onMouseLeave={hideSuggestions}
                 >
                   {suggestions.map((company) => (
@@ -269,7 +269,7 @@ const CompaniesSettings: React.FC = () => {
         {shouldShowContactSection && (
           <section className="space-y-4">
             <div className="flex justify-between items-center border-b border-dark-shadow dark:border-dark-dark-shadow pb-2">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white">Contatos</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1">Contatos</h3>
               <Button onClick={() => setIsAddingContact(true)} disabled={isAddingContact} variant="default" className="!py-2 !px-4">
                 <Plus className="h-4 w-4 mr-2" /> Adicionar Contato
               </Button>

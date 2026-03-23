@@ -570,7 +570,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ tenantSlug }) => {
   return (
     <div
       className={clsx(
-        'flex flex-col h-full w-full overflow-hidden rounded-xl shadow-xl border border-gray-200 dark:border-gray-700',
+        'flex flex-col h-full w-full overflow-hidden rounded-xl shadow-xl border border-gray-200 dark:border-white/10',
         themeClasses
       )}
     >
@@ -663,7 +663,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ tenantSlug }) => {
               layout === 'horizontal'
                 ? 'w-1 hover:bg-primary/50 cursor-col-resize'
                 : 'h-1 hover:bg-primary/50 cursor-row-resize',
-              'bg-gray-200 dark:bg-gray-700'
+              'bg-gray-200 dark:bg-dark-s2'
             )}
           />
 
@@ -694,7 +694,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ tenantSlug }) => {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 max-w-md w-full shadow-xl">
             <h3 className="text-lg font-bold mb-3">Limpar conteúdo</h3>
-            <p className="text-sm mb-4 text-gray-700 dark:text-gray-200">
+            <p className="text-sm mb-4 text-gray-700 dark:text-dark-t1">
               Tem certeza que deseja limpar todo o conteúdo do editor e o nome
               do arquivo? Esta ação não poderá ser desfeita.
             </p>
@@ -719,9 +719,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ tenantSlug }) => {
       {/* Modal: Sobrescrever arquivo na nuvem */}
       {showOverwriteModal && overwriteFileName && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 max-w-md w-full neumorphic-convex">
+          <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 max-w-md w-full neumorphic-convex">
             <h3 className="text-lg font-bold mb-3">Confirmar sobrescrita</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-gray-600 dark:text-dark-t1">
               Deseja sobrescrever o arquivo <strong>{overwriteFileName}</strong>
               ? Esta ação não pode ser desfeita e o conteúdo atual não poderá
               ser recuperado.
@@ -752,9 +752,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ tenantSlug }) => {
       {/* Modal: Excluir arquivo da nuvem */}
       {showDeleteModal && deleteTargetFileName && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 max-w-md w-full neumorphic-convex">
+          <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 max-w-md w-full neumorphic-convex">
             <h3 className="text-lg font-bold mb-3">Excluir arquivo</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-gray-600 dark:text-dark-t1">
               Tem certeza que deseja excluir o arquivo{' '}
               <strong>{deleteTargetFileName}</strong> da nuvem? Esta ação não
               poderá ser desfeita.

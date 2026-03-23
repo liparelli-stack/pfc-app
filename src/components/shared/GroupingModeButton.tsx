@@ -57,23 +57,28 @@ const GroupingModeButton: React.FC<Props> = ({ mode, onModeChange }) => {
   };
 
   return (
-    <Button
+    <button
       type="button"
-      variant="default"
-      className={clsx(
-        "h-9 px-3 text-sm font-medium w-full justify-between",
-        "border border-dark-shadow/40 dark:border-dark-dark-shadow/40",
-        "bg-plate dark:bg-plate-dark",
-        isActive && "bg-primary text-white shadow-md border-transparent"
-      )}
       onClick={handleClick}
       aria-pressed={isActive}
       title="Alternar modo de agrupamento"
+      className="h-9 px-3 text-sm font-medium w-full flex items-center justify-between cursor-pointer transition-colors"
+      style={isActive ? {
+        backgroundColor: '#3b68f5',
+        color: '#ffffff',
+        border: 'none',
+        borderRadius: '8px',
+      } : {
+        backgroundColor: 'transparent',
+        border: '0.5px solid rgba(59,42,20,0.15)',
+        color: '#9a7d5a',
+        borderRadius: '8px',
+      }}
     >
       <span className="text-xs">&lt;</span>
       <span>{GROUP_MODE_LABEL[mode]}</span>
       <span className="text-xs">&gt;</span>
-    </Button>
+    </button>
   );
 };
 

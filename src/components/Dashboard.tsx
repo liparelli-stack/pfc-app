@@ -512,7 +512,7 @@ const NeumorphicCard: React.FC<{ children: React.ReactNode; className?: string }
   className = "",
 }) => (
   <div
-    className={`relative bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex hover:neumorphic-concave active:neumorphic-concave transition-all duration-200 ${className}`}
+    className={`relative bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex hover:neumorphic-concave active:neumorphic-concave transition-all duration-200 ${className}`}
   >
     <IaBadge />
     {children}
@@ -530,7 +530,7 @@ const IndicatorCard: React.FC<{
       <Icon className="h-6 w-6 text-primary" />
     </div>
     <div>
-      <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-sm text-gray-500 dark:text-dark-t2">{label}</p>
       <p className="text-2xl font-bold">{value}</p>
     </div>
   </NeumorphicCard>
@@ -595,7 +595,7 @@ const AgendaItem: React.FC<{
 
         {contact && contact.trim().length > 0 && (
           <div
-            className="flex items-center gap-1 flex-shrink-0 text-[11px] text-gray-700 dark:text-gray-200"
+            className="flex items-center gap-1 flex-shrink-0 text-[11px] text-gray-700 dark:text-dark-t1"
             title={contactTooltip || contact}
           >
             <User className="h-3.5 w-3.5 opacity-80" />
@@ -606,7 +606,7 @@ const AgendaItem: React.FC<{
 
       {companyLine && companyLine.trim().length > 0 && (
         <p
-          className="text-[11px] text-gray-600 dark:text-gray-300 mt-0.5 truncate"
+          className="text-[11px] text-gray-600 dark:text-dark-t1 mt-0.5 truncate"
           title={companyTooltip || companyLine}
         >
           {companyLine}
@@ -620,7 +620,7 @@ const AgendaItem: React.FC<{
         >
           {tag}
         </span>
-        {time && <span className="ml-2 text-gray-500 dark:text-gray-300 tabular-nums">{time}</span>}
+        {time && <span className="ml-2 text-gray-500 dark:text-dark-t1 tabular-nums">{time}</span>}
       </div>
     </div>
   </div>
@@ -876,7 +876,7 @@ const Dashboard: React.FC = () => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <h3 className="text-xl font-bold">Métricas Gerais</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+              <p className="text-xs text-gray-500 dark:text-dark-t2 mt-1 flex items-center gap-1">
                 <Users className="h-3 w-3" />
                 <span>Sua carteira • Total de Empresas • Ações </span>
               </p>
@@ -884,7 +884,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {metricsLoading && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-dark-t2">
               Carregando métricas...
             </p>
           )}
@@ -986,7 +986,7 @@ const Dashboard: React.FC = () => {
 
               {tenantTotalCompanies > 0 && (
                 <div className="mt-4">
-                  <div className="flex justify-between text-[11px] mb-1 text-gray-600 dark:text-gray-400">
+                  <div className="flex justify-between text-[11px] mb-1 text-gray-600 dark:text-dark-t2">
                     <span>
                       Sua carteira {ownerTotalCompanies} ({percentOwnerOnTenant}%)
                     </span>
@@ -1003,7 +1003,7 @@ const Dashboard: React.FC = () => {
               )}
 
               {tenantTotalCompanies === 0 && (
-                <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-3">
+                <p className="text-[11px] text-gray-500 dark:text-dark-t2 mt-3">
                   Nenhuma empresa encontrada para cálculo da carteira.
                 </p>
               )}
@@ -1011,7 +1011,7 @@ const Dashboard: React.FC = () => {
           )}
 
           {!metricsLoading && !metricsError && !metrics && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-dark-t2">
               Nenhuma empresa encontrada.
             </p>
           )}
@@ -1024,7 +1024,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {agendaLoading && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-dark-t2">
               Carregando compromissos...
             </p>
           )}
@@ -1034,7 +1034,7 @@ const Dashboard: React.FC = () => {
           )}
 
           {!agendaLoading && !agendaError && agendaItems.length === 0 && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-dark-t2">
               Nenhum compromisso agendado.
             </p>
           )}
@@ -1212,7 +1212,7 @@ const Dashboard: React.FC = () => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <h3 className="text-xl font-bold">Temperaturas ⬅️30•Hoje•45➡️</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+              <p className="text-xs text-gray-500 dark:text-dark-t2 mt-1 flex items-center gap-1">
                 <BarChart2 className="h-3 w-3" />
                 <span>Ações, empresas e tempo sob a lente da temperatura</span>
               </p>
@@ -1220,7 +1220,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {quadro3Loading && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-dark-t2">
               Carregando métricas de temperatura...
             </p>
           )}
@@ -1265,7 +1265,7 @@ const Dashboard: React.FC = () => {
                           <span className="text-xs font-semibold tabular-nums">
                             {item.actionsTotal}
                           </span>
-                          <span className="text-[10px] text-gray-500 dark:text-gray-400 tabular-nums">
+                          <span className="text-[10px] text-gray-500 dark:text-dark-t2 tabular-nums">
                             {Math.round(item.actionsPct)}%
                           </span>
                         </div>
@@ -1311,7 +1311,7 @@ const Dashboard: React.FC = () => {
                   <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-100">
                     Linha temporal por temperatura
                   </span>
-                  <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                  <span className="text-[10px] text-gray-500 dark:text-dark-t2">
                     ← passadas | hoje | futuras →
                   </span>
                 </div>
@@ -1342,7 +1342,7 @@ const Dashboard: React.FC = () => {
           )}
 
           {!quadro3Loading && !quadro3Error && !quadro3Metrics && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-dark-t2">
               Nenhuma métrica de temperatura encontrada.
             </p>
           )}

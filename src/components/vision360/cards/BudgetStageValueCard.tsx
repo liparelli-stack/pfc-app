@@ -119,7 +119,7 @@ const BudgetStageValueCard: React.FC<Props> = ({
     <button
       type="button"
       onClick={() => setThousands((v) => !v)}
-      className="inline-flex items-center gap-1 rounded-full border border-current/40 px-2.5 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-100/60 dark:hover:bg-zinc-800/60 transition"
+      className="inline-flex items-center gap-1 rounded-full border border-current/40 px-2.5 py-1 text-[11px] text-gray-600 dark:text-dark-t1 hover:bg-gray-100/60 dark:hover:bg-zinc-800/60 transition"
       title={thousands ? 'Mostrar valores integrais (R$)' : 'Mostrar em milhares (R$ × 1.000)'}
     >
       <span className="font-medium">{thousands ? 'R$k' : 'R$'}</span>
@@ -136,16 +136,16 @@ const BudgetStageValueCard: React.FC<Props> = ({
     >
       {/* Cabeçalho do card com switch discreto à direita */}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-dark-t1">{title}</h3>
         {headerRight}
       </div>
 
       {/* Área do gráfico (valores em R$ / R$k) */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <MiniBar items={displayItems} width={220} height={64} className="text-gray-700 dark:text-gray-200" />
+        <MiniBar items={displayItems} width={220} height={64} className="text-gray-700 dark:text-dark-t1" />
 
         {/* Sumário à direita (valores) */}
-        <div className="grid grid-cols-3 gap-2 text-xs text-gray-600 dark:text-gray-300">
+        <div className="grid grid-cols-3 gap-2 text-xs text-gray-600 dark:text-dark-t1">
           <div className="rounded-xl border px-2 py-1 border-gray-200 dark:border-zinc-800">
             <div className="opacity-70">{LABELS.em_espera}</div>
             <div className="font-semibold">
@@ -168,7 +168,7 @@ const BudgetStageValueCard: React.FC<Props> = ({
       </div>
 
       {/* Rodapé de valores (total) */}
-      <div className="mt-3 text-[11px] text-gray-500 dark:text-gray-400">
+      <div className="mt-3 text-[11px] text-gray-500 dark:text-dark-t2">
         Total no período:{' '}
         <span className="font-medium">
           {thousands ? fmtBRLk(total) : total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -218,7 +218,7 @@ const BudgetStageValueCard: React.FC<Props> = ({
         {/* Tooltip flutuante */}
         {tip && (
           <div
-            className="pointer-events-none absolute -top-9 translate-x-[-50%] whitespace-nowrap rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] text-gray-900 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-gray-100"
+            className="pointer-events-none absolute -top-9 translate-x-[-50%] whitespace-nowrap rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] text-gray-900 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-dark-t1"
             style={{ left: `${tip.x}px` }}
           >
             <span className="font-medium">{tip.label}</span>
@@ -230,7 +230,7 @@ const BudgetStageValueCard: React.FC<Props> = ({
       </div>
 
       {/* Contagens (badges) */}
-      <div className="mt-2 text-xs text-gray-700 dark:text-gray-200">
+      <div className="mt-2 text-xs text-gray-700 dark:text-dark-t1">
         <span className="opacity-70 mr-2">Quantidade por estágio:</span>
         <div className="mt-1 flex flex-wrap gap-2">
           <span className="rounded-xl border px-2 py-1 border-gray-200 dark:border-zinc-800" title={`${LABELS.em_espera}: ${cEmEspera} (${fmtPct(pEmEspera)})`}>

@@ -28,7 +28,7 @@ export const Avatar = ({ src, name, className }: AvatarProps) => {
   return (
     <div
       className={clsx(
-        'flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-600 font-bold text-gray-800 dark:text-white',
+        'flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-600 font-bold text-gray-800 dark:text-dark-t1',
         className
       )}
     >

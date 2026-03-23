@@ -149,7 +149,7 @@ const TicketDetailView: React.FC<TicketDetailViewProps> = ({ ticketId, onBack })
         </Button>
 
         <div className="flex-1">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">{ticket.subject}</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-dark-t1">{ticket.subject}</h1>
           <p className="text-gray-500">#{ticket.ticket_number}</p>
         </div>
 
@@ -213,7 +213,7 @@ const TicketDetailView: React.FC<TicketDetailViewProps> = ({ ticketId, onBack })
               rows={4}
               disabled={isClosed}
               className={clsx(
-                'w-full p-3 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave outline-none',
+                'w-full p-3 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave outline-none',
                 'focus:bg-white dark:focus:bg-gray-700',
                 isClosed && 'opacity-60 cursor-not-allowed'
               )}

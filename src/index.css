@@ -1,12 +1,22 @@
 /*
 -- ===================================================
 -- Código: /src/index.css
--- Versão: 2.0.0 (Super MA Ready)
--- Data/Hora: 2025-12-10 04:05 America/Sao_Paulo
--- Autor: FL / Execução via você EVA
--- Objetivo: Estilos globais da aplicação AD + Tema Sépia + Correções Markdown
---           + Inclusão Oficial do TEMA SUPER MA (vermelho) ativado por
---           <html data-theme="super-ma">.
+-- Versão: 3.1.0
+-- Data/Hora: 2026-03-20 America/Sao_Paulo
+-- Autor: FL / Execução via Eva (Claude Sonnet 4.6)
+-- Objetivo: Migração DS v0101 — body base, sépia, scrollbar dark.
+--           Neumorfismo redirecionado para DS v0101. Super MA intocado.
+-- Alterações (3.1.0):
+--   • [DS] .neumorphic-* → override DS v0101 (dark/light/sépia)
+--   • [DS] .bg-plate e .bg-plate-dark com !important para garantir override
+--   • [REMOVE] Neumorfismo sépia legado removido do @layer base
+-- Alterações (3.0.0):
+--   • [DS] body base: bg-plate → bg-dark-bg, text-gray-700 → text-dark-t1
+--   • [DS] Sépia: seletores .bg-plate/.bg-plate-dark → .bg-dark-s1
+--   • [DS] Scrollbar: cores ajustadas para palette dark do DS
+--   • [KEEP] Tema Super MA — intocado
+--   • [KEEP] .markdown-body — intocado
+--   • [KEEP] .gold-badge — intocado
 -- ===================================================
 */
 
@@ -14,18 +24,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================= */
-/* Tema Base (Light/Dark padrão) */
-/* ============================= */
+/* ===================================================
+   Tema Base (Light/Dark padrão) — DS v0101
+   =================================================== */
 @layer base {
   body {
-    @apply bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-300 transition-colors duration-300;
+    /* Dark: bg-dark-bg + text-dark-t1 */
+    /* Light: ainda usa bg-plate por compatibilidade com componentes não migrados */
+    @apply bg-plate dark:bg-dark-bg text-gray-700 dark:text-dark-t1 transition-colors duration-300;
+    font-family: 'DM Sans', sans-serif;
   }
 }
 
-/* ============================= */
-/* Tema SÉPIA (+30% quente)      */
-/* ============================= */
+/* ===================================================
+   Tema SÉPIA (+30% quente)
+   =================================================== */
 @layer base {
   :root[data-theme='sepia'] {
     --app-bg: #eaddc5;
@@ -44,51 +57,64 @@
     color: var(--app-text);
   }
 
-  /* Painéis */
+  /* Painéis — legado (.bg-plate) + novo DS (.bg-dark-s1) */
   [data-theme='sepia'] .bg-plate,
-  [data-theme='sepia'] .bg-plate-dark {
+  [data-theme='sepia'] .bg-plate-dark,
+  [data-theme='sepia'] .bg-dark-s1,
+  [data-theme='sepia'] .bg-dark-s2 {
     background-color: var(--app-surface) !important;
     box-shadow: var(--app-shadow);
   }
 
-  /* Bordas */
+  /* Bordas — legado + novo DS */
   [data-theme='sepia'] .border-dark-shadow,
-  [data-theme='sepia'] .dark\:border-dark-dark-shadow {
+  [data-theme='sepia'] .dark\:border-dark-dark-shadow,
+  [data-theme='sepia'] .border-dark-bmd,
+  [data-theme='sepia'] .border-dark-blo,
+  [data-theme='sepia'] .border-dark-bhi {
     border-color: var(--app-border) !important;
   }
 
-  /* Neumorfismo */
-  [data-theme='sepia'] .neumorphic-convex {
-    box-shadow: 5px 5px 10px #d4c6a9, -5px -5px 10px #ffffff;
-  }
-  [data-theme='sepia'] .neumorphic-concave {
-    box-shadow: inset 5px 5px 10px #d4c6a9, inset -5px -5px 10px #ffffff;
-  }
-
-  /* Texto */
+  /* Texto — legado + novo DS */
   [data-theme='sepia'] .prose { color: var(--app-text); }
   [data-theme='sepia'] .prose a { color: var(--link); }
   [data-theme='sepia'] .prose a:hover { color: var(--link-hover); text-decoration: underline; }
-
   [data-theme='sepia'] mark { background-color: var(--kb-mark); color: var(--app-text); }
 
-  /* Inputs */
+  /* texto DS */
+  [data-theme='sepia'] .text-dark-t1 { color: var(--app-text) !important; }
+  [data-theme='sepia'] .text-dark-t2 { color: var(--app-muted) !important; }
+  [data-theme='sepia'] .text-dark-t3 { color: var(--app-muted) !important; }
+
+  /* Inputs — sépia: fundo mais claro que painel, borda 0.5px, foco com ring */
   [data-theme='sepia'] input,
   [data-theme='sepia'] textarea,
   [data-theme='sepia'] select,
   [data-theme='sepia'] .app-input {
-    background: #fffbf0;
-    color: var(--app-text);
-    border: 1px solid var(--app-border);
+    background-color: #fffbf0 !important;
+    color: var(--app-text) !important;
+    border: 0.5px solid var(--app-border) !important;
+    border-radius: 8px;
+  }
+  [data-theme='sepia'] input::placeholder,
+  [data-theme='sepia'] textarea::placeholder {
+    color: var(--app-muted) !important;
+  }
+  [data-theme='sepia'] input:focus,
+  [data-theme='sepia'] textarea:focus,
+  [data-theme='sepia'] select:focus {
+    outline: none !important;
+    border-color: #3b68f5 !important;
+    box-shadow: 0 0 0 3px rgba(59,104,245,0.12) !important;
   }
 
-  /* Ajustes visuais */
+  /* Ajustes visuais legado */
   [data-theme='sepia'] .text-gray-500 { color: var(--app-muted) !important; }
   [data-theme='sepia'] .dark\:text-gray-400 { color: var(--app-muted) !important; }
   [data-theme='sepia'] .text-gray-800 { color: var(--app-text) !important; }
   [data-theme='sepia'] .dark\:text-white { color: var(--app-text) !important; }
 
-  /* ===== FIX SÉPIA: Toggle ativo ===== */
+  /* FIX SÉPIA: Toggle ativo */
   [data-theme='sepia'] .bg-primary {
     background-color: #1c4c96 !important;
     color: #ffffff !important;
@@ -104,28 +130,28 @@
 }
 
 /* ===================================================
-   FIX DARK: Azul coerente (igual botões)
+   FIX DARK: Azul coerente (legado — componentes não migrados)
    =================================================== */
 .dark .bg-primary,
 .dark .bg-primary\/90 {
-  background-color: #2563eb !important; /* azul dos botões */
+  background-color: #3b68f5 !important; /* accent DS v0101 */
   color: #ffffff !important;
 }
 
 .dark .ring-primary\/60 {
-  --tw-ring-color: rgba(37, 99, 235, 0.6) !important;
+  --tw-ring-color: rgba(59, 104, 245, 0.6) !important;
 }
 
 .dark .hover\:bg-primary:hover {
-  background-color: #1d4ed8 !important; /* azul 700 */
+  background-color: #4f7cff !important; /* accent light DS */
 }
 
 .dark .active\:bg-primary:active {
-  background-color: #1e40af !important; /* azul 800 */
+  background-color: #2d55d4 !important;
 }
 
 /* ===================================================
-   Scrollbar Global
+   Scrollbar Global — ajustada para palette dark DS
    =================================================== */
 ::-webkit-scrollbar {
   width: 5px;
@@ -135,35 +161,93 @@
   background-color: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(148, 163, 184, 0.9);
+  /* dark-s4 equivalente */
+  background-color: rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(100, 116, 139, 0.9);
+  background-color: rgba(255, 255, 255, 0.22);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.9) transparent;
-}
-
-/* ============================= */
-/* Neumorfismo                  */
-/* ============================= */
-@layer utilities {
-  .neumorphic-convex {
-    @apply shadow-neumorphic-convex dark:shadow-neumorphic-convex-dark;
-  }
-  .neumorphic-convex-strong {
-    @apply shadow-neumorphic-convex-strong dark:shadow-neumorphic-convex-strong-dark;
-  }
-  .neumorphic-concave {
-    @apply shadow-neumorphic-concave dark:shadow-neumorphic-concave-dark;
-  }
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
 }
 
 /* ===================================================
+   .input-field — campo de texto padrão DS v0101
+   Uso: <select>, <textarea>, <input> nativos fora do
+   componente Input.tsx (que tem seu próprio base class).
+   Light mode base; sépia via [data-theme='sepia'] acima.
+   =================================================== */
+.input-field {
+  background-color: #ffffff;
+  border: 0.5px solid rgba(0,0,0,0.10);
+  border-radius: 8px;
+  color: #374151;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.input-field::placeholder {
+  color: #9ca3af;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #3b68f5;
+  box-shadow: 0 0 0 3px rgba(59,104,245,0.12);
+}
+
+/* ============================================================
+   Migração global neumorfismo → DS v0101
+   Override das classes legadas — não remover os nomes de classe,
+   apenas redirecionar o visual para o novo design system
+   ============================================================ */
+
+/* Dark mode */
+.dark .neumorphic-convex,
+.dark .neumorphic-convex-strong {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.32), 0 4px 16px rgba(0,0,0,0.22) !important;
+  background-color: #13151a !important;
+}
+.dark .neumorphic-concave {
+  box-shadow: none !important;
+  background-color: #1a1d24 !important;
+  border: 0.5px solid rgba(255,255,255,0.11) !important;
+}
+
+/* Light mode */
+.neumorphic-convex,
+.neumorphic-convex-strong {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06) !important;
+  background-color: #f4f5f7 !important;
+}
+.neumorphic-concave {
+  box-shadow: none !important;
+  background-color: rgba(0,0,0,0.04) !important;
+  border: 0.5px solid rgba(0,0,0,0.10) !important;
+}
+
+/* Sépia */
+[data-theme='sepia'] .neumorphic-convex,
+[data-theme='sepia'] .neumorphic-convex-strong {
+  box-shadow: var(--app-shadow) !important;
+  background-color: var(--app-surface) !important;
+}
+[data-theme='sepia'] .neumorphic-concave {
+  box-shadow: none !important;
+  background-color: #fffbf0 !important;
+  border: 0.5px solid var(--app-border) !important;
+}
+
+/* Plates */
+.bg-plate                { background-color: #f4f5f7 !important; }
+.bg-plate-dark           { background-color: #13151a !important; }
+/* dark mode: força bg-plate para dark-s1 (sem isso o !important do light vence) */
+.dark .bg-plate          { background-color: #13151a !important; }
+
+/* ===================================================
    Markdown Preview Styles (.markdown-body)
-   Correção para renderização correta de elementos MD
+   — INTOCADO — não faz parte do escopo DS v0101
    =================================================== */
 @layer components {
   .markdown-body {
@@ -200,7 +284,7 @@
     @apply my-8 border-t-2 border-gray-200 dark:border-gray-700;
   }
   .markdown-body a {
-    @apply text-primary hover:underline;
+    @apply text-accent hover:underline;
   }
   .markdown-body code {
     @apply bg-gray-100 dark:bg-gray-800 rounded px-1.5 py-0.5 font-mono text-sm text-pink-600 dark:text-pink-400;
@@ -223,8 +307,8 @@
   .markdown-body img {
     @apply max-w-full h-auto rounded-lg my-4 shadow-md;
   }
-  
-  /* Sepia overrides for markdown */
+
+  /* Sépia overrides para markdown */
   [data-theme='sepia'] .markdown-body blockquote {
     @apply border-[#bcaaa4] text-[#5d4037] bg-[#fff8e1];
   }
@@ -248,7 +332,9 @@
   }
 }
 
-/* Badge Dourado */
+/* ===================================================
+   Badge Dourado — INTOCADO
+   =================================================== */
 @layer utilities {
   .gold-badge {
     @apply text-xs font-bold px-2 py-1 rounded-full bg-[#FFD700] text-gray-900 shadow-inner transition-all duration-300;
@@ -264,60 +350,50 @@
 }
 
 /* ===================================================
-   SUPER MA THEME (Pastel Ultra-Claro / Base #FEFFF2)
+   SUPER MA THEME — INTOCADO
    Ativado quando: <html data-theme="super-ma">
    =================================================== */
 
 :root[data-theme="super-ma"] {
-  /* Base escolhida pelo FL */
-  --superma-bg: #fefff2;          /* fundo geral ultra claro */
-  --superma-surface: #fcfde8;     /* sidebar/header */
-  --superma-bg-light: #fafcdc;    /* cards/painéis */
-
-  /* Destaques */
-  --superma-primary: #e8a4a4;          /* vermelho pastel suave */
+  --superma-bg: #fefff2;
+  --superma-surface: #fcfde8;
+  --superma-bg-light: #fafcdc;
+  --superma-primary: #e8a4a4;
   --superma-primary-hover: #da8d8d;
-
-  /* Texto */
-  --superma-text: #4b3a3a;             /* contraste suave */
-  --superma-muted: #8a6f6f;            /* texto apagado */
-
-  /* Bordas */
+  --superma-text: #4b3a3a;
+  --superma-muted: #8a6f6f;
   --superma-border: #e8d2d2;
 }
 
-/* Corpo geral */
 [data-theme="super-ma"] body {
   background-color: var(--superma-bg) !important;
   color: var(--superma-text) !important;
 }
 
-/* Sidebar */
 [data-theme="super-ma"] .sidebar {
   background-color: var(--superma-surface) !important;
   color: var(--superma-text) !important;
   border-right: 1px solid var(--superma-border) !important;
 }
 
-/* Header */
 [data-theme="super-ma"] .header {
   background-color: var(--superma-surface) !important;
   color: var(--superma-text) !important;
   border-bottom: 1px solid var(--superma-border) !important;
 }
 
-/* Painéis / Cards */
 [data-theme="super-ma"] .card,
 [data-theme="super-ma"] .panel,
 [data-theme="super-ma"] .bg-plate,
-[data-theme="super-ma"] .bg-plate-dark {
+[data-theme="super-ma"] .bg-plate-dark,
+[data-theme="super-ma"] .bg-dark-s1,
+[data-theme="super-ma"] .bg-dark-s2 {
   background-color: var(--superma-bg-light) !important;
   border: 1px solid var(--superma-border) !important;
   color: var(--superma-text) !important;
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
-/* Botões primários */
 [data-theme="super-ma"] .btn-primary,
 [data-theme="super-ma"] button.bg-primary {
   background-color: var(--superma-primary) !important;
@@ -330,8 +406,163 @@
   background-color: var(--superma-primary-hover) !important;
 }
 
-/* Texto apagado */
 [data-theme="super-ma"] .text-gray-500,
 [data-theme="super-ma"] .text-gray-400 {
   color: var(--superma-muted) !important;
 }
+
+/* ===================================================
+   Radix UI — Portais no dark mode (Select, Popover, etc.)
+   Envolvido em .dark para não afetar light mode.
+   [data-radix-popper-content-wrapper] injeta no portal
+   fora do DOM principal — o prefixo dark: do Tailwind
+   não alcança. Necessário override direto.
+   =================================================== */
+.dark [data-radix-popper-content-wrapper] > * {
+  background-color: #1a1d24 !important;
+  border: 0.5px solid rgba(255,255,255,0.11) !important;
+  color: #f0eeec !important;
+}
+
+.dark [role="listbox"],
+.dark [role="option"] {
+  background-color: #1a1d24 !important;
+  color: #f0eeec !important;
+}
+
+.dark [role="option"]:hover,
+.dark [role="option"]:focus,
+.dark [role="option"][data-highlighted] {
+  background-color: #22262f !important;
+  color: #f0eeec !important;
+}
+
+.dark [data-radix-portal] > * {
+  background-color: #1a1d24 !important;
+}
+
+/* ============================================================
+   Registrar Ação — normalização de campos sépia + light
+   ============================================================ */
+
+/* Inputs e textareas */
+[data-theme='sepia'] input:not([type='checkbox']):not([type='radio']):not([type='date']),
+[data-theme='sepia'] textarea,
+[data-theme='sepia'] select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #fffdf9 !important;
+  border: 0.5px solid rgba(59,42,20,0.15) !important;
+  border-radius: 8px !important;
+  color: #3b2e1a !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+[data-theme='sepia'] input::placeholder,
+[data-theme='sepia'] textarea::placeholder {
+  color: #9a7d5a !important;
+}
+
+[data-theme='sepia'] input:focus,
+[data-theme='sepia'] textarea:focus,
+[data-theme='sepia'] select:focus {
+  outline: none !important;
+  border-color: rgba(59,104,245,0.45) !important;
+  box-shadow: 0 0 0 3px rgba(59,104,245,0.10) !important;
+}
+
+/* Data input — type=date tem fundo próprio do browser */
+[data-theme='sepia'] input[type='date'] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #fffdf9 !important;
+  border: 0.5px solid rgba(59,42,20,0.15) !important;
+  border-radius: 8px !important;
+  color: #3b2e1a !important;
+  color-scheme: light;
+}
+
+/* Select — seta customizada */
+[data-theme='sepia'] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239a7d5a' d='M6 8L1 3h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  padding-right: 32px !important;
+}
+
+/* Light mode — mesma estrutura, cores claras */
+:root:not([data-theme='sepia']) input:not([type='checkbox']):not([type='radio']):not([type='date']),
+:root:not([data-theme='sepia']) textarea,
+:root:not([data-theme='sepia']) select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #ffffff !important;
+  border: 0.5px solid rgba(0,0,0,0.12) !important;
+  border-radius: 8px !important;
+  color: #1a1a1a !important;
+}
+
+:root:not([data-theme='sepia']) select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  padding-right: 32px !important;
+}
+
+/* Botão "+ Próxima ação" */
+[data-theme='sepia'] button[data-next-action],
+[data-theme='sepia'] .btn-next-action {
+  font-size: 13px;
+  color: #9a7d5a;
+  background: transparent;
+  border: 0.5px solid rgba(59,42,20,0.15);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+/* DS v0101 — Botão ghost para ícones de ação secundária */
+.btn-ghost-icon {
+  background: transparent !important;
+  border: none !important;
+  padding: 6px !important;
+  border-radius: 6px !important;
+  color: #9a7d5a !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+.btn-ghost-icon:hover {
+  color: #3b68f5 !important;
+  background: rgba(59,104,245,0.08) !important;
+}
+
+/* Labels gerados pelo InputWrapper (text-dark-t2 → cor sépia correta) */
+[data-theme='sepia'] label.text-caption {
+  color: #3b2e1a !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* Campos Assunto e Data — Registrar Ação */
+[data-theme='sepia'] input[placeholder="Resumo da ação..."],
+[data-theme='sepia'] input[type="date"] {
+  box-shadow: none !important;
+  font-size: 14px !important;
+  color: #3b2e1a !important;
+}
+[data-theme='sepia'] input[placeholder="Resumo da ação..."]::placeholder {
+  color: #9a7d5a !important;
+}
+
+[data-theme='sepia'] button[data-next-action]:hover,
+[data-theme='sepia'] .btn-next-action:hover {
+  background: rgba(59,42,20,0.06);
+  color: #3b2e1a;
+}
+
+/* ===================================================
+   Cockpit — camadas de cor por tema
+   =================================================== */
+[data-theme='sepia'] .cockpit-page-bg    { background-color: #f5ead8 !important; }
+[data-theme='sepia'] .cockpit-card-bg    { background-color: #fffdf9 !important; }
+[data-theme='sepia'] .cockpit-sidebar-bg { background-color: #fffdf9 !important; }

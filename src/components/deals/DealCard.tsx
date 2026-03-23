@@ -138,7 +138,7 @@ const DealCard: React.FC<DealCardProps> = ({ deal, onEdit, refreshDeals }) => {
       {/* Modal Perdeu */}
       <Modal isOpen={lostOpen} onClose={() => setLostOpen(false)} title="Marcar como Perdida">
         <div className="space-y-3">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-gray-600 dark:text-dark-t1">
             Informe o <strong>motivo da perda</strong> para esta oportunidade.
           </p>
           <textarea
@@ -166,11 +166,11 @@ const DealCard: React.FC<DealCardProps> = ({ deal, onEdit, refreshDeals }) => {
         exit={{ opacity: 0, scale: 0.95 }}
         draggable={!deal.is_archived}
         onDragStart={handleDragStart}
-        className={`p-4 rounded-2xl neumorphic-convex bg-plate dark:bg-plate-dark cursor-grab active:cursor-grabbing ${cardRing}`}
+        className={`p-4 rounded-2xl neumorphic-convex bg-plate dark:bg-dark-s1 cursor-grab active:cursor-grabbing ${cardRing}`}
       >
         <div className="flex justify-between items-start">
           <h4
-            className="font-bold text-gray-800 dark:text-white pr-2 flex-1 break-words"
+            className="font-bold text-gray-800 dark:text-dark-t1 pr-2 flex-1 break-words"
             style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-word' }}
             title={fullTitle}
           >
@@ -186,7 +186,7 @@ const DealCard: React.FC<DealCardProps> = ({ deal, onEdit, refreshDeals }) => {
               <MoreVertical size={18} />
             </button>
             {isMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-plate dark:bg-plate-dark rounded-lg neumorphic-convex p-2 z-20">
+              <div className="absolute right-0 mt-2 w-48 bg-plate dark:bg-dark-s1 rounded-lg neumorphic-convex p-2 z-20">
                 <button
                   onClick={() => { onEdit(deal); setIsMenuOpen(false); }}
                   disabled={deal.is_archived}
@@ -222,7 +222,7 @@ const DealCard: React.FC<DealCardProps> = ({ deal, onEdit, refreshDeals }) => {
 
         <div className="mt-1 flex items-center gap-2">
           <p
-            className="text-sm text-gray-500 dark:text-gray-400 flex-1 min-w-0"
+            className="text-sm text-gray-500 dark:text-dark-t2 flex-1 min-w-0"
             style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}
             title={companyName}
           >
@@ -242,14 +242,14 @@ const DealCard: React.FC<DealCardProps> = ({ deal, onEdit, refreshDeals }) => {
         <div className="flex justify-between items-end mt-4">
           <div className="flex items-center gap-2">
             <div className={`w-3 h-3 rounded-full ${statusDot[deal.status]}`} title={`Status: ${STATUS_LABEL_PT[deal.status]}`} />
-            <span className="font-bold text-lg text-gray-800 dark:text-white">
+            <span className="font-bold text-lg text-gray-800 dark:text-dark-t1">
               {(deal.amount || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
             </span>
           </div>
           <Avatar src={deal.owner?.avatar_url} name={deal.owner?.full_name} className="w-8 h-8" />
         </div>
 
-        <p className="text-xs text-gray-400 dark:text-gray-500 text-right mt-2">
+        <p className="text-xs text-gray-400 dark:text-dark-t2 text-right mt-2">
           Atualizado em: {deal.updated_at ? new Date(deal.updated_at as any).toLocaleDateString('pt-BR') : '—'}
         </p>
       </motion.div>

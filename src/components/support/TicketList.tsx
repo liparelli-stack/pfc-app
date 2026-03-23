@@ -28,7 +28,7 @@ const labelStatusPt = (s: Ticket['status']) => (s === 'open' ? 'Aberto' : 'Fecha
 
 const STATUS_STYLES: Record<Ticket['status'], string> = {
   open: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-  closed: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+  closed: 'bg-gray-100 text-gray-800 dark:bg-dark-s2 dark:text-dark-t1',
 };
 
 const PRIORITY_STYLES: Record<Ticket['priority'], string> = {
@@ -121,7 +121,7 @@ const TicketList: React.FC<TicketListProps> = ({ onTicketSelect }) => {
                     <Paperclip className="h-4 w-4 text-gray-500" />
                   </span>
                 )}
-                <p className="font-bold text-lg text-gray-800 dark:text-white truncate">{ticket.subject}</p>
+                <p className="font-bold text-lg text-gray-800 dark:text-dark-t1 truncate">{ticket.subject}</p>
               </div>
 
               <span className={clsx('px-2 py-0.5 text-xs font-semibold rounded-full', STATUS_STYLES[ticket.status])}>
@@ -129,7 +129,7 @@ const TicketList: React.FC<TicketListProps> = ({ onTicketSelect }) => {
               </span>
             </div>
 
-            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <div className="text-sm text-gray-500 dark:text-dark-t2 mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="whitespace-nowrap">#{ticket.ticket_number}</span>
               <span className="opacity-60">|</span>
               <span className="whitespace-nowrap">Atualizado em: {formatPtBrDateTime(ticket.updated_at)}</span>

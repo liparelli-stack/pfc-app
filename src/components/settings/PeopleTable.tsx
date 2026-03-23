@@ -75,7 +75,7 @@ const PeopleTable: React.FC<PeopleTableProps> = ({
       <div className="overflow-x-auto neumorphic-convex rounded-2xl p-4">
         <table className="w-full min-w-[960px] text-sm">
           <thead>
-            <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200/60 dark:border-gray-700/60">
+            <tr className="text-left text-gray-500 dark:text-dark-t2 border-b border-gray-200/60 dark:border-white/10/60">
               <th scope="col" className="py-3 px-4 font-semibold">Nome</th>
               <th scope="col" className="py-3 px-4 font-semibold">Email</th>
               <th scope="col" className="py-3 px-4 font-semibold">Perfil</th>

@@ -179,7 +179,7 @@ const KeyForm: React.FC<KeyFormProps> = ({
           <label className="text-sm font-medium">Provider</label>
           <input
             type="text"
-            className="neumorphic-input px-3 py-2 rounded-lg text-sm bg-plate dark:bg-plate-dark border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="neumorphic-input px-3 py-2 rounded-lg text-sm bg-plate dark:bg-dark-s1 border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
             placeholder="ex: gemini, openai, whatsapp"
             value={provider}
             onChange={(e) => setProvider(e.target.value)}
@@ -190,7 +190,7 @@ const KeyForm: React.FC<KeyFormProps> = ({
           <label className="text-sm font-medium">Label</label>
           <input
             type="text"
-            className="neumorphic-input px-3 py-2 rounded-lg text-sm bg-plate dark:bg-plate-dark border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="neumorphic-input px-3 py-2 rounded-lg text-sm bg-plate dark:bg-dark-s1 border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
             placeholder="ex: CRMAPPY_AI"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
@@ -203,7 +203,7 @@ const KeyForm: React.FC<KeyFormProps> = ({
         <div className="relative">
           <input
             type={showApiKey ? "text" : "password"}
-            className="neumorphic-input px-3 py-2 rounded-lg text-sm w-full pr-10 bg-plate dark:bg-plate-dark border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="neumorphic-input px-3 py-2 rounded-lg text-sm w-full pr-10 bg-plate dark:bg-dark-s1 border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
             placeholder="Cole a chave do provider aqui"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
@@ -250,7 +250,7 @@ const KeyForm: React.FC<KeyFormProps> = ({
           Metadata (JSON opcional – configs extras)
         </label>
         <textarea
-          className="neumorphic-input px-3 py-2 rounded-lg text-xs min-h-[120px] font-mono bg-plate dark:bg-plate-dark border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className="neumorphic-input px-3 py-2 rounded-lg text-xs min-h-[120px] font-mono bg-plate dark:bg-dark-s1 border border-dark-shadow/20 dark:border-dark-dark-shadow/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
           placeholder='{ "model_default": "models/gemini-1.5-flash" }'
           value={metadataText}
           onChange={(e) => setMetadataText(e.target.value)}
@@ -407,7 +407,7 @@ const IntegrationKeysSettings: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
         <div>
           <h1 className="text-xl font-semibold mb-1">Chaves & IA</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600 dark:text-dark-t2">
             Gerencie chaves de integração (Gemini, OpenAI, WhatsApp, etc.) por
             tenant. Apenas usuários autorizados devem ter acesso a esta seção.
           </p>
@@ -455,7 +455,7 @@ const IntegrationKeysSettings: React.FC = () => {
       </div>
 
       {/* Lista de chaves (Card) */}
-      <div className="rounded-2xl bg-white/60 dark:bg-gray-900/40 p-3 md:p-4 shadow-inner border border-gray-200/50 dark:border-gray-700/50">
+      <div className="rounded-2xl bg-white/60 dark:bg-dark-s3 p-3 md:p-4 shadow-inner border border-gray-200/50 dark:border-white/10/50">
         {isLoading ? (
           <div className="text-sm text-gray-500 p-4">Carregando chaves...</div>
         ) : !hasKeys ? (
@@ -468,7 +468,7 @@ const IntegrationKeysSettings: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="text-left text-xs uppercase text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                <tr className="text-left text-xs uppercase text-gray-500 dark:text-dark-t2 border-b border-gray-200 dark:border-white/10">
                   <th className="py-3 pr-3 pl-2">Provider</th>
                   <th className="py-3 pr-3">Label</th>
                   <th className="py-3 pr-3">Ativa</th>
@@ -481,15 +481,15 @@ const IntegrationKeysSettings: React.FC = () => {
                 {sortedKeys.map((k) => (
                   <tr
                     key={k.id}
-                    className="border-b border-gray-100 dark:border-gray-800 last:border-b-0 hover:bg-gray-50/70 dark:hover:bg-gray-800/50 transition-colors"
+                    className="border-b border-gray-100 dark:border-white/[0.06] last:border-b-0 hover:bg-gray-50/70 dark:hover:bg-dark-s2/50 transition-colors"
                   >
-                    <td className="py-3 pr-3 pl-2 align-middle font-medium text-gray-800 dark:text-gray-200">
+                    <td className="py-3 pr-3 pl-2 align-middle font-medium text-gray-800 dark:text-dark-t1">
                       <div className="flex items-center gap-2">
                         {getProviderIcon(k.provider)}
                         <span>{k.provider}</span>
                       </div>
                     </td>
-                    <td className="py-3 pr-3 align-middle text-gray-700 dark:text-gray-300">
+                    <td className="py-3 pr-3 align-middle text-gray-700 dark:text-dark-t1">
                       {k.label}
                     </td>
                     <td className="py-3 pr-3 align-middle">
@@ -513,7 +513,7 @@ const IntegrationKeysSettings: React.FC = () => {
                         <span className="text-xs text-gray-400">—</span>
                       )}
                     </td>
-                    <td className="py-3 pr-3 align-middle hidden md:table-cell text-xs text-gray-500 dark:text-gray-400">
+                    <td className="py-3 pr-3 align-middle hidden md:table-cell text-xs text-gray-500 dark:text-dark-t2">
                       {new Date(k.createdAt).toLocaleString("pt-BR")}
                     </td>
                     <td className="py-3 pr-3 align-middle">
@@ -521,7 +521,7 @@ const IntegrationKeysSettings: React.FC = () => {
                         {/* Editar - Botão visível com borda e cor */}
                         <button
                           type="button"
-                          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 hover:text-blue-600 hover:border-blue-300 dark:hover:text-blue-400 transition-colors shadow-sm"
+                          className="p-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-s2 text-gray-500 hover:text-blue-600 hover:border-blue-300 dark:hover:text-blue-400 transition-colors shadow-sm"
                           onClick={() => handleEdit(k)}
                           title="Editar"
                           aria-label={`Editar chave ${k.label}`}
@@ -532,7 +532,7 @@ const IntegrationKeysSettings: React.FC = () => {
                         {/* Excluir - Botão visível com borda e cor */}
                         <button
                           type="button"
-                          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 hover:text-red-600 hover:border-red-300 dark:hover:text-red-400 transition-colors shadow-sm"
+                          className="p-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-s2 text-gray-500 hover:text-red-600 hover:border-red-300 dark:hover:text-red-400 transition-colors shadow-sm"
                           onClick={() => handleDelete(k)}
                           title="Excluir"
                           aria-label={`Excluir chave ${k.label}`}
@@ -566,7 +566,7 @@ const IntegrationKeysSettings: React.FC = () => {
         onClose={() => setModelsModalOpen(false)}
       >
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold flex items-center gap-2 text-gray-800 dark:text-white">
+          <h2 className="text-lg font-semibold flex items-center gap-2 text-gray-800 dark:text-dark-t1">
             <Sparkles className="h-5 w-5 text-primary" />
             <span>Modelos disponíveis no Gemini</span>
           </h2>
@@ -581,10 +581,10 @@ const IntegrationKeysSettings: React.FC = () => {
               possui acesso ao Gemini.
             </div>
           ) : (
-            <div className="max-h-[360px] overflow-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="max-h-[360px] overflow-auto rounded-lg border border-gray-200 dark:border-white/10">
               <table className="min-w-full text-xs">
                 <thead>
-                  <tr className="text-left text-[11px] uppercase text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                  <tr className="text-left text-[11px] uppercase text-gray-500 dark:text-dark-t2 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-dark-s2">
                     <th className="py-2 px-3">Nome</th>
                     <th className="py-2 px-3">Exibição</th>
                     <th className="py-2 px-3 hidden md:table-cell">
@@ -596,23 +596,23 @@ const IntegrationKeysSettings: React.FC = () => {
                   {models.map((m) => (
                     <tr
                       key={m.name}
-                      className="border-b border-gray-100 dark:border-gray-800 last:border-b-0"
+                      className="border-b border-gray-100 dark:border-white/[0.06] last:border-b-0"
                     >
-                      <td className="py-2 px-3 align-top font-mono text-gray-600 dark:text-gray-300">
+                      <td className="py-2 px-3 align-top font-mono text-gray-600 dark:text-dark-t1">
                         {m.name}
                       </td>
                       <td className="py-2 px-3 align-top">
-                        <div className="font-medium text-[13px] text-gray-800 dark:text-gray-200">
+                        <div className="font-medium text-[13px] text-gray-800 dark:text-dark-t1">
                           {m.displayName}
                         </div>
                         {m.description && (
-                          <div className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 mt-0.5">
+                          <div className="text-[11px] text-gray-500 dark:text-dark-t2 line-clamp-2 mt-0.5">
                             {m.description}
                           </div>
                         )}
                       </td>
                       <td className="py-2 px-3 align-top hidden md:table-cell">
-                        <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                        <span className="text-[11px] text-gray-500 dark:text-dark-t2">
                           {m.supportedGenerationMethods.join(", ") || "—"}
                         </span>
                       </td>

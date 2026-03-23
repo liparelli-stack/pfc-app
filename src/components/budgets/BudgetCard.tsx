@@ -98,7 +98,7 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
   const renderDisplayView = () => (
     <>
       <div className="flex justify-between items-start">
-        <h4 className="font-bold text-gray-800 dark:text-white pr-2 flex-1 break-words">
+        <h4 className="font-bold text-gray-800 dark:text-dark-t1 pr-2 flex-1 break-words">
           {item.description || 'Orçamento sem descrição'}
         </h4>
         <button
@@ -114,8 +114,8 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
         </button>
       </div>
 
-      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.companyName}</p>
-      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">{item.subject}</p>
+      <p className="text-sm text-gray-600 dark:text-dark-t2 mt-1">{item.companyName}</p>
+      <p className="text-xs text-gray-500 dark:text-dark-t2 mt-1">{item.subject}</p>
 
       {item.status === 'perdida' && (
         <div className="mt-2 p-2 rounded-lg bg-red-100/50 dark:bg-red-900/20 text-red-700 dark:text-red-200 text-xs flex items-start gap-2">
@@ -129,10 +129,10 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
       )}
 
       <div className="flex justify-between items-end mt-4">
-        <span className="font-bold text-lg text-gray-800 dark:text-white">
+        <span className="font-bold text-lg text-gray-800 dark:text-dark-t1">
           {formatCurrency(item.amount)}
         </span>
-        <span className="text-xs text-gray-400 dark:text-gray-500">
+        <span className="text-xs text-gray-400 dark:text-dark-t2">
           {formatDate(item.updatedAt)}
         </span>
       </div>
@@ -141,7 +141,7 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
 
   const renderEditView = () => (
     <div className="flex flex-col h-full">
-      <h4 className="font-bold text-gray-800 dark:text-white mb-2 text-sm">
+      <h4 className="font-bold text-gray-800 dark:text-dark-t1 mb-2 text-sm">
         Motivo da Perda
       </h4>
       <textarea
@@ -150,7 +150,7 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
         onChange={(e) => setReason(e.target.value)}
         onKeyDown={handleKeyDown}
         rows={3}
-        className="w-full p-2 text-sm rounded-lg bg-white/80 dark:bg-plate-dark/80 neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+        className="w-full p-2 text-sm rounded-lg bg-white/80 dark:bg-dark-s1/80 neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
         placeholder="Descreva o motivo (mín. 3 palavras)..."
       />
       <div className="flex justify-end gap-2 mt-2">

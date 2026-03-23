@@ -197,7 +197,7 @@ function TempIcon({ temp }: { temp?: string | null }) {
       {children}
       <span
         className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 whitespace-nowrap 
-                   rounded-md bg-gray-800 text-white dark:bg-gray-900 dark:text-gray-100 
+                   rounded-md bg-gray-800 text-white dark:bg-dark-s3 dark:text-dark-t1 
                    text-[10px] py-1 px-2 opacity-0 group-hover:opacity-100 
                    pointer-events-none transition-opacity duration-200 shadow-lg z-10"
       >
@@ -671,10 +671,10 @@ const ConversationHistoryCard: React.FC<Props> = ({
             setSelectedId((prev) => (prev === r.id ? null : r.id))
           }
           className={clsx(
-            "border-b border-gray-200 dark:border-gray-700 transition-colors cursor-pointer",
+            "border-b border-sepia-border dark:border-white/10 transition-colors cursor-pointer",
             isSelected
               ? "bg-blue-50 dark:bg-blue-950/30"
-              : "hover:bg-gray-100 dark:hover:bg-gray-800",
+              : "hover:bg-[rgba(59,42,20,0.03)]",
             r.id === highlightId &&
               "animate-pulse bg-green-100/70 dark:bg-green-900/30 ring-2 ring-green-400/70"
           )}
@@ -730,32 +730,32 @@ const ConversationHistoryCard: React.FC<Props> = ({
         </tr>
 
         {showDetails && (
-          <tr className="bg-gray-50 dark:bg-gray-800/50">
+          <tr className="dark:bg-dark-s2" style={{ backgroundColor: '#fffdf9' }}>
             <td colSpan={COLSPAN} className="p-4">
-              <div className="rounded-lg border border-gray-400 dark:border-gray-600 p-4 bg-white/70 dark:bg-gray-900/30">
+              <div className="p-4" style={{ background: '#ffffff', border: '0.5px solid rgba(59,42,20,0.10)', borderTop: '0.5px solid rgba(59,42,20,0.16)', borderRadius: '8px', boxShadow: '0 1px 3px rgba(59,42,20,0.06), 0 4px 12px rgba(59,42,20,0.04)' }}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                   <div className="md:col-span-2">
-                    <strong className="block text-gray-600 dark:text-gray-300 mb-1">
+                    <strong className="block text-[#3b2e1a] dark:text-dark-t1 mb-1">
                       Descrição:
                     </strong>
-                    <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                    <p className="text-[#3b2e1a] dark:text-dark-t1 whitespace-pre-wrap">
                       {r.body || "Nenhuma descrição fornecida."}
                     </p>
                   </div>
                   <div className="space-y-3">
                     <div>
-                      <strong className="block text-gray-600 dark:text-gray-300">
+                      <strong className="block text-[#3b2e1a] dark:text-dark-t1">
                         Contato:
                       </strong>
-                      <p className="text-gray-800 dark:text-gray-200">
+                      <p className="text-[#3b2e1a] dark:text-dark-t1">
                         {r.contact_name || "N/A"}
                       </p>
                     </div>
                     <div>
-                      <strong className="block text-gray-600 dark:text-gray-300">
+                      <strong className="block text-[#3b2e1a] dark:text-dark-t1">
                         Prioridade:
                       </strong>
-                      <p className="text-gray-800 dark:text-gray-200">
+                      <p className="text-[#3b2e1a] dark:text-dark-t1">
                         {r.priority || "Não definida"}
                       </p>
                     </div>
@@ -768,8 +768,8 @@ const ConversationHistoryCard: React.FC<Props> = ({
                 if (!visibleBudgets.length) return null;
 
                 return (
-                  <div className="mt-4 rounded-lg border border-gray-400 dark:border-gray-600 p-4 bg-white/70 dark:bg-gray-900/30">
-                    <div className="mb-3 font-semibold text-gray-700 dark:text-gray-200">
+                  <div className="mt-4 p-4" style={{ background: '#ffffff', border: '0.5px solid rgba(59,42,20,0.10)', borderTop: '0.5px solid rgba(59,42,20,0.16)', borderRadius: '8px', boxShadow: '0 1px 3px rgba(59,42,20,0.06), 0 4px 12px rgba(59,42,20,0.04)' }}>
+                    <div className="mb-3 font-semibold text-[#3b2e1a] dark:text-dark-t1">
                       Orçamentos ({visibleBudgets.length})
                     </div>
 
@@ -777,7 +777,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                       {visibleBudgets.map((b, idx) => (
                         <div
                           key={b.id ?? idx}
-                          className="rounded-lg border border-gray-400 dark:border-gray-600 bg-white/80 dark:bg-gray-900/40 px-3 h-10 flex items-center gap-4 overflow-hidden"
+                          className="rounded-lg border border-[rgba(59,42,20,0.10)] dark:border-white/10 bg-[#fffdf9] dark:bg-dark-s3 px-3 h-10 flex items-center gap-4 overflow-hidden"
                           title={[
                             b.description || "Orçamento sem descrição",
                             b.amount != null
@@ -823,10 +823,10 @@ const ConversationHistoryCard: React.FC<Props> = ({
                             </span>
                             <TempIcon temp={r.temperature} />
                           </span>
-                          <span className="text-[12px] text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                          <span className="text-[12px] text-[#3b2e1a] dark:text-dark-t1 whitespace-nowrap">
                             {b.pipeline_stage || "—"}
                           </span>
-                          <span className="text-[12px] text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                          <span className="text-[12px] text-[#9a7d5a] dark:text-dark-t2 whitespace-nowrap">
                             {formatDateTime(
                               b.updated_at || b.created_at || null
                             )}
@@ -845,11 +845,26 @@ const ConversationHistoryCard: React.FC<Props> = ({
   };
 
   return (
-    <section className="rounded-2xl bg-plate dark:bg-plate-dark p-4 shadow-sm">
+    <section className="p-4" style={{ background: '#fffdf9', backgroundColor: '#fffdf9', border: '0.5px solid rgba(59,42,20,0.10)', borderTop: '0.5px solid rgba(59,42,20,0.16)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(59,42,20,0.08), 0 4px 16px rgba(59,42,20,0.06)' }}>
+      {/* Estilo scoped: opções do select nativo não aceitam classes Tailwind */}
+      <style>{`
+        .dark .chc-status-filter option {
+          background-color: #1a1d24;
+          color: #9096a3;
+        }
+        .dark .chc-status-filter option:checked {
+          background-color: rgba(59,104,245,0.12);
+          color: #3b68f5;
+        }
+        .dark .chc-status-filter option:hover {
+          background-color: #22262f;
+          color: #f0eeec;
+        }
+      `}</style>
       {/* [--BLOCO--] Cabeçalho unificado e responsivo */}
       {/* 1) Título isolado em linha própria (w-full) */}
       <div className="mb-4 w-full">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+        <h3 className="text-lg font-semibold text-[#3b2e1a] dark:text-dark-t1">
           Histórico das Ações
         </h3>
       </div>
@@ -857,7 +872,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
       {/* 2) Filtros reorganizados (flex-wrap, justify-between, w-full) */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2 w-full">
         {/* 1. Abas (Do Dia | Histórico | Ambos) */}
-        <div className="inline-flex w-full sm:w-[260px] rounded-xl overflow-hidden border border-dark-shadow/60 dark:border-dark-dark-shadow/60">
+        <div className="inline-flex gap-1 w-full sm:w-auto">
           {[
             { key: "day" as TabKind, label: "Do Dia" },
             { key: "history" as TabKind, label: "Histórico" },
@@ -867,11 +882,18 @@ const ConversationHistoryCard: React.FC<Props> = ({
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
-              className={clsx(
-                "flex-1 px-3 py-1.5 text-sm font-medium transition-colors text-center",
-                "bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-200",
-                tab === t.key && "bg-primary text-white shadow-md"
-              )}
+              className="flex-1 px-3 py-1.5 text-sm font-medium transition-colors text-center cursor-pointer"
+              style={tab === t.key ? {
+                backgroundColor: '#3b68f5',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+              } : {
+                backgroundColor: 'transparent',
+                border: '0.5px solid rgba(59,42,20,0.15)',
+                color: '#9a7d5a',
+                borderRadius: '8px',
+              }}
               aria-pressed={tab === t.key}
             >
               {t.label}
@@ -885,16 +907,22 @@ const ConversationHistoryCard: React.FC<Props> = ({
         </div>
 
         {/* 3. Detalhada/Compacta */}
-        <div className="inline-flex rounded-xl overflow-hidden border border-dark-shadow dark:border-dark-dark-shadow select-none h-9">
+        <div className="inline-flex gap-1 select-none">
           <button
             type="button"
             title="Detalhada"
-            className={clsx(
-              "px-3 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60",
-              rows.length && "cursor-pointer",
-              "bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-200",
-              viewMode === "detailed" && "bg-primary text-white shadow-md"
-            )}
+            className="px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer"
+            style={viewMode === "detailed" ? {
+              backgroundColor: '#3b68f5',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '8px',
+            } : {
+              backgroundColor: 'transparent',
+              border: '0.5px solid rgba(59,42,20,0.15)',
+              color: '#9a7d5a',
+              borderRadius: '8px',
+            }}
             onClick={() => setViewMode("detailed")}
             aria-pressed={viewMode === "detailed"}
           >
@@ -903,12 +931,18 @@ const ConversationHistoryCard: React.FC<Props> = ({
           <button
             type="button"
             title="Compacta"
-            className={clsx(
-              "px-3 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60",
-              rows.length && "cursor-pointer",
-              "bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-200",
-              viewMode === "compact" && "bg-primary text-white shadow-md"
-            )}
+            className="px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer"
+            style={viewMode === "compact" ? {
+              backgroundColor: '#3b68f5',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '8px',
+            } : {
+              backgroundColor: 'transparent',
+              border: '0.5px solid rgba(59,42,20,0.15)',
+              color: '#9a7d5a',
+              borderRadius: '8px',
+            }}
             onClick={() => setViewMode("compact")}
             aria-pressed={viewMode === "compact"}
           >
@@ -929,17 +963,24 @@ const ConversationHistoryCard: React.FC<Props> = ({
             "!px-0 !py-0",
             "h-9 w-9 flex items-center justify-center",
             "rounded-full border border-dark-shadow/60 dark:border-dark-dark-shadow/60",
-            "bg-plate dark:bg-plate-dark shadow-sm",
-            "hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            "bg-[#fffdf9] dark:bg-dark-s1 shadow-sm",
+            "hover:bg-[#f0e8d8] dark:hover:bg-dark-s2 transition-colors"
           )}
+          style={{ backgroundColor: '#fffdf9' }}
         >
-          <Eraser className="h-4 w-4 text-gray-700 dark:text-gray-200" />
+          <Eraser className="h-4 w-4 text-[#9a7d5a] dark:text-dark-t1" />
         </Button>
 
         {/* 4. Busca */}
         <div className="flex-1 min-w-[150px]">
           <input
-            className="h-9 px-3 w-full rounded-lg border border-dark-shadow/40 dark:border-dark-dark-shadow/40 bg-plate dark:bg-plate-dark text-sm outline-none"
+            className="h-9 px-3 w-full text-sm outline-none"
+            style={{
+              backgroundColor: '#fffdf9',
+              border: '0.5px solid rgba(59,42,20,0.15)',
+              borderRadius: '8px',
+              color: '#3b2e1a',
+            }}
             placeholder="Buscar (assunto/corpo)…"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -951,11 +992,16 @@ const ConversationHistoryCard: React.FC<Props> = ({
 
         {/* 5. Status */}
         <select
-          className={clsx(
-            "h-9 px-3 rounded-lg text-sm font-semibold transition-colors",
-            "border border-transparent bg-primary text-white shadow-md",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-          )}
+          className="chc-status-filter text-sm font-medium cursor-pointer outline-none"
+          style={{
+            backgroundColor: '#3b68f5',
+            color: '#ffffff',
+            borderRadius: '8px',
+            border: 'none',
+            padding: '7px 15px',
+            appearance: 'none',
+            WebkitAppearance: 'none',
+          }}
           value={statusFilter}
           onChange={(e) =>
             setStatusFilter(e.target.value as "false" | "true" | "all")
@@ -972,10 +1018,10 @@ const ConversationHistoryCard: React.FC<Props> = ({
       {isLoading ? (
         <Skeleton className="w-full h-24" />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-dark-shadow/40 dark:border-dark-dark-shadow/40">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-xl border border-dark-shadow/40 dark:border-dark-dark-shadow/40" style={{ backgroundColor: '#fffdf9' }}>
+          <table className="w-full text-sm" style={{ backgroundColor: '#fffdf9' }}>
             <thead>
-              <tr className="text-left bg-gray-50 dark:bg-gray-800/50">
+              <tr className="text-left bg-[#f0e8d8] dark:bg-dark-s2" style={{ backgroundColor: '#f0e8d8' }}>
                 {[
                   { key: "updated_at", label: "Atualizado" },
                   { key: "calendar_at", label: "Agendamento" },
@@ -988,9 +1034,9 @@ const ConversationHistoryCard: React.FC<Props> = ({
                 ].map((col) => (
                   <th
                     key={col.key}
-                    className={`py-2 px-2 ${
+                    className={`py-2 px-2 dark:text-dark-t2 ${
                       col.key !== "actions"
-                        ? "cursor-pointer select-none hover:text-blue-600"
+                        ? "cursor-pointer select-none hover:text-blue-600 dark:hover:text-accent"
                         : ""
                     }`}
                     onClick={
@@ -1045,7 +1091,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                 <tr>
                   <td
                     colSpan={COLSPAN}
-                    className="px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400"
+                    className="px-3 py-4 text-center text-sm text-[#9a7d5a] dark:text-dark-t2"
                   >
                     Nenhuma ação encontrada.
                   </td>
@@ -1055,10 +1101,11 @@ const ConversationHistoryCard: React.FC<Props> = ({
               ) : groupMode === "date" ? (
                 groupRowsByDate(rows).map((g) => (
                   <React.Fragment key={`day-${g.day}`}>
-                    <tr className="bg-[#4C1D95]">
+                    <tr style={{ backgroundColor: '#3b68f5' }}>
                       <td
                         colSpan={COLSPAN}
-                        className="px-3 py-1 text-xs font-semibold text-white"
+                        className="px-3 py-1"
+                        style={{ fontSize: '13px', fontWeight: 500, color: '#ffffff' }}
                       >
                         📅 {g.day === "—" ? "Sem data" : formatDateOnly(g.day)}
                       </td>
@@ -1069,10 +1116,11 @@ const ConversationHistoryCard: React.FC<Props> = ({
               ) : groupMode === "company" ? (
                 groupRowsByCompany(rows).map((c) => (
                   <React.Fragment key={`company-${c.company}`}>
-                    <tr className="bg-[#4C1D95]">
+                    <tr style={{ backgroundColor: '#3b68f5' }}>
                       <td
                         colSpan={COLSPAN}
-                        className="px-3 py-1 text-xs font-semibold text-white"
+                        className="px-3 py-1"
+                        style={{ fontSize: '13px', fontWeight: 500, color: '#ffffff' }}
                       >
                         🏢 {c.company || "Sem empresa"}
                       </td>
@@ -1083,24 +1131,26 @@ const ConversationHistoryCard: React.FC<Props> = ({
               ) : groupMode === "company_date" ? (
                 groupRowsByCompany(rows).map((c) => (
                   <React.Fragment key={`company-${c.company}`}>
-                    {/* 1º nível: Empresa (roxo) */}
-                    <tr className="bg-[#4C1D95]">
+                    {/* 1º nível: Empresa */}
+                    <tr style={{ backgroundColor: '#3b68f5' }}>
                       <td
                         colSpan={COLSPAN}
-                        className="px-3 py-1 text-xs font-semibold text-white"
+                        className="px-3 py-1"
+                        style={{ fontSize: '13px', fontWeight: 500, color: '#ffffff' }}
                       >
                         🏢 {c.company || "Sem empresa"}
                       </td>
                     </tr>
-                    {/* 2º nível: Data (cinza, indentado) */}
+                    {/* 2º nível: Data */}
                     {groupRowsByDate(c.rows).map((g) => (
                       <React.Fragment
                         key={`company-${c.company}-day-${g.day}`}
                       >
-                        <tr className="bg-gray-100 dark:bg-gray-900/40">
+                        <tr style={{ backgroundColor: '#3b68f5' }}>
                           <td
                             colSpan={COLSPAN}
-                            className="px-6 py-1 text-xs font-semibold text-gray-600 dark:text-gray-300"
+                            className="px-6 py-1"
+                            style={{ fontSize: '13px', fontWeight: 500, color: '#ffffff' }}
                           >
                             📅{" "}
                             {g.day === "—"
@@ -1117,24 +1167,26 @@ const ConversationHistoryCard: React.FC<Props> = ({
                 /* groupMode === "date_company" */
                 groupRowsByDate(rows).map((g) => (
                   <React.Fragment key={`day-${g.day}`}>
-                    {/* 1º nível: Data (roxo) */}
-                    <tr className="bg-[#4C1D95]">
+                    {/* 1º nível: Data */}
+                    <tr style={{ backgroundColor: '#3b68f5' }}>
                       <td
                         colSpan={COLSPAN}
-                        className="px-3 py-1 text-xs font-semibold text-white"
+                        className="px-3 py-1"
+                        style={{ fontSize: '13px', fontWeight: 500, color: '#ffffff' }}
                       >
                         📅 {g.day === "—" ? "Sem data" : formatDateOnly(g.day)}
                       </td>
                     </tr>
-                    {/* 2º nível: Empresa (cinza, indentado) */}
+                    {/* 2º nível: Empresa */}
                     {groupRowsByCompany(g.rows).map((c) => (
                       <React.Fragment
                         key={`day-${g.day}-company-${c.company}`}
                       >
-                        <tr className="bg-gray-50 dark:bg-gray-800/60">
+                        <tr style={{ backgroundColor: '#3b68f5' }}>
                           <td
                             colSpan={COLSPAN}
-                            className="px-6 py-1 text-xs font-semibold text-gray-700 dark:text-gray-200"
+                            className="px-6 py-1"
+                            style={{ fontSize: '13px', fontWeight: 500, color: '#ffffff' }}
                           >
                             🏢 {c.company || "Sem empresa"}
                           </td>

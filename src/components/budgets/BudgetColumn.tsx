@@ -49,7 +49,7 @@ const BudgetColumn: React.FC<BudgetColumnProps> = ({
   return (
     <div
       className="
-        w-[360px] flex flex-col bg-plate dark:bg-plate-dark 
+        w-[360px] flex flex-col bg-plate dark:bg-dark-s1 
         p-4 rounded-2xl neumorphic-convex
         min-h-[2000px]   /* <<< altura fixada 5× maior */
       "

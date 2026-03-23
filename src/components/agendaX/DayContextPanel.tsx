@@ -65,10 +65,10 @@ const DayContextPanel = ({ selectedDate, viewMode }: DayContextPanelProps) => {
   }, [dateStr]);
 
   const SkeletonCard = () => (
-    <div className="animate-pulse bg-plate dark:bg-plate-dark mb-4 p-4 rounded-2xl neumorphic-convex">
-      <div className="h-4 w-1/2 bg-gray-300 dark:bg-gray-700 rounded mb-3"></div>
-      <div className="h-3 w-1/3 bg-gray-200 dark:bg-gray-800 rounded mb-2"></div>
-      <div className="h-3 w-2/3 bg-gray-200 dark:bg-gray-800 rounded"></div>
+    <div className="animate-pulse bg-plate dark:bg-dark-s1 mb-4 p-4 rounded-2xl neumorphic-convex">
+      <div className="h-4 w-1/2 bg-gray-300 dark:bg-dark-s2 rounded mb-3"></div>
+      <div className="h-3 w-1/3 bg-gray-200 dark:bg-dark-s2 rounded mb-2"></div>
+      <div className="h-3 w-2/3 bg-gray-200 dark:bg-dark-s2 rounded"></div>
     </div>
   );
 

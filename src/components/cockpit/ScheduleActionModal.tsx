@@ -320,7 +320,7 @@ const ScheduleActionModal: React.FC<ScheduleActionModalProps> = ({
                       "px-4 text-sm font-semibold flex items-center",
                       !field.value
                         ? "bg-red-500 text-white"
-                        : "bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-200"
+                        : "bg-plate dark:bg-dark-s1 text-gray-700 dark:text-dark-t1"
                     )}
                   >
                     Andamento
@@ -332,7 +332,7 @@ const ScheduleActionModal: React.FC<ScheduleActionModalProps> = ({
                       "px-4 text-sm font-semibold flex items-center",
                       field.value
                         ? "bg-green-600 text-white"
-                        : "bg-plate dark:bg-plate-dark text-gray-700 dark:text-gray-200"
+                        : "bg-plate dark:bg-dark-s1 text-gray-700 dark:text-dark-t1"
                     )}
                   >
                     Concluída
@@ -352,7 +352,7 @@ const ScheduleActionModal: React.FC<ScheduleActionModalProps> = ({
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
                   value={field.value}
                   onChange={field.onChange}
                 >
@@ -394,7 +394,7 @@ const ScheduleActionModal: React.FC<ScheduleActionModalProps> = ({
                 rows={4}
                 className={clsx(
                   "w-full px-4 py-3 rounded-lg",
-                  "bg-plate dark:bg-plate-dark neumorphic-concave",
+                  "bg-plate dark:bg-dark-s1 neumorphic-concave",
                   "focus:outline-none focus:ring-2 focus:ring-primary/50",
                   "resize-y min-h-[110px]"
                 )}
@@ -429,7 +429,7 @@ const ScheduleActionModal: React.FC<ScheduleActionModalProps> = ({
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
                   value={field.value ?? "Neutra"}
                   onChange={(e) => field.onChange(e.target.value || "Neutra")}
                 >
@@ -449,7 +449,7 @@ const ScheduleActionModal: React.FC<ScheduleActionModalProps> = ({
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full h-11 px-4 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave focus:outline-none focus:ring-2 focus:ring-primary/50"
                   value={field.value ?? ""}
                   onChange={(e) => field.onChange(e.target.value || "Normal")}
                 >

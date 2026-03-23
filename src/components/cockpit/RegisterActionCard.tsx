@@ -90,23 +90,37 @@ const RegisterActionCard: React.FC<RegisterActionCardProps> = ({
   };
 
   return (
-    <section className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex relative">
+    <section className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex relative">
       {/* Cabeçalho: título + ícone IA (mesma posição visual do card de Métricas Gerais) */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+        <h3 className="text-xl font-bold text-gray-800 dark:text-dark-t1">
           {title}
         </h3>
 
         {/* Ícone circular – clique dispara a análise de IA */}
-        <button
-          type="button"
+        <div
           onClick={handleAiClick}
-          className="h-8 w-8 rounded-full bg-slate-100/90 dark:bg-slate-800/80 shadow-sm flex items-center justify-center text-blue-700 dark:text-blue-300 hover:scale-[1.03] transition-transform"
           title="Analisar esta ação com IA"
           aria-label="Analisar esta ação com IA"
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
+          style={{
+            backgroundColor: '#3b68f5',
+            color: '#ffffff',
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            opacity: 1,
+          }}
         >
           <Sparkles className="h-4 w-4" />
-        </button>
+        </div>
       </div>
 
       {/* Reutiliza exatamente o mesmo formulário de edição, em modo criação */}

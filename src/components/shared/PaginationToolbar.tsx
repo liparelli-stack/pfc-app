@@ -58,7 +58,7 @@ const PaginationToolbar: React.FC<PaginationToolbarProps> = ({
       aria-label="Barra de paginação"
     >
       {/* Label "Mostrando X–Y de Z" */}
-      <div className="text-gray-600 dark:text-gray-300">
+      <div className="text-gray-600 dark:text-dark-t1">
         Mostrando <strong>{start}</strong>–<strong>{end}</strong> de{" "}
         <strong>{total}</strong> {itemTypeLabel}
       </div>
@@ -67,11 +67,11 @@ const PaginationToolbar: React.FC<PaginationToolbarProps> = ({
       <div className="flex items-center gap-3">
         {/* Page size */}
         <label className="inline-flex items-center gap-2">
-          <span className="text-gray-600 dark:text-gray-300">Por página</span>
+          <span className="text-gray-600 dark:text-dark-t1">Por página</span>
           <select
             className={clsx(
               "rounded-lg border border-dark-shadow/30 dark:border-dark-dark-shadow/30",
-              "bg-plate dark:bg-plate-dark px-2 py-1",
+              "bg-plate dark:bg-dark-s1 px-2 py-1",
               "focus:outline-none focus:ring-2 focus:ring-primary/30"
             )}
             value={pageSize}
@@ -91,7 +91,7 @@ const PaginationToolbar: React.FC<PaginationToolbarProps> = ({
             className={clsx(
               "inline-flex items-center justify-center h-8 w-8 rounded-full",
               "border border-dark-shadow/30 dark:border-dark-dark-shadow/30",
-              "bg-plate dark:bg-plate-dark hover:opacity-90 disabled:opacity-50"
+              "bg-plate dark:bg-dark-s1 hover:opacity-90 disabled:opacity-50"
             )}
             onClick={() => changePage(current - 1)}
             disabled={current <= 1}
@@ -101,7 +101,7 @@ const PaginationToolbar: React.FC<PaginationToolbarProps> = ({
             <ChevronLeft className="h-4 w-4" />
           </button>
 
-          <span className="px-2 tabular-nums text-gray-700 dark:text-gray-200" aria-live="polite">
+          <span className="px-2 tabular-nums text-gray-700 dark:text-dark-t1" aria-live="polite">
             {current} / {totalPages}
           </span>
 
@@ -110,7 +110,7 @@ const PaginationToolbar: React.FC<PaginationToolbarProps> = ({
             className={clsx(
               "inline-flex items-center justify-center h-8 w-8 rounded-full",
               "border border-dark-shadow/30 dark:border-dark-dark-shadow/30",
-              "bg-plate dark:bg-plate-dark hover:opacity-90 disabled:opacity-50"
+              "bg-plate dark:bg-dark-s1 hover:opacity-90 disabled:opacity-50"
             )}
             onClick={() => changePage(current + 1)}
             disabled={current >= totalPages}

@@ -41,7 +41,7 @@ import React, {
 } from "react";
 import ReactDOM from "react-dom";
 import clsx from "clsx";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { Check, ChevronDown, ChevronRight } from "lucide-react";
 
 type Option = { id: string; label: string };
 type Group = { group: string; parentId: "call" | "message" | "task"; options: Option[] };
@@ -302,13 +302,22 @@ const HierarchicalActionSelect: React.FC<HierarchicalActionSelectProps> = ({
         onKeyDown={onTriggerKeyDown}
         onClick={() => (open ? closeMenu() : openMenu())}
         className={clsx(
-          "h-11 px-4 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave",
+          "h-11 px-4 rounded-lg",
+          "bg-white [[data-theme='sepia']_&]:bg-[#fffdf9]",
+          "border border-black/10 [[data-theme='sepia']_&]:border-[rgba(59,42,20,0.15)]",
+          "dark:bg-dark-s2 dark:border-dark-bmd",
           "text-left inline-flex items-center justify-between gap-2",
-          error ? "ring-1 ring-red-500" : "focus:outline-none"
+          "text-gray-800 dark:text-dark-t1 [[data-theme='sepia']_&]:text-[#3b2e1a]",
+          error ? "ring-1 ring-red-500" : "focus:outline-none focus:ring-0 focus:shadow-none"
         )}
         style={autoWidth ? { width: autoWidth } : undefined}
       >
-        <span className={clsx(!selectedLabel && "text-gray-400", "whitespace-nowrap")}>
+        <span className={clsx(
+          "whitespace-nowrap",
+          selectedLabel
+            ? "text-gray-800 dark:text-dark-t1 [[data-theme='sepia']_&]:text-[#3b2e1a]"
+            : "text-gray-400 dark:text-dark-t3 [[data-theme='sepia']_&]:text-[#9a7d5a]"
+        )}>
           {selectedLabel || placeholder}
         </span>
         <ChevronDown
@@ -331,8 +340,10 @@ const HierarchicalActionSelect: React.FC<HierarchicalActionSelectProps> = ({
             onTouchMoveCapture={(e) => e.stopPropagation()}
             className={clsx(
               "z-[30000] fixed",
-              "rounded-xl shadow-lg border border-dark-shadow dark:border-dark-dark-shadow",
-              "bg-plate dark:bg-plate-dark"
+              "rounded-lg border",
+              "bg-white border-black/10 shadow-[0_4px_16px_rgba(0,0,0,0.10)]",
+              "[[data-theme='sepia']_&]:border-[rgba(59,42,20,0.15)]",
+              "dark:bg-dark-s1 dark:border-dark-bmd dark:shadow-sh1"
             )}
             style={{ top: menuPos.top, left: menuPos.left, width: menuPos.width }}
           >
@@ -348,9 +359,8 @@ const HierarchicalActionSelect: React.FC<HierarchicalActionSelectProps> = ({
                       className={clsx(
                         "flex items-center justify-between px-3 py-2 rounded-lg select-none",
                         "cursor-pointer",
-                        someChildActive
-                          ? "bg-blue-50 dark:bg-blue-900/40 text-blue-800 dark:text-blue-100"
-                          : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                        "text-gray-500 dark:text-dark-t3",
+                        someChildActive && "dark:text-dark-t2"
                       )}
                       onClick={() => toggleGroup(g.group)}
                       onKeyDown={onGroupKeyDown(g.group, isOpen)}
@@ -363,7 +373,8 @@ const HierarchicalActionSelect: React.FC<HierarchicalActionSelectProps> = ({
                           type="button"
                           aria-label={isOpen ? "Recolher" : "Expandir"}
                           className={clsx(
-                            "p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+                            "p-1 rounded-md hover:bg-gray-100 dark:hover:bg-dark-s3",
+                            "[[data-theme='sepia']_&]:hover:bg-transparent"
                           )}
                           onClick={(e) => handleToggleClick(e, g.group)}
                         >
@@ -373,7 +384,7 @@ const HierarchicalActionSelect: React.FC<HierarchicalActionSelectProps> = ({
                             <ChevronRight className="w-4 h-4" />
                           )}
                         </button>
-                        <span className="font-semibold whitespace-nowrap">
+                        <span className="text-[12px] font-medium whitespace-nowrap text-gray-400 dark:text-dark-t3 [[data-theme='sepia']_&]:text-[#9a7d5a]">
                           {g.group}
                         </span>
                       </div>
@@ -391,15 +402,26 @@ const HierarchicalActionSelect: React.FC<HierarchicalActionSelectProps> = ({
                               role="option"
                               aria-selected={active}
                               className={clsx(
-                                "w-full text-left px-3 py-2 rounded-md whitespace-nowrap",
+                                "w-full text-left px-3 py-2 rounded-[6px] whitespace-nowrap",
+                                "flex items-center justify-between gap-2",
                                 active
-                                  ? "bg-blue-600 text-white"
-                                  : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                                  ? [
+                                      "bg-blue-50 text-blue-700",
+                                      "dark:bg-accent/[0.12] dark:text-accent",
+                                      "[[data-theme='sepia']_&]:bg-[rgba(59,104,245,0.08)] [[data-theme='sepia']_&]:text-[#3b68f5]",
+                                    ]
+                                  : [
+                                      "text-gray-600 hover:bg-[#3b68f5] hover:text-white",
+                                      "dark:text-dark-t2 dark:hover:bg-dark-s3 dark:hover:text-dark-t1",
+                                      "[[data-theme='sepia']_&]:text-[#3b2e1a]",
+                                      "[[data-theme='sepia']_&]:hover:bg-[#3b68f5] [[data-theme='sepia']_&]:hover:text-white",
+                                    ]
                               )}
-                              onMouseDown={(e) => e.preventDefault()} // evita blur antes do clique
+                              onMouseDown={(e) => e.preventDefault()}
                               onClick={() => handleChooseChild(opt.id)}
                             >
-                              {opt.label}
+                              <span>{opt.label}</span>
+                              {active && <Check className="w-3.5 h-3.5 shrink-0 text-blue-600 dark:text-accent [[data-theme='sepia']_&]:text-[#3b68f5]" />}
                             </button>
                           );
                         })}

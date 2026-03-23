@@ -13,7 +13,7 @@
 --   • [DONE] Adicionada contagem opcional de concluídas (done) por dia.
 --   • [BADGE] Exibição de badge verde para concluídas, sem alterar a cor de fundo do dia.
 -- Alterações (1.5.2) :
---   • [FIX] Removido o highlight de fundo do dia selecionado (bg-gray-100 / dark:bg-white/10).
+--   • [FIX] Removido o highlight de fundo do dia selecionado (bg-gray-100 / dark:bg-dark-s1/10).
 --     Agora a seleção não sobrescreve o estado azul dos dias.
 -- ===================================================
 */
@@ -119,7 +119,7 @@ const CalendarMiniX = ({ selectedDate, onSelect, size = 'md' }: CalendarMiniXPro
   };
 
   const getDayColorClass = (d: Date | null) => {
-    if (!d) return 'text-gray-300 dark:text-gray-600';
+    if (!d) return 'text-gray-300 dark:text-dark-t3';
     const baseBorder = 'border';
 
     const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
@@ -130,7 +130,7 @@ const CalendarMiniX = ({ selectedDate, onSelect, size = 'md' }: CalendarMiniXPro
     if (overdue > 0)  return `${baseBorder} bg-red-500/20 text-red-700 dark:text-red-300 border-red-500/30`;
     if (todayActive > 0) return `${baseBorder} bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30`;
     if (dayMidnight > todayMidnight) return `${baseBorder} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
-    return `${baseBorder} bg-gray-500/10 text-gray-500 dark:text-gray-400 border-gray-500/20`;
+    return `${baseBorder} bg-gray-500/10 text-gray-500 dark:text-dark-t2 border-gray-500/20`;
   };
 
   const getButtonBase = () =>
@@ -138,7 +138,7 @@ const CalendarMiniX = ({ selectedDate, onSelect, size = 'md' }: CalendarMiniXPro
     `neumorphic-convex hover:neumorphic-concave px-1.5 pt-1.5`;
 
   return (
-    <div className="neumorphic-convex p-4 rounded-2xl bg-plate dark:bg-plate-dark">
+    <div className="neumorphic-convex p-4 rounded-2xl bg-plate dark:bg-dark-s1">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold capitalize">{title}</h3>
@@ -162,7 +162,7 @@ const CalendarMiniX = ({ selectedDate, onSelect, size = 'md' }: CalendarMiniXPro
       </div>
 
       {/* Week header */}
-      <div className={`grid grid-cols-7 ${gapClass} mb-2 text-sm text-gray-500 dark:text-gray-400`}>
+      <div className={`grid grid-cols-7 ${gapClass} mb-2 text-sm text-gray-500 dark:text-dark-t2`}>
         {WEEKDAYS.map((w, i) => (<div key={`wd-${i}`} className="text-center">{w}</div>))}
       </div>
 
@@ -170,7 +170,7 @@ const CalendarMiniX = ({ selectedDate, onSelect, size = 'md' }: CalendarMiniXPro
       {loading && (
         <div className={`grid grid-cols-7 ${gapClass} animate-pulse`}>
           {Array.from({ length: 42 }).map((_, i) => (
-            <div key={`sk-${i}`} className={`${cellDims.w} ${cellDims.h} rounded-lg bg-gray-200 dark:bg-gray-800`} />
+            <div key={`sk-${i}`} className={`${cellDims.w} ${cellDims.h} rounded-lg bg-gray-200 dark:bg-dark-s2`} />
           ))}
         </div>
       )}
@@ -228,19 +228,19 @@ const CalendarMiniX = ({ selectedDate, onSelect, size = 'md' }: CalendarMiniXPro
                       <div className="absolute bottom-1 right-1 flex flex-col items-end gap-1 z-10">
                         {split.overdue > 0 && (
                           <span className="min-w-[18px] h-[18px] px-1 rounded-full text-[10px] leading-[18px] font-bold
-                                           text-red-600 dark:text-red-300 text-center bg-gray-900/10 dark:bg-white/10">
+                                           text-red-600 dark:text-red-300 text-center bg-gray-900/10 dark:bg-dark-s1/10">
                             {split.overdue}
                           </span>
                         )}
                         {split.todayActive > 0 && (
                           <span className="min-w-[18px] h-[18px] px-1 rounded-full text-[10px] leading-[18px] font-bold
-                                           text-blue-600 dark:text-blue-300 text-center bg-gray-900/10 dark:bg-white/10">
+                                           text-blue-600 dark:text-blue-300 text-center bg-gray-900/10 dark:bg-dark-s1/10">
                             {split.todayActive}
                           </span>
                         )}
                         {split.done > 0 && (
                           <span className="min-w-[18px] h-[18px] px-1 rounded-full text-[10px] leading-[18px] font-bold
-                                           text-green-600 dark:text-green-300 text-center bg-gray-900/10 dark:bg-white/10">
+                                           text-green-600 dark:text-green-300 text-center bg-gray-900/10 dark:bg-dark-s1/10">
                             {split.done}
                           </span>
                         )}

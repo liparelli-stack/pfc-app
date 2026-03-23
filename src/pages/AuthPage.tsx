@@ -107,10 +107,10 @@ export const AuthPage = () => {
   // VIEW: LOGIN / SIGNUP
   // ---------------------------------------------------------------------------
   return (
-    <div className="flex items-center justify-center min-h-screen bg-plate dark:bg-plate-dark">
-      <div className="w-full max-w-sm p-8 space-y-6 bg-plate dark:bg-plate-dark rounded-2xl neumorphic-convex">
+    <div className="flex items-center justify-center min-h-screen bg-plate dark:bg-dark-s1">
+      <div className="w-full max-w-sm p-8 space-y-6 bg-plate dark:bg-dark-s1 rounded-2xl neumorphic-convex">
         
-        <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white">
+        <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-dark-t1">
           {getTitle()}
         </h1>
         
@@ -156,11 +156,11 @@ export const AuthPage = () => {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-400 dark:border-gray-500 bg-plate dark:bg-plate-dark text-primary focus:ring-primary focus:ring-offset-0"
+                  className="h-4 w-4 rounded border-gray-400 dark:border-gray-500 bg-plate dark:bg-dark-s1 text-primary focus:ring-primary focus:ring-offset-0"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-gray-700 dark:text-gray-300"
+                  className="ml-2 block text-gray-700 dark:text-dark-t1"
                 >
                   Lembrar login
                 </label>

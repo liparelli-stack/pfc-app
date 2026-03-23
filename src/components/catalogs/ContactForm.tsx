@@ -133,7 +133,7 @@ export default function ContactForm({ contact, companyId, tenantId, onSaved, onC
 
   return (
     <>
-      <div className="w-full rounded-2xl bg-plate dark:bg-plate-dark neumorphic-convex p-4 relative">
+      <div className="w-full rounded-2xl bg-plate dark:bg-dark-s1 neumorphic-convex p-4 relative">
         <button
           type="button"
           onClick={handleCancelRequest}
@@ -144,7 +144,7 @@ export default function ContactForm({ contact, companyId, tenantId, onSaved, onC
           <X className="h-5 w-5" />
         </button>
 
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 pr-8">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-dark-t1 mb-3 pr-8">
           {isCreating ? 'Adicionar Novo Contato' : 'Editar Contato'}
         </h3>
         <div className="h-px w-full bg-dark-shadow/40 dark:bg-dark-dark-shadow/40 mb-4" />
@@ -208,7 +208,7 @@ export default function ContactForm({ contact, companyId, tenantId, onSaved, onC
             className="flex items-center justify-between rounded-lg px-3 py-2 neumorphic-convex cursor-pointer"
             title="Ativar/Desativar contato"
           >
-            <span className="text-sm text-gray-700 dark:text-gray-300">Status Ativo</span>
+            <span className="text-sm text-gray-700 dark:text-dark-t1">Status Ativo</span>
             <Switch
               id={`switch-status-${contact?.id ?? 'new'}`}
               checked={isActive}
@@ -242,7 +242,7 @@ export default function ContactForm({ contact, companyId, tenantId, onSaved, onC
               Cancelar
             </Button>
           )}
-          <span className="ml-auto text-xs text-gray-500 dark:text-gray-400">
+          <span className="ml-auto text-xs text-gray-500 dark:text-dark-t2">
             Enter salva · Esc cancela
           </span>
         </div>

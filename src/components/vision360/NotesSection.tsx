@@ -137,10 +137,28 @@ const NotesSection: React.FC<Props> = ({ companyId, notes = [], onNotesChange })
             <p className="text-sm text-gray-600 dark:text-gray-300">
               Registre fatos e decisões. O assunto pode ser recalculado automaticamente.
             </p>
-            <Button type="button" variant="primary" onClick={() => setIsAddOpen(true)}>
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Adicionar nota
-            </Button>
+            <button
+              onClick={() => setIsAddOpen(true)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backgroundColor: '#3b68f5',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '7px 15px',
+                fontSize: '13px',
+                fontWeight: '400',
+                cursor: 'pointer',
+                opacity: 1,
+              }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
+            >
+              <PlusCircle size={16} color="#ffffff" />
+              <span>Adicionar nota</span>
+            </button>
           </div>
 
           <div className="rounded-xl p-4 neumorphic-convex">

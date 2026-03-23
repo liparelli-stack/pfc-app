@@ -117,19 +117,19 @@ const NotasPorEmpresa: React.FC = () => {
               key={company.id}
               className="bg-white dark:bg-zinc-900/50 shadow-md rounded-lg p-6"
             >
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-dark-t1 mb-4">
                 {company.trade_name}
               </h3>
               <div className="space-y-4">
                 {(company.notes ?? []).map((note: any, index: number) => (
                   <div
                     key={`${company.id}-${index}`}
-                    className="border-t border-gray-200 dark:border-gray-700 pt-4"
+                    className="border-t border-gray-200 dark:border-white/10 pt-4"
                   >
-                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                    <p className="text-gray-700 dark:text-dark-t1 whitespace-pre-wrap">
                       {note?.nota}
                     </p>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex justify-between">
+                    <div className="text-xs text-gray-500 dark:text-dark-t2 mt-2 flex justify-between">
                       <span>{note?.assunto || 'Geral'}</span>
                       <span>{formatDate(note?.data)}</span>
                     </div>

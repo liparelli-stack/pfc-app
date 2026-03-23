@@ -40,7 +40,7 @@ type Props = {
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const Highlight: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <mark className="bg-[#fff5a5] dark:bg-[#524a00]/80 text-black dark:text-white rounded px-1 transition-colors">
+  <mark className="bg-[#fff5a5] dark:bg-[#524a00]/80 text-black dark:text-dark-t1 rounded px-1 transition-colors">
     {children}
   </mark>
 );
@@ -230,7 +230,7 @@ const KnowledgeBasePanel: React.FC<Props> = ({
         </div>
       ),
       thead: (p: any) => (
-        <thead className="bg-black/5 dark:bg-white/5">{p.children}</thead>
+        <thead className="bg-black/5 dark:bg-dark-s1/5">{p.children}</thead>
       ),
       tr: (p: any) => (
         <tr className="border-b border-black/10 dark:border-white/10">
@@ -241,12 +241,12 @@ const KnowledgeBasePanel: React.FC<Props> = ({
       td: (p: any) => <td className="p-2 align-top">{p.children}</td>,
       a: (p: any) => <a {...p} className="prose-a:text-primary hover:underline" />,
       pre: (p: any) => (
-        <pre className="rounded-xl p-3 overflow-auto bg-black/90 text-white dark:bg-white/10">
+        <pre className="rounded-xl p-3 overflow-auto bg-black/90 text-white dark:bg-dark-s1/10">
           {p.children}
         </pre>
       ),
       code: (p: any) => (
-        <code className="rounded px-1 py-0.5 bg-black/5 dark:bg-white/10">
+        <code className="rounded px-1 py-0.5 bg-black/5 dark:bg-dark-s1/10">
           {p.children}
         </code>
       ),
@@ -334,8 +334,8 @@ const KnowledgeBasePanel: React.FC<Props> = ({
       : 'Base de Conhecimento';
 
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-4 sm:p-8 neumorphic-convex">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-4 sm:p-8 neumorphic-convex">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1 mb-6">
         {title}
       </h2>
 

@@ -37,16 +37,16 @@ const PersonRow: React.FC<PersonRowProps> = ({ user, onEdit, onDelete }) => {
     role === 'admin' ? 'Admin' : 'Usuário';
 
   return (
-    <tr className="border-b border-gray-200/60 dark:border-gray-700/60 hover:bg-black/5 dark:hover:bg-white/5">
-      <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-100">
+    <tr className="border-b border-gray-200/60 dark:border-white/10/60 hover:bg-black/5 dark:hover:bg-white/5">
+      <td className="py-3 px-4 font-medium text-gray-800 dark:text-dark-t1">
         {user.full_name}
       </td>
-      <td className="py-3 px-4 text-gray-600 dark:text-gray-300">
+      <td className="py-3 px-4 text-gray-600 dark:text-dark-t1">
         {user.email}
       </td>
 
       {/* PERFIL (ajustado) */}
-      <td className="py-3 px-4 text-gray-600 dark:text-gray-300 capitalize">
+      <td className="py-3 px-4 text-gray-600 dark:text-dark-t1 capitalize">
         {getRoleLabel(user.role)}
       </td>
 
@@ -57,7 +57,7 @@ const PersonRow: React.FC<PersonRowProps> = ({ user, onEdit, onDelete }) => {
             'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ' +
             (user.mfa_enabled
               ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200'
-              : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300')
+              : 'bg-gray-100 text-gray-600 dark:bg-dark-s2 dark:text-dark-t1')
           }
         >
           {user.mfa_enabled ? 'Ativo' : 'Desativado'}
@@ -71,7 +71,7 @@ const PersonRow: React.FC<PersonRowProps> = ({ user, onEdit, onDelete }) => {
             'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ' +
             (user.kb_can_edit
               ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200'
-              : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300')
+              : 'bg-gray-100 text-gray-600 dark:bg-dark-s2 dark:text-dark-t1')
           }
         >
           {user.kb_can_edit ? 'Pode editar' : 'Somente leitura'}

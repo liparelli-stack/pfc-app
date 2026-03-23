@@ -79,7 +79,7 @@ export const ProfileSelector = ({ profiles, onSelect, selectedProfile }: Profile
             }
           }}
           onFocus={() => setIsOpen(true)}
-          className="w-full pl-11 pr-10 py-2.5 rounded-lg bg-plate dark:bg-plate-dark neumorphic-concave focus:bg-white dark:focus:bg-gray-700 transition-colors duration-200 outline-none"
+          className="w-full pl-11 pr-10 py-2.5 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave focus:bg-white dark:focus:bg-gray-700 transition-colors duration-200 outline-none"
         />
         {searchTerm && (
           <button onClick={clearSelection} className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -89,7 +89,7 @@ export const ProfileSelector = ({ profiles, onSelect, selectedProfile }: Profile
       </div>
 
       {isOpen && (
-        <div className="absolute mt-2 w-full bg-plate dark:bg-plate-dark rounded-lg neumorphic-convex p-2 z-10 max-h-60 overflow-y-auto">
+        <div className="absolute mt-2 w-full bg-plate dark:bg-dark-s1 rounded-lg neumorphic-convex p-2 z-10 max-h-60 overflow-y-auto">
           {filteredProfiles.length > 0 ? (
             filteredProfiles.map(profile => (
               <div
@@ -103,7 +103,7 @@ export const ProfileSelector = ({ profiles, onSelect, selectedProfile }: Profile
                 <Avatar src={profile.avatar_url} name={profile.full_name} className="w-10 h-10 mr-3" />
                 <div>
                   <p className="font-semibold">{profile.full_name}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{profile.email}</p>
+                  <p className="text-sm text-gray-500 dark:text-dark-t2">{profile.email}</p>
                 </div>
               </div>
             ))

@@ -100,7 +100,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
             exit={{ opacity: 0, y: -10, scale: 0.95, transition: { duration: 0.2 } }}
             className="mb-3"
           >
-            <div className="pointer-events-auto flex items-center p-4 rounded-lg neumorphic-convex dark:neumorphic-convex-dark bg-plate dark:bg-plate-dark shadow-lg">
+            <div className="pointer-events-auto flex items-center p-4 rounded-lg neumorphic-convex dark:neumorphic-convex-dark bg-plate dark:bg-dark-s1 shadow-lg">
               <div className="mr-3">{toastIcons[toast.type]}</div>
               <p className="font-semibold">{toast.message}</p>
               <button
@@ -134,7 +134,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
             exit={{ opacity: 0, y: -6, scale: 0.98, transition: { duration: 0.2 } }}
             className="mb-2"
           >
-            <div className="pointer-events-auto flex items-center p-3 rounded-lg neumorphic-convex dark:neumorphic-convex-dark bg-plate dark:bg-plate-dark shadow-md">
+            <div className="pointer-events-auto flex items-center p-3 rounded-lg neumorphic-convex dark:neumorphic-convex-dark bg-plate dark:bg-dark-s1 shadow-md">
               <div className="mr-2">{toastIcons[toast.type]}</div>
               <p className="font-semibold text-sm">{toast.message}</p>
               <button

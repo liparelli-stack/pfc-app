@@ -82,7 +82,7 @@ const CompanyDayBlock = ({ snapshot }: CompanyDayBlockProps) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="bg-plate dark:bg-plate-dark mb-4 p-4 rounded-2xl neumorphic-convex transition-all duration-200">
+    <div className="bg-plate dark:bg-dark-s1 mb-4 p-4 rounded-2xl neumorphic-convex transition-all duration-200">
       <div
         className="flex justify-between items-center cursor-pointer"
         onClick={() => setExpanded(!expanded)}
@@ -98,7 +98,7 @@ const CompanyDayBlock = ({ snapshot }: CompanyDayBlockProps) => {
       </div>
 
       {expanded && (
-        <div className="mt-3 border-t border-gray-300 dark:border-gray-700 pt-3 space-y-3">
+        <div className="mt-3 border-t border-gray-300 dark:border-white/10 pt-3 space-y-3">
           {/* Contatos (até 2) */}
           {snapshot.contacts.slice(0, 2).map((ct) => (
             <p key={ct.id} className="text-sm">
@@ -108,7 +108,7 @@ const CompanyDayBlock = ({ snapshot }: CompanyDayBlockProps) => {
 
           {/* Chats (até 3) com badges vivas */}
           {snapshot.chats.slice(0, 3).map((ch) => (
-            <div key={ch.id} className="text-sm text-gray-700 dark:text-gray-300">
+            <div key={ch.id} className="text-sm text-gray-700 dark:text-dark-t1">
               💬 {getTempIcon(ch.temperature)} <strong>{ch.subject}</strong>
               {ch.priority && <VividTag>{ch.priority}</VividTag>}
               {ch.kind && <VividTag>{ch.kind}</VividTag>}

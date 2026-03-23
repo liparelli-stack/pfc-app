@@ -136,7 +136,7 @@ const TagForm: React.FC<TagFormProps> = ({ isOpen, onClose, onSave, initialData 
           )}
         />
         <div>
-          <label htmlFor="color-picker" className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">Cor</label>
+          <label htmlFor="color-picker" className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1">Cor</label>
           <Controller
             name="color"
             control={control}
@@ -146,16 +146,16 @@ const TagForm: React.FC<TagFormProps> = ({ isOpen, onClose, onSave, initialData 
                 type="color"
                 {...field}
                 value={field.value || '#4A90E2'}
-                className="w-full h-10 p-1 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
+                className="w-full h-10 p-1 rounded-lg border border-gray-300 dark:border-white/10 cursor-pointer"
               />
             )}
           />
           {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color.message}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">Status</label>
+          <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-dark-t1">Status</label>
           <div className="flex items-center justify-between rounded-lg p-3 neumorphic-convex">
-            <span className="font-medium text-sm text-gray-600 dark:text-gray-300">Ativa</span>
+            <span className="font-medium text-sm text-gray-600 dark:text-dark-t1">Ativa</span>
             <Controller
               name="is_active"
               control={control}

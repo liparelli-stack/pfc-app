@@ -12,7 +12,7 @@ import { Skeleton } from '../ui/Skeleton';
 
 export const TenantFormSkeleton = () => {
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-8 neumorphic-convex">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-8 neumorphic-convex">
       <Skeleton className="h-8 w-1/3 mb-6" />
 
       <div className="space-y-6">

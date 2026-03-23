@@ -47,7 +47,7 @@ const MiniBar: React.FC<Props> = ({
         })}
       </svg>
       {showLabels && (
-        <div className="grid grid-cols-2 gap-1 mt-1 text-[10px] text-gray-500 dark:text-gray-400">
+        <div className="grid grid-cols-2 gap-1 mt-1 text-[10px] text-gray-500 dark:text-dark-t2">
           {top.map((it) => (
             <div key={it.key} className="truncate">{`${it.key} · ${it.value}`}</div>
           ))}

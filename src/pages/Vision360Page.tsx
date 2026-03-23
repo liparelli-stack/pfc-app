@@ -75,7 +75,7 @@ const Vision360Page: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Visão 360 do Cliente</h1>
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-dark-t1">Visão 360 do Cliente</h1>
 
       {/* Filtro de Cliente */}
       <section className="neumorphic-convex rounded-2xl p-4 sm:p-6">
@@ -92,7 +92,7 @@ const Vision360Page: React.FC = () => {
             className="pl-12"
           />
           {showSuggestions && (
-            <div className="absolute z-10 w-full mt-1 bg-plate dark:bg-plate-dark rounded-lg neumorphic-convex shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-1 bg-plate dark:bg-dark-s1 rounded-lg neumorphic-convex shadow-lg max-h-60 overflow-y-auto">
               {suggestions.map((company) => (
                 <div
                   key={company.id}
@@ -137,7 +137,7 @@ const Vision360Page: React.FC = () => {
       )}
 
       {!customerDetails && !isLoading && (
-        <div className="flex items-center justify-center h-64 rounded-2xl neumorphic-convex bg-plate dark:bg-plate-dark">
+        <div className="flex items-center justify-center h-64 rounded-2xl neumorphic-convex bg-plate dark:bg-dark-s1">
           <p className="text-gray-500">Selecione um cliente para ver os detalhes.</p>
         </div>
       )}

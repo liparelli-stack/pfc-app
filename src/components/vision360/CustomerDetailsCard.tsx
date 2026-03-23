@@ -34,7 +34,7 @@ const InfoItem: React.FC<{ icon: React.ElementType; label?: string; value?: stri
     <span className="inline-flex items-center gap-2">
       <Icon className="h-4 w-4 text-gray-500 flex-shrink-0" />
       {label && <span className="font-medium">{label}:</span>}
-      <span className="text-gray-700 dark:text-gray-300">{value}</span>
+      <span className="text-gray-700 dark:text-dark-t1">{value}</span>
     </span>
   );
   if (href) {
@@ -50,8 +50,8 @@ const ContactCard: React.FC<{ contact: Contact }> = ({ contact }) => {
     <div className="neumorphic-convex rounded-xl p-4">
       <div className="flex justify-between items-start">
         <div>
-          <p className="font-bold text-lg text-gray-800 dark:text-white">{contact.full_name}</p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{contact.position || 'Cargo não informado'}</p>
+          <p className="font-bold text-lg text-gray-800 dark:text-dark-t1">{contact.full_name}</p>
+          <p className="text-sm text-gray-600 dark:text-dark-t2">{contact.position || 'Cargo não informado'}</p>
           {contact.department && <p className="text-xs text-gray-500">{contact.department}</p>}
         </div>
         <div className="flex items-center gap-2">
@@ -92,14 +92,14 @@ const CustomerDetailsCard: React.FC<{ details: CustomerDetails }> = ({ details }
     null;
 
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex space-y-6">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex space-y-6">
       {/* Dados da Empresa */}
       <section>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
           <div className="flex items-center gap-3">
             <Building className="h-7 w-7 text-primary" />
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{company.trade_name}</h2>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1">{company.trade_name}</h2>
               {company.legal_name && <p className="text-sm text-gray-500">{company.legal_name}</p>}
             </div>
           </div>
@@ -110,7 +110,7 @@ const CustomerDetailsCard: React.FC<{ details: CustomerDetails }> = ({ details }
                   key={i}
                   className={clsx(
                     'h-5 w-5',
-                    i < company.qualification! ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-gray-600'
+                    i < company.qualification! ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-dark-t3'
                   )}
                 />
               ))}
@@ -136,7 +136,7 @@ const CustomerDetailsCard: React.FC<{ details: CustomerDetails }> = ({ details }
 
       {/* Contatos */}
       <section>
-        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Contatos</h3>
+        <h3 className="text-xl font-bold text-gray-800 dark:text-dark-t1 mb-4">Contatos</h3>
         {contacts && contacts.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {contacts.map(contact => (

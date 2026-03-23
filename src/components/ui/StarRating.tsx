@@ -43,7 +43,7 @@ export const StarRating = ({ count = 5, value, onChange, className }: StarRating
                 'h-6 w-6 transition-colors',
                 starValue <= (hoverRating || rating)
                   ? 'text-yellow-400 fill-yellow-400'
-                  : 'text-gray-300 dark:text-gray-600'
+                  : 'text-gray-300 dark:text-dark-t3'
               )}
             />
           </button>

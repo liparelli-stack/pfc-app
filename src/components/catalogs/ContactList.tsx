@@ -138,8 +138,8 @@ const ContactList: React.FC<ContactListProps> = ({
 
   if (!contacts || contacts.length === 0) {
     return (
-      <div className="w-full bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex flex items-center justify-center">
-        <p className="text-gray-500 dark:text-gray-400">Nenhum contato cadastrado para esta empresa.</p>
+      <div className="w-full bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex flex items-center justify-center">
+        <p className="text-gray-500 dark:text-dark-t2">Nenhum contato cadastrado para esta empresa.</p>
       </div>
     );
   }
@@ -147,7 +147,7 @@ const ContactList: React.FC<ContactListProps> = ({
   return (
     <>
       {isRefreshing && (
-        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 pl-1">Atualizando…</div>
+        <div className="text-xs text-gray-500 dark:text-dark-t2 mb-2 pl-1">Atualizando…</div>
       )}
 
       <div className="space-y-4">

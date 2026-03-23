@@ -189,7 +189,7 @@ const InsightsStrip: React.FC<Props> = ({ companyId = null, className }) => {
     <section className={className}>
       {/* Header: título + filtro + ÍCONE de IA ao lado do período */}
       <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-t1">
           Insights Rápidos - Ações e Orçamentos
         </h2>
 
@@ -232,7 +232,7 @@ const InsightsStrip: React.FC<Props> = ({ companyId = null, className }) => {
 
       {/* Card principal de KPIs */}
       {showEmpty ? (
-        <div className="neumorphic-convex flex h-40 items-center justify-center rounded-2xl bg-plate text-gray-500 dark:bg-plate-dark">
+        <div className="neumorphic-convex flex h-40 items-center justify-center rounded-2xl bg-plate text-gray-500 dark:bg-dark-s1">
           Por enquanto, sem informações suficientes aqui. Número de 'Ações Registradas' deve igual ou maior que 5.
         </div>
       ) : (

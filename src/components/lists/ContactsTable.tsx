@@ -44,7 +44,7 @@ const StatusBadge: React.FC<{ status: string | null | undefined }> = ({ status }
         'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
         isActive
           ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
-          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+          : 'bg-gray-100 text-gray-800 dark:bg-dark-s2 dark:text-dark-t1'
       )}
     >
       {isActive ? 'Ativo' : 'Inativo'}
@@ -110,7 +110,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({ contacts, loading, sortCo
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200/60 dark:border-gray-700/60">
+          <tr className="text-left text-gray-500 dark:text-dark-t2 border-b border-gray-200/60 dark:border-white/10/60">
             <SortableHeader label="Contato" sortKey="full_name" currentSort={sortBy} currentOrder={sortOrder} onSort={onSort} />
             <SortableHeader label="Empresa" sortKey="company.trade_name" currentSort={sortBy} currentOrder={sortOrder} onSort={onSort} />
             <th className="py-2 px-3 font-semibold">Canais</th>
@@ -123,8 +123,8 @@ const ContactsTable: React.FC<ContactsTableProps> = ({ contacts, loading, sortCo
         </thead>
         <tbody>
           {contacts.map(contact => (
-            <tr key={contact.id} className="border-b border-gray-200/60 dark:border-gray-700/60 hover:bg-black/5 dark:hover:bg-white/5">
-              <td className="py-3 px-3 align-top font-medium text-gray-900 dark:text-gray-100">{contact.full_name}</td>
+            <tr key={contact.id} className="border-b border-gray-200/60 dark:border-white/10/60 hover:bg-black/5 dark:hover:bg-white/5">
+              <td className="py-3 px-3 align-top font-medium text-gray-900 dark:text-dark-t1">{contact.full_name}</td>
               <td className="py-3 px-3 align-top">{contact.company?.trade_name || 'N/A'}</td>
               <td className="py-3 px-3 align-top">
                 <div className="flex flex-col gap-2">
@@ -144,7 +144,7 @@ const ContactsTable: React.FC<ContactsTableProps> = ({ contacts, loading, sortCo
               <td className="py-3 px-3 align-top"><StatusBadge status={contact.status} /></td>
               <td className="py-3 px-3 align-top">{contact.department || '—'}</td>
               <td className="py-3 px-3 align-top">{formatBirthday(contact.birth_day_month)}</td>
-              <td className="py-3 px-3 align-top text-gray-600 dark:text-gray-400 max-w-xs truncate" title={contact.notes || ''}>{contact.notes || '—'}</td>
+              <td className="py-3 px-3 align-top text-gray-600 dark:text-dark-t2 max-w-xs truncate" title={contact.notes || ''}>{contact.notes || '—'}</td>
             </tr>
           ))}
         </tbody>

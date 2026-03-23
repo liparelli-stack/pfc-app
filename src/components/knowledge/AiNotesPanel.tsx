@@ -46,7 +46,7 @@ const AiNotesPanel: React.FC = () => {
   };
 
   return (
-    <div className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex h-full">
+    <div className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex h-full">
       {/* Header do painel */}
       <header className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">

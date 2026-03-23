@@ -90,7 +90,7 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
   const fullAddress = [address_line, city, state, zip_code].filter(Boolean).join(', ');
 
   return (
-    <section className="bg-plate dark:bg-plate-dark rounded-2xl p-6 neumorphic-convex">
+    <section className="bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex">
       {/* ======================= */}
       {/* Cabeçalho Empresa */}
       {/* ======================= */}
@@ -99,7 +99,7 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div className="flex items-center min-w-0">
             <Building className="h-6 w-6 mr-3 text-primary flex-shrink-0" />
-            <h3 className="text-2xl font-bold text-gray-800 dark:text-white truncate" title={trade_name}>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-dark-t1 truncate" title={trade_name}>
               {trade_name}
             </h3>
             {website && (
@@ -121,7 +121,7 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={clsx('h-5 w-5', i < qualification ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-gray-600')}
+                  className={clsx('h-5 w-5', i < qualification ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-dark-t3')}
                 />
               ))}
             </div>
@@ -129,10 +129,10 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
         </div>
 
         {/* Linha 1.1: Razão social */}
-        {legal_name && <p className="text-gray-500 dark:text-gray-400">{legal_name}</p>}
+        {legal_name && <p className="text-gray-500 dark:text-dark-t2">{legal_name}</p>}
 
         {/* Linha 2: Telefone + Email */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-800 dark:text-gray-200">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-800 dark:text-dark-t1">
           {phone && (
             <span className="inline-flex items-center">
               <Phone className="h-4 w-4 mr-1.5" />
@@ -148,7 +148,7 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
         </div>
 
         {/* Linha 3: Endereço + CNPJ */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700 dark:text-gray-300">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700 dark:text-dark-t1">
           {fullAddress && (
             <span className="inline-flex items-center">
               <MapPin className="h-4 w-4 mr-1.5" />
@@ -168,13 +168,13 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
       {/* Tabela Contatos (layout mantido) */}
       {/* ======================= */}
       <div className="rounded-xl p-4 neumorphic-convex">
-        <h4 className="text-lg font-bold mb-3 text-gray-800 dark:text-white">Contatos</h4>
+        <h4 className="text-lg font-bold mb-3 text-gray-800 dark:text-dark-t1">Contatos</h4>
 
         {contacts && contacts.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200/60 dark:border-gray-700/60">
+                <tr className="text-left text-gray-500 dark:text-dark-t2 border-b border-gray-200/60 dark:border-white/10/60">
                   <th className="py-2 pr-3 font-semibold">Nome</th>
                   <th className="py-2 px-3 font-semibold">Cargo</th>
                   <th className="py-2 px-3 font-semibold">Departamento</th>
@@ -194,16 +194,16 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
                   return (
                     <tr
                       key={c.id}
-                      className="border-b border-gray-200/60 dark:border-gray-700/60 hover:bg-black/5 dark:hover:bg:white/5 transition-colors"
+                      className="border-b border-gray-200/60 dark:border-white/10/60 hover:bg-black/5 dark:hover:bg:white/5 transition-colors"
                     >
                       <td className="py-2 pr-3">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">{name || '—'}</div>
+                        <div className="font-medium text-gray-900 dark:text-dark-t1">{name || '—'}</div>
                       </td>
                       <td className="py-2 px-3">
-                        <div className="text-gray-700 dark:text-gray-300">{position}</div>
+                        <div className="text-gray-700 dark:text-dark-t1">{position}</div>
                       </td>
                       <td className="py-2 px-3">
-                        <div className="text-gray-700 dark:text-gray-300">{department}</div>
+                        <div className="text-gray-700 dark:text-dark-t1">{department}</div>
                       </td>
 
                       <td className="py-2 px-3">
@@ -245,7 +245,7 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
             </table>
           </div>
         ) : (
-          <div className="text-center text-gray-500 dark:text-gray-400 py-6">
+          <div className="text-center text-gray-500 dark:text-dark-t2 py-6">
             Nenhum contato cadastrado para esta empresa.
           </div>
         )}

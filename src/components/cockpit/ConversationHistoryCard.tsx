@@ -730,9 +730,9 @@ const ConversationHistoryCard: React.FC<Props> = ({
         </tr>
 
         {showDetails && (
-          <tr className="dark:bg-dark-s2" style={{ backgroundColor: '#fffdf9' }}>
+          <tr className="bg-light-s2 dark:bg-dark-s2">
             <td colSpan={COLSPAN} className="p-4">
-              <div className="p-4" style={{ background: '#ffffff', border: '0.5px solid rgba(59,42,20,0.10)', borderTop: '0.5px solid rgba(59,42,20,0.16)', borderRadius: '8px', boxShadow: '0 1px 3px rgba(59,42,20,0.06), 0 4px 12px rgba(59,42,20,0.04)' }}>
+              <div className="p-4 bg-white dark:bg-dark-s2 border border-light-bmd dark:border-dark-bmd rounded-[8px]">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                   <div className="md:col-span-2">
                     <strong className="block text-[#3b2e1a] dark:text-dark-t1 mb-1">
@@ -768,7 +768,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                 if (!visibleBudgets.length) return null;
 
                 return (
-                  <div className="mt-4 p-4" style={{ background: '#ffffff', border: '0.5px solid rgba(59,42,20,0.10)', borderTop: '0.5px solid rgba(59,42,20,0.16)', borderRadius: '8px', boxShadow: '0 1px 3px rgba(59,42,20,0.06), 0 4px 12px rgba(59,42,20,0.04)' }}>
+                  <div className="mt-4 p-4 bg-white dark:bg-dark-s2 border border-light-bmd dark:border-dark-bmd rounded-[8px]">
                     <div className="mb-3 font-semibold text-[#3b2e1a] dark:text-dark-t1">
                       Orçamentos ({visibleBudgets.length})
                     </div>
@@ -845,7 +845,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
   };
 
   return (
-    <section className="p-4" style={{ background: '#fffdf9', backgroundColor: '#fffdf9', border: '0.5px solid rgba(59,42,20,0.10)', borderTop: '0.5px solid rgba(59,42,20,0.16)', borderRadius: '12px', boxShadow: '0 1px 3px rgba(59,42,20,0.08), 0 4px 16px rgba(59,42,20,0.06)' }}>
+    <section className="p-4 bg-white dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-xl">
       {/* Estilo scoped: opções do select nativo não aceitam classes Tailwind */}
       <style>{`
         .dark .chc-status-filter option {
@@ -963,10 +963,9 @@ const ConversationHistoryCard: React.FC<Props> = ({
             "!px-0 !py-0",
             "h-9 w-9 flex items-center justify-center",
             "rounded-full border border-dark-shadow/60 dark:border-dark-dark-shadow/60",
-            "bg-[#fffdf9] dark:bg-dark-s1 shadow-sm",
-            "hover:bg-[#f0e8d8] dark:hover:bg-dark-s2 transition-colors"
+            "bg-white dark:bg-dark-s1 shadow-sm",
+            "hover:bg-light-s1 dark:hover:bg-dark-s2 transition-colors"
           )}
-          style={{ backgroundColor: '#fffdf9' }}
         >
           <Eraser className="h-4 w-4 text-[#9a7d5a] dark:text-dark-t1" />
         </Button>
@@ -975,12 +974,6 @@ const ConversationHistoryCard: React.FC<Props> = ({
         <div className="flex-1 min-w-[150px]">
           <input
             className="h-9 px-3 w-full text-sm outline-none"
-            style={{
-              backgroundColor: '#fffdf9',
-              border: '0.5px solid rgba(59,42,20,0.15)',
-              borderRadius: '8px',
-              color: '#3b2e1a',
-            }}
             placeholder="Buscar (assunto/corpo)…"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -1018,10 +1011,10 @@ const ConversationHistoryCard: React.FC<Props> = ({
       {isLoading ? (
         <Skeleton className="w-full h-24" />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-dark-shadow/40 dark:border-dark-dark-shadow/40" style={{ backgroundColor: '#fffdf9' }}>
-          <table className="w-full text-sm" style={{ backgroundColor: '#fffdf9' }}>
+        <div className="overflow-x-auto rounded-xl border border-dark-shadow/40 dark:border-dark-dark-shadow/40 bg-white dark:bg-dark-s1">
+          <table className="w-full text-sm">
             <thead>
-              <tr className="text-left bg-[#f0e8d8] dark:bg-dark-s2" style={{ backgroundColor: '#f0e8d8' }}>
+              <tr className="text-left bg-light-s1 dark:bg-dark-s2">
                 {[
                   { key: "updated_at", label: "Atualizado" },
                   { key: "calendar_at", label: "Agendamento" },

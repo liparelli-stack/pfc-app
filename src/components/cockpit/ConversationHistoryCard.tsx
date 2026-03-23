@@ -882,18 +882,12 @@ const ConversationHistoryCard: React.FC<Props> = ({
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
-              className="flex-1 px-3 py-1.5 text-sm font-medium transition-colors text-center cursor-pointer"
-              style={tab === t.key ? {
-                backgroundColor: '#3b68f5',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-              } : {
-                backgroundColor: 'transparent',
-                border: '0.5px solid rgba(59,42,20,0.15)',
-                color: '#9a7d5a',
-                borderRadius: '8px',
-              }}
+              className={clsx(
+                "flex-1 px-3 py-1.5 text-sm font-medium transition-colors text-center cursor-pointer rounded-[8px]",
+                tab === t.key
+                  ? "bg-[#3b68f5] text-white border-none"
+                  : "bg-transparent border border-light-bmd text-[#9a7d5a]"
+              )}
               aria-pressed={tab === t.key}
             >
               {t.label}
@@ -911,18 +905,12 @@ const ConversationHistoryCard: React.FC<Props> = ({
           <button
             type="button"
             title="Detalhada"
-            className="px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer"
-            style={viewMode === "detailed" ? {
-              backgroundColor: '#3b68f5',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-            } : {
-              backgroundColor: 'transparent',
-              border: '0.5px solid rgba(59,42,20,0.15)',
-              color: '#9a7d5a',
-              borderRadius: '8px',
-            }}
+            className={clsx(
+              "px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer rounded-[8px]",
+              viewMode === "detailed"
+                ? "bg-[#3b68f5] text-white border-none"
+                : "bg-transparent border border-light-bmd text-[#9a7d5a]"
+            )}
             onClick={() => setViewMode("detailed")}
             aria-pressed={viewMode === "detailed"}
           >
@@ -931,18 +919,12 @@ const ConversationHistoryCard: React.FC<Props> = ({
           <button
             type="button"
             title="Compacta"
-            className="px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer"
-            style={viewMode === "compact" ? {
-              backgroundColor: '#3b68f5',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-            } : {
-              backgroundColor: 'transparent',
-              border: '0.5px solid rgba(59,42,20,0.15)',
-              color: '#9a7d5a',
-              borderRadius: '8px',
-            }}
+            className={clsx(
+              "px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer rounded-[8px]",
+              viewMode === "compact"
+                ? "bg-[#3b68f5] text-white border-none"
+                : "bg-transparent border border-light-bmd text-[#9a7d5a]"
+            )}
             onClick={() => setViewMode("compact")}
             aria-pressed={viewMode === "compact"}
           >
@@ -985,16 +967,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
 
         {/* 5. Status */}
         <select
-          className="chc-status-filter text-sm font-medium cursor-pointer outline-none"
-          style={{
-            backgroundColor: '#3b68f5',
-            color: '#ffffff',
-            borderRadius: '8px',
-            border: 'none',
-            padding: '7px 15px',
-            appearance: 'none',
-            WebkitAppearance: 'none',
-          }}
+          className="chc-status-filter text-sm font-medium cursor-pointer outline-none appearance-none bg-[#3b68f5] text-white rounded-[8px] border-none py-[7px] px-[15px]"
           value={statusFilter}
           onChange={(e) =>
             setStatusFilter(e.target.value as "false" | "true" | "all")
@@ -1094,7 +1067,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
               ) : groupMode === "date" ? (
                 groupRowsByDate(rows).map((g) => (
                   <React.Fragment key={`day-${g.day}`}>
-                    <tr style={{ backgroundColor: '#3b68f5' }}>
+                    <tr className="bg-[#3b68f5]">
                       <td
                         colSpan={COLSPAN}
                         className="px-3 py-1"
@@ -1109,7 +1082,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
               ) : groupMode === "company" ? (
                 groupRowsByCompany(rows).map((c) => (
                   <React.Fragment key={`company-${c.company}`}>
-                    <tr style={{ backgroundColor: '#3b68f5' }}>
+                    <tr className="bg-[#3b68f5]">
                       <td
                         colSpan={COLSPAN}
                         className="px-3 py-1"
@@ -1125,7 +1098,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                 groupRowsByCompany(rows).map((c) => (
                   <React.Fragment key={`company-${c.company}`}>
                     {/* 1º nível: Empresa */}
-                    <tr style={{ backgroundColor: '#3b68f5' }}>
+                    <tr className="bg-[#3b68f5]">
                       <td
                         colSpan={COLSPAN}
                         className="px-3 py-1"
@@ -1139,7 +1112,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                       <React.Fragment
                         key={`company-${c.company}-day-${g.day}`}
                       >
-                        <tr style={{ backgroundColor: '#3b68f5' }}>
+                        <tr className="bg-[#3b68f5]">
                           <td
                             colSpan={COLSPAN}
                             className="px-6 py-1"
@@ -1161,7 +1134,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                 groupRowsByDate(rows).map((g) => (
                   <React.Fragment key={`day-${g.day}`}>
                     {/* 1º nível: Data */}
-                    <tr style={{ backgroundColor: '#3b68f5' }}>
+                    <tr className="bg-[#3b68f5]">
                       <td
                         colSpan={COLSPAN}
                         className="px-3 py-1"
@@ -1175,7 +1148,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                       <React.Fragment
                         key={`day-${g.day}-company-${c.company}`}
                       >
-                        <tr style={{ backgroundColor: '#3b68f5' }}>
+                        <tr className="bg-[#3b68f5]">
                           <td
                             colSpan={COLSPAN}
                             className="px-6 py-1"

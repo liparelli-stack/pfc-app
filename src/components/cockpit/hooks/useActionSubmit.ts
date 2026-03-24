@@ -106,6 +106,7 @@ export function useActionSubmit({
       calendar_at: formData.calendar_at,
       on_time: formData.on_time,
       is_done: formData.is_done,
+      done_at: formData.is_done ? new Date().toISOString() : null,
       kind: triple.kind,
       direction: triple.direction,
       channel_type: triple.channel_type,

@@ -81,10 +81,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import HierarchicalActionSelect from "@/components/ui/HierarchicalActionSelect";
-import BudgetSection, {
-  BudgetDraft as UIBudgetDraft,
-  BudgetItem as UIBudgetItem,
-} from "./BudgetSection";
+import BudgetSection from "./BudgetSection";
+import { useBudgetManager } from "@/components/cockpit/hooks/useBudgetManager";
 
 import {
   ActionFormData,
@@ -249,12 +247,21 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     if (!nextOpen) reset(defaults);
   }, [defaults, nextOpen, reset]);
 
-  const [budgetItems, setBudgetItems] = useState<UIBudgetItem[]>(() => {
-    const raw = (editingChat?.budgets as UIBudgetItem[] | null) ?? [];
-    // 3.8.2: orçamentos com status "terminado" não são exibidos/editados no formulário
-    return raw.filter((b) => b && (b as any).status !== "terminado");
+  // --------------------- Orçamentos ---------------------
+  const {
+    budgetItems,
+    budgetDraft,
+    setBudgetDraft,
+    openCreateDraft,
+    openEditDraft,
+    cancelDraft,
+    submitDraft,
+  } = useBudgetManager({
+    isEditing,
+    chatId: editingChat?.id,
+    initialBudgets: editingChat?.budgets as any,
+    addToast,
   });
-  const [budgetDraft, setBudgetDraft] = useState<UIBudgetDraft | null>(null);
 
   // --------------------- Tags (Etiquetas) ---------------------
   const {
@@ -282,141 +289,6 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     editingChatId: editingChat?.id,
     editingChatTags: (editingChat as any)?.tags,
   });
-
-  const openCreateDraft = () => {
-    setBudgetDraft({
-      description: isEditing ? editingChat?.subject ?? "" : watchedSubject ?? "",
-      amount: "",
-      status: "aberta", // default = Em espera
-      loss_reason: null,
-    });
-  };
-
-  const openEditDraft = (item: UIBudgetItem) => {
-    setBudgetDraft({
-      id: item.id,
-      description: item.description,
-      amount: item.amount,
-      status: item.status,
-      loss_reason: item.loss_reason ?? null,
-    });
-  };
-
-  const cancelDraft = () => setBudgetDraft(null);
-
-  const submitDraft = async () => {
-    if (!budgetDraft)
-      return addToast("Descrição do orçamento é obrigatória.", "error");
-    if (
-      budgetDraft.amount === "" ||
-      typeof budgetDraft.amount !== "number" ||
-      !isFinite(budgetDraft.amount) ||
-      budgetDraft.amount <= 0
-    ) {
-      return addToast("Valor do orçamento deve ser maior que zero.", "error");
-    }
-
-    const safeStatus = (budgetDraft.status ?? "aberta") as
-      | "aberta"
-      | "ganha"
-      | "perdida"
-      | "terminado";
-
-    const allowedStatuses: Array<"aberta" | "ganha" | "perdida" | "terminado"> =
-      ["aberta", "ganha", "perdida", "terminado"];
-
-    if (!allowedStatuses.includes(safeStatus)) {
-      return addToast("Status do orçamento inválido.", "error");
-    }
-
-    if (
-      safeStatus === "perdida" &&
-      !(budgetDraft.loss_reason && budgetDraft.loss_reason.trim().length > 0)
-    ) {
-      return addToast("Informe o motivo da perda.", "error");
-    }
-
-    try {
-      if (isEditing && editingChat?.id) {
-        if (budgetDraft.id) {
-          await chatsService.updateBudget(editingChat.id, {
-            id: budgetDraft.id,
-            description: budgetDraft.description,
-            amount: budgetDraft.amount as number,
-            status: safeStatus,
-            loss_reason: budgetDraft.loss_reason ?? null,
-          });
-          setBudgetItems((prev) =>
-            prev
-              .map((it) =>
-                it.id === budgetDraft.id
-                  ? {
-                      ...it,
-                      description: budgetDraft.description,
-                      amount: budgetDraft.amount as number,
-                      status: safeStatus,
-                      loss_reason: budgetDraft.loss_reason ?? null,
-                      updated_at: new Date().toISOString(),
-                    }
-                  : it
-              )
-              // 3.8.2: se virou "terminado", some da UI (deleção fria)
-              .filter((it) => (it as any).status !== "terminado")
-          );
-          addToast("Orçamento atualizado.", "success");
-        } else {
-          await chatsService.appendBudget(editingChat.id, {
-            description: budgetDraft.description,
-            amount: budgetDraft.amount as number,
-            status: safeStatus,
-            loss_reason: budgetDraft.loss_reason ?? null,
-          });
-
-          // 3.8.2: se criado como "terminado", não exibe na UI (apenas auditoria)
-          if (safeStatus !== "terminado") {
-            setBudgetItems((prev) => [
-              ...prev,
-              {
-                description: budgetDraft.description,
-                amount: budgetDraft.amount as number,
-                status: safeStatus,
-                loss_reason: budgetDraft.loss_reason ?? null,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              } as any,
-            ]);
-          }
-          addToast("Orçamento criado.", "success");
-        }
-        setBudgetDraft(null);
-        return;
-      }
-
-      // Novo chat (pendente em memória)
-      const pendingItem: UIBudgetItem & { _pending: boolean } = {
-        description: budgetDraft.description,
-        amount: budgetDraft.amount as number,
-        status: safeStatus,
-        loss_reason: budgetDraft.loss_reason ?? null,
-        _pending: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      } as any;
-
-      // 3.8.2: pendentes "terminado" não são exibidos na UI
-      if (safeStatus !== "terminado") {
-        setBudgetItems((prev) => [...prev, pendingItem]);
-      }
-
-      setBudgetDraft(null);
-      addToast(
-        "Orçamento adicionado (pendente). Será salvo ao registrar a ação.",
-        "info"
-      );
-    } catch (e: any) {
-      addToast(e?.message || "Falha ao salvar orçamento.", "error");
-    }
-  };
 
   /* --------------------- Submit principal (Salvar) --------------------- */
   const onSubmit = async (formData: ActionFormData) => {
@@ -1182,7 +1054,11 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
         <BudgetSection
           items={budgetItems}
           draft={budgetDraft}
-          onCreateRequest={openCreateDraft}
+          onCreateRequest={() =>
+            openCreateDraft(
+              isEditing ? (editingChat?.subject ?? "") : (watchedSubject ?? "")
+            )
+          }
           onEditRequest={openEditDraft}
           onDraftChange={setBudgetDraft}
           onSubmitDraft={submitDraft}

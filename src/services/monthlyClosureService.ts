@@ -100,6 +100,7 @@ function buildMonthData(mes: string, sellers: SellerRow[]): MonthData {
     sellers.reduce((s, r) => s + (Number(r[f]) || 0), 0);
 
   const total_ganha   = sum('total_ganha');
+  const qty_ganha     = sum('qty_ganha');
   const target_amount = sum('target_amount');
   const is_closed     = sellers.length > 0 && sellers.every((s) => s.is_closed);
   const closed_at     = is_closed ? (sellers[0].closed_at ?? null) : null;

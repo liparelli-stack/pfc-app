@@ -1,87 +1,18 @@
-/*
--- ===================================================
--- Código             : /src/components/cockpit/EditActionForm.tsx
--- Versão (.v20)      : 3.11.1
--- Data/Hora          : 2025-12-18 00:00 America/Sao_Paulo
--- Autor              : FL / Execução via você EVA
--- Objetivo do codigo : Formulário "Registrar Ação" (criar/editar) padronizado:
---                      • Temperatura TitleCase: "Neutra" | "Fria" | "Morna" | "Quente"
---                      • Defaults/Select/Submit coerentes (sem alerts)
---                      • Integração com Etiquetas (chats.tags jsonb - slugs string[])
---                      • Tagging por janela não-modal ancorada no botão de etiqueta
---                      • Em edição, recupera nome/cor das tags via public.tags (getTagsBySlugs)
---                      • [3.9.0] Integração com IA: gatilho externo (aiTrigger) monta
---                        payload da ação/conversa e chama analyzeRegisterActionWithAi,
---                        exibindo painel de insights abaixo do campo de descrição.
---                      • [3.10.0] Botão "Colar ✨" no painel da IA que insere bloco
---                        formatado no campo "body" sem apagar o texto existente.
---                      • [3.11.0] Persistência automática (silenciosa) do resultado da IA
---                        em ai_notes logo após analyzeRegisterActionWithAi (sem depender
---                        do botão "Colar ✨" e sem alterar aiNotesService).
---                      • [3.11.1] AI Note grava mensagem COMPLETA (não só summary),
---                        mantendo metadata/fingerprint e sem alterar layout.
--- Fluxo              : UI (EditActionForm)
---                      → chatsService.upsertChat (+ ScheduleActionModal)
---                      → grava também tags: string[] (slugs) em public.chats.tags
---                      → analyzeRegisterActionWithAi (IA) para insights da conversa.
---                      → aiNotesService.createAiNote (auto-save da análise em ai_notes)
--- Alterações (3.6.0) :
---   • [TAG] Mantido modelo normalizado: chats.tags armazena apenas slugs (string[]).
---   • [TAG] Em edição, usa getTagsBySlugs(slugs) para recuperar cor/nome das tags e
---           popular tagEntities, permitindo chips coloridos sem desnormalizar o chat.
--- Alterações (3.6.1) :
---   • [PRIORIDADE] Dropdown de prioridade agora reflete PRIORITY_OPTIONS de @/types/chat
---                  ("Normal" | "Alta"), mantendo default em "Normal".
--- Alterações (3.6.2) :
---   • [LAYOUT] Ajuste fino de layout (Etiquetas, Data/Hora/Temperatura/Prioridade,
---              rodapé com "+ Próxima ação" / Cancelar / Salvar).
--- Alterações (3.8.0) :
---   • [BUDGET] Suportado novo status interno "terminado" (Encerrado) para orçamentos.
---   • [BUDGET] Orçamentos com status "terminado" deixam de ser carregados/exibidos/
---              editados no formulário (deleção fria na UI, preservando JSON para auditoria).
--- Alterações (3.8.2) :
---   • [LAYOUT] Restauração do layout completo após o campo "Descreva a Ação ou Conversa"
---              com base na 3.6.2 (Etiquetas, Data/Hora/Temperatura/Prioridade e rodapé).
---   • [BUDGET] Filtro explícito para não exibir orçamentos com status "terminado" e
---              tratamento seguro em criação/edição, mantendo o JSON de auditoria.
--- Alterações (3.8.3) :
---   • [UX] Padronização do botão principal do formulário:
---          - Texto fixo "Salvar ação".
---          - Tooltip dinâmico: "Registrar nova ação" (criação) e "Editar ação existente" (edição).
--- Alterações (3.9.0) :
---   • [IA] Novo prop opcional aiTrigger (número incremental) vindo do RegisterActionCard.
---   • [IA] Ao detectar mudança no aiTrigger, monta RegisterActionPayload a partir do form
---          atual e chama analyzeRegisterActionWithAi (serviço de IA).
---   • [IA] Exibe painel "Sugestões da IA" logo abaixo do campo "Descreva a Ação ou Conversa"
---          com resumo, sentimento, urgência, próximos passos, checklist e etiquetas sugeridas.
--- Alterações (3.10.0) :
---   • [IA] Adicionado botão "Colar ✨" no painel de Sugestões da IA.
---   • [IA] Botão monta bloco formatado e o acrescenta ao campo body via setValue,
---           sempre após duas quebras de linha, sem apagar o texto existente.
--- Alterações (3.11.0) :
---   • [IA→AI NOTES] Após gerar ActionAiAnalysis, grava automaticamente em ai_notes
---                  via aiNotesService (falha silenciosa, sem impactar UI).
--- Alterações (3.11.1) :
---   • [IA→AI NOTES] body da AI Note agora inclui sentimento/urgência + summary +
---                  next_steps + checklist + suggested_tags (mensagem completa).
--- ===================================================
-*/
-
-import React, {
-  useEffect,
-  useMemo,
-} from "react";
-import clsx from "clsx";
+import React, { useEffect, useMemo } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Tag as TagIcon, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
 
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import HierarchicalActionSelect from "@/components/ui/HierarchicalActionSelect";
+import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
+import { TimePickerRHF } from "@/components/ui/TimePicker";
 import BudgetSection from "./BudgetSection";
-import { useBudgetManager } from "@/components/cockpit/hooks/useBudgetManager";
+import ActionTagSelector from "./ActionTagSelector";
+import AiInsightsPanel from "./AiInsightsPanel";
+import ScheduleActionModal from "@/components/cockpit/ScheduleActionModal";
 
 import {
   ActionFormData,
@@ -91,19 +22,14 @@ import {
 } from "@/types/chat";
 import type { CompanyDetails, ContactWithChannels } from "@/types/cockpit";
 
-import ScheduleActionModal from "@/components/cockpit/ScheduleActionModal";
-import { TimePickerRHF } from "@/components/ui/TimePicker";
+import { useBudgetManager } from "@/components/cockpit/hooks/useBudgetManager";
 import { useTagsManager } from "@/components/cockpit/hooks/useTagsManager";
-import type { ActionAiAnalysis } from "@/services/ai/actionsAiService";
 import { useActionAI } from "@/components/cockpit/hooks/useActionAI";
 import { useActionSubmit } from "@/components/cockpit/hooks/useActionSubmit";
 
 import type { Dir } from "@/config/actionConstants";
-import { ACTION_GROUPS, COLOR_PRESETS } from "@/config/actionConstants";
-import { getContrastColor, darkenHex } from "@/utils/colors";
+import { ACTION_GROUPS } from "@/config/actionConstants";
 import { reconstructSelectionId } from "@/utils/actionMappers";
-import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
-import { TagChip } from "@/components/ui/TagChip";
 
 /* --------------------- Tipos locais --------------------- */
 type EditingChat = { id: string } & Partial<ActionFormData> & {
@@ -113,7 +39,7 @@ type EditingChat = { id: string } & Partial<ActionFormData> & {
   contact_name?: string | null;
   deal_id?: string | null;
   budgets?: any[] | null;
-  tags?: string[] | null; // tags já existentes no chat (jsonb → string[] via slug)
+  tags?: string[] | null;
 };
 
 interface EditActionFormProps {
@@ -122,7 +48,6 @@ interface EditActionFormProps {
   onSaved: () => void;
   onCancel: () => void;
   profileId?: string;
-  /** Gatilho externo para disparar análise com IA (incremental) */
   aiTrigger?: number;
 }
 
@@ -140,15 +65,11 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
   const contextCompanyId = companyDetails?.id || editingChat?.company_id || "";
   const contacts: ContactWithChannels[] = companyDetails?.contacts ?? [];
 
+  const normalizePriority = (p: string | null | undefined): string =>
+    PRIORITY_OPTIONS.includes(p as any) ? (p as string) : "Normal";
+
   const getFirstErrorMessage = (errors: any): string => {
-    const order = [
-      "action",
-      "contact_id",
-      "subject",
-      "calendar_at",
-      "on_time",
-      "priority",
-    ];
+    const order = ["action", "contact_id", "subject", "calendar_at", "on_time", "priority"];
     for (const key of order) {
       const err = errors?.[key];
       if (err?.message) return String(err.message);
@@ -158,14 +79,10 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     return withMsg?.message || "Verifique os campos obrigatórios.";
   };
 
-  const normalizePriority = (p: string | null | undefined): string =>
-    PRIORITY_OPTIONS.includes(p as any) ? (p as string) : "Normal";
-
   // Defaults ----------------
   const defaults = useMemo((): ActionFormData => {
     const now = new Date();
     const today = now.toISOString().split("T")[0];
-
     const mm = now.getMinutes();
     const roundedMin = Math.ceil(mm / 15) * 15;
     const d = new Date(now);
@@ -175,18 +92,15 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     } else {
       d.setMinutes(roundedMin);
     }
-    const currentTime = `${String(d.getHours()).padStart(2, "0")}:${String(
-      d.getMinutes()
-    ).padStart(2, "0")}`;
+    const currentTime = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 
-    let dv: ActionFormData;
     if (isEditing && editingChat) {
       const selId = reconstructSelectionId({
         kind: editingChat.kind ?? null,
         direction: (editingChat.direction ?? null) as Dir,
         channel_type: editingChat.channel_type ?? null,
       });
-      dv = {
+      return {
         action: selId,
         contact_id: editingChat.contact_id || "",
         company_id: editingChat.company_id || contextCompanyId,
@@ -200,21 +114,19 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
         on_time: editingChat.on_time || currentTime,
         is_done: (editingChat as any).is_done ?? false,
       };
-    } else {
-      dv = {
-        action: "",
-        contact_id: contacts?.[0]?.id || "",
-        company_id: contextCompanyId,
-        subject: "",
-        body: "",
-        temperature: "Neutra",
-        priority: "Normal",
-        calendar_at: today,
-        on_time: currentTime,
-        is_done: false,
-      };
     }
-    return dv;
+    return {
+      action: "",
+      contact_id: contacts?.[0]?.id || "",
+      company_id: contextCompanyId,
+      subject: "",
+      body: "",
+      temperature: "Neutra",
+      priority: "Normal",
+      calendar_at: today,
+      on_time: currentTime,
+      is_done: false,
+    };
   }, [isEditing, editingChat, contextCompanyId, contacts]);
 
   const { control, handleSubmit, reset, formState, getValues, setValue } =
@@ -228,13 +140,8 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
 
   // --------------------- Orçamentos ---------------------
   const {
-    budgetItems,
-    budgetDraft,
-    setBudgetDraft,
-    openCreateDraft,
-    openEditDraft,
-    cancelDraft,
-    submitDraft,
+    budgetItems, budgetDraft, setBudgetDraft,
+    openCreateDraft, openEditDraft, cancelDraft, submitDraft,
   } = useBudgetManager({
     isEditing,
     chatId: editingChat?.id,
@@ -242,41 +149,23 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     addToast,
   });
 
-  // --------------------- Tags (Etiquetas) ---------------------
+  // --------------------- Tags ---------------------
   const {
-    tags,
-    tagMapBySlug,
-    lowerSelectedTags,
-    isTagPanelOpen,
-    tagSearch,
-    tagSuggestions,
-    tagLoading,
-    tagCreating,
-    tagError,
-    pendingColor,
-    effectivePendingColor,
-    tagButtonRef,
-    tagPanelRef,
-    handleTagAdd,
-    handleTagRemove,
-    handleTagCreate,
-    handleTagSearchKeyDown,
-    setTagSearch,
-    setIsTagPanelOpen,
-    setPendingColor,
+    tags, tagMapBySlug, lowerSelectedTags,
+    isTagPanelOpen, tagSearch, tagSuggestions,
+    tagLoading, tagCreating, tagError,
+    effectivePendingColor, tagButtonRef, tagPanelRef,
+    handleTagAdd, handleTagRemove, handleTagCreate,
+    handleTagSearchKeyDown, setTagSearch, setIsTagPanelOpen, setPendingColor,
   } = useTagsManager({
     editingChatId: editingChat?.id,
     editingChatTags: (editingChat as any)?.tags,
   });
 
-  /* --------------------- Submit / Próxima Ação --------------------- */
+  // --------------------- Submit / Próxima Ação ---------------------
   const {
-    onSubmit,
-    handleOpenNextAction,
-    handleSubmitNext,
-    nextOpen,
-    setNextOpen,
-    nextDefaults,
+    onSubmit, handleOpenNextAction, handleSubmitNext,
+    nextOpen, setNextOpen, nextDefaults,
   } = useActionSubmit({
     isEditing,
     editingChatId: editingChat?.id,
@@ -291,28 +180,12 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     if (!nextOpen) reset(defaults);
   }, [defaults, nextOpen, reset]);
 
-  const onInvalid = (errors: any) => {
-    const msg = getFirstErrorMessage(errors);
-    addToast(msg, "error");
-  };
+  const onInvalid = (errors: any) => addToast(getFirstErrorMessage(errors), "error");
 
-  const shouldShowBudgetSection = watchedAction === "task:null:orcamento";
-
-  // Opções do select: usar exatamente o enum TitleCase
-  const temperatureOptions = useMemo(
-    () => TEMPERATURE_OPTIONS as string[],
-    []
-  );
-
-  /* --------------------- IA --------------------- */
+  // --------------------- IA ---------------------
   const {
-    aiRequested,
-    aiLoading,
-    aiError,
-    aiResult,
-    sentimentToLabel,
-    urgencyToLabel,
-    handlePasteFromAi,
+    aiRequested, aiLoading, aiError, aiResult,
+    sentimentToLabel, urgencyToLabel, handlePasteFromAi,
   } = useActionAI({
     aiTrigger,
     getValues,
@@ -322,6 +195,9 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     tags,
     addToast,
   });
+
+  const temperatureOptions = useMemo(() => TEMPERATURE_OPTIONS as string[], []);
+  const shouldShowBudgetSection = watchedAction === "task:null:orcamento";
 
   return (
     <div className="space-y-4">
@@ -337,10 +213,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
                 error={fieldState.error?.message}
                 groups={ACTION_GROUPS.map((g) => ({
                   group: g.group,
-                  options: g.options.map((o) => ({
-                    id: o.id,
-                    label: o.label,
-                  })),
+                  options: g.options.map((o) => ({ id: o.id, label: o.label })),
                 }))}
                 value={field.value}
                 onChange={field.onChange}
@@ -384,9 +257,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
                   onChange={field.onChange}
                 >
                   {contacts.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.full_name}
-                    </option>
+                    <option key={c.id} value={c.id}>{c.full_name}</option>
                   ))}
                 </select>
               )}
@@ -437,278 +308,40 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
           />
         </div>
 
-        {/* Painel de Sugestões da IA */}
-        {aiRequested && (
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-900/40 px-4 py-3 text-sm space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-semibold text-slate-800 dark:text-slate-100">
-                Sugestões da IA
-              </span>
-              <div className="flex items-center gap-2">
-                {aiLoading && (
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Analisando...
-                  </span>
-                )}
-                {aiError && !aiLoading && (
-                  <span className="text-[11px] text-red-500">{aiError}</span>
-                )}
-                {aiResult && !aiLoading && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="px-2 py-1 text-xs h-7"
-                    onClick={handlePasteFromAi}
-                  >
-                    Colar ✨
-                  </Button>
-                )}
-              </div>
-            </div>
+        {/* Painel IA */}
+        <AiInsightsPanel
+          aiRequested={aiRequested}
+          aiLoading={aiLoading}
+          aiError={aiError}
+          aiResult={aiResult}
+          sentimentToLabel={sentimentToLabel}
+          urgencyToLabel={urgencyToLabel}
+          onPasteFromAi={handlePasteFromAi}
+        />
 
-            {aiResult && !aiLoading && (
-              <div className="space-y-2">
-                {aiResult.summary && (
-                  <p className="text-[13px] text-slate-700 dark:text-slate-200">
-                    {aiResult.summary}
-                  </p>
-                )}
-
-                <div className="flex flex-wrap gap-2 text-[11px] text-slate-600 dark:text-slate-300">
-                  <span className="px-2 py-0.5 rounded-full bg-slate-200/80 dark:bg-slate-800/80">
-                    {sentimentToLabel(aiResult.sentiment)}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-slate-200/80 dark:bg-slate-800/80">
-                    {urgencyToLabel(aiResult.urgency)}
-                  </span>
-                </div>
-
-                {aiResult.next_steps?.length > 0 && (
-                  <div className="mt-1">
-                    <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-200 mb-0.5">
-                      Próximas ações sugeridas
-                    </div>
-                    <ul className="list-disc pl-4 space-y-0.5 text-[12px] text-slate-700 dark:text-slate-200">
-                      {aiResult.next_steps.map((step, idx) => (
-                        <li key={idx}>{step}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {aiResult.checklist?.length > 0 && (
-                  <div className="mt-1">
-                    <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-200 mb-0.5">
-                      Pontos importantes
-                    </div>
-                    <ul className="list-disc pl-4 space-y-0.5 text-[12px] text-slate-700 dark:text-slate-200">
-                      {aiResult.checklist.map((item, idx) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {aiResult.suggested_tags?.length > 0 && (
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {aiResult.suggested_tags.map((t, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center rounded-full border border-slate-300 dark:border-slate-700 px-2 py-0.5 text-[11px] text-slate-600 dark:text-slate-200 bg-slate-100/70 dark:bg-slate-800/70"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Etiquetas: botão etiqueta + chips (e janela de Tagging) */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-1">Etiquetas</label>
-          <div className="flex items-start gap-3">
-            <div
-              ref={tagButtonRef as any}
-              title="Etiqueta"
-              aria-label="Etiqueta"
-              onClick={() => {
-                setIsTagPanelOpen((prev) => !prev);
-                setTagSearch("");
-              }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
-              style={{
-                backgroundColor: '#3b68f5',
-                color: '#ffffff',
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                opacity: 1,
-              }}
-            >
-              <TagIcon className="h-4 w-4" />
-            </div>
-
-            <div className="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-plate dark:bg-dark-s1 neumorphic-concave flex flex-wrap gap-2 items-center">
-              {tags.length === 0 && (
-                <span className="text-xs text-gray-500 dark:text-dark-t2">
-                  Use o botão de etiqueta para pesquisar ou criar novas
-                  etiquetas que resumam o assunto ou contexto da ação.
-                </span>
-              )}
-              {tags.map((slug) => (
-                <TagChip
-                  key={slug}
-                  slug={slug}
-                  tag={tagMapBySlug.get(slug.toLowerCase())}
-                  onRemove={() => handleTagRemove(slug)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {isTagPanelOpen && (
-            <div
-              ref={tagPanelRef}
-              className="absolute z-30 mt-2 w-full max-w-xl rounded-xl bg-slate-900 text-slate-50 shadow-xl border border-slate-700 p-3"
-            >
-              <div className="mb-2 flex items-start justify_between gap-2">
-                <div className="text-[11px] text-slate-300">
-                  <div className="font-semibold mb-0.5">
-                    Etiquetas desta ação
-                  </div>
-                  <div className="text-slate-400">
-                    Busque por nome para reaproveitar etiquetas existentes ou
-                    crie novas com uma cor padrão. Isso ajuda a organizar o
-                    contexto sobre a conversa/tarefa.
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsTagPanelOpen(false)}
-                  className="ml-2 text-[10px] text-slate-400 hover:text-slate-100"
-                >
-                  Fechar
-                </button>
-              </div>
-
-              <div className="mb-2 flex flex-col gap-2">
-                <input
-                  type="text"
-                  value={tagSearch}
-                  onChange={(e) => setTagSearch(e.target.value)}
-                  onKeyDown={handleTagSearchKeyDown}
-                  placeholder="Buscar ou criar etiqueta..."
-                  className="w-full rounded-md border border-slate-600 bg-slate-800 px-2 py-1 text-xs outline-none placeholder:text-slate-500"
-                />
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-400">Cor sugerida:</span>
-                  <div className="flex flex-wrap gap-1">
-                    {COLOR_PRESETS.map((c) => {
-                      const selected = c === effectivePendingColor;
-                      return (
-                        <button
-                          key={c}
-                          type="button"
-                          onClick={() => setPendingColor(c)}
-                          className={clsx(
-                            "h-4 w-4 rounded-full border border-slate-600",
-                            selected &&
-                              "ring-2 ring-offset-1 ring-offset-slate-900"
-                          )}
-                          style={{ backgroundColor: c }}
-                          title={c}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleTagCreate}
-                  disabled={tagCreating || !tagSearch.trim()}
-                  className="self-start mt-1 inline-flex items-center rounded-md border border-slate-600 bg-slate-800 px-2 py-0.5 text-[11px] font-medium hover:bg-slate-700 disabled:opacity-50"
-                >
-                  {tagCreating ? "Criando..." : "Criar etiqueta com esse nome"}
-                </button>
-              </div>
-
-              {tagError && (
-                <div className="mb-2 text-[10px] text-red-400">{tagError}</div>
-              )}
-
-              <div className="max-h-56 space-y-1 overflow-y-auto pr-1 mb-2">
-                {tagLoading && (
-                  <div className="text-[10px] text-slate-400">Buscando tags...</div>
-                )}
-
-                {tagSuggestions.map((tag) => {
-                  const selected = lowerSelectedTags.has(tag.slug.toLowerCase());
-                  const baseColor = tag.color || "#4B5563";
-                  const textColor = getContrastColor(baseColor);
-                  const outlineColor = darkenHex(baseColor, 0.85);
-
-                  return (
-                    <div
-                      key={tag.id}
-                      className="flex items-center justify-between rounded-md px-2 py-1 text-xs hover:bg-slate-800/80"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => handleTagAdd(tag.slug)}
-                        className="flex flex-1 items-center gap-2 text-left"
-                      >
-                        <span className="text-slate-500 text-[10px] mr-1">⋮⋮</span>
-                        <span
-                          className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium border"
-                          style={{
-                            backgroundColor: baseColor,
-                            color: textColor,
-                            borderColor: outlineColor,
-                          }}
-                        >
-                          <span
-                            className="mr-1 inline-block h-2 w-2 rounded-full"
-                            style={{ backgroundColor: baseColor }}
-                          />
-                          {tag.name}
-                        </span>
-                      </button>
-                      <input
-                        type="checkbox"
-                        className="ml-2 h-3 w-3 rounded border-slate-500 bg-slate-800 text-primary focus:ring-0"
-                        checked={selected}
-                        onChange={() => {
-                          if (selected) {
-                            handleTagRemove(tag.slug);
-                          } else {
-                            handleTagAdd(tag.slug);
-                          }
-                        }}
-                      />
-                    </div>
-                  );
-                })}
-
-                {!tagLoading && tagSuggestions.length === 0 && tagSearch && (
-                  <div className="text-[10px] text-slate-500">
-                    Nenhuma etiqueta encontrada para &quot;{tagSearch}&quot;.
-                    Você pode criar uma nova usando o botão acima.
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Etiquetas */}
+        <ActionTagSelector
+          tags={tags}
+          tagMapBySlug={tagMapBySlug}
+          lowerSelectedTags={lowerSelectedTags}
+          isTagPanelOpen={isTagPanelOpen}
+          tagSearch={tagSearch}
+          tagSuggestions={tagSuggestions}
+          tagLoading={tagLoading}
+          tagCreating={tagCreating}
+          tagError={tagError}
+          effectivePendingColor={effectivePendingColor}
+          tagButtonRef={tagButtonRef}
+          tagPanelRef={tagPanelRef}
+          onTogglePanel={() => { setIsTagPanelOpen((prev) => !prev); setTagSearch(""); }}
+          onTagAdd={handleTagAdd}
+          onTagRemove={handleTagRemove}
+          onTagCreate={handleTagCreate}
+          onTagSearchKeyDown={handleTagSearchKeyDown}
+          onTagSearchChange={setTagSearch}
+          onColorSelect={setPendingColor}
+          onClosePanel={() => setIsTagPanelOpen(false)}
+        />
 
         {/* Data → Hora → Temperatura → Prioridade */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -734,7 +367,6 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
               />
             )}
           />
-
           <TimePickerRHF
             control={control}
             name="on_time"
@@ -742,7 +374,6 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
             minuteStep={15}
             dropdownMaxHeight={224}
           />
-
           <div>
             <label className="block text-sm font-medium mb-1">Temperatura</label>
             <Controller
@@ -755,15 +386,12 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
                   onChange={(e) => field.onChange(e.target.value || "Neutra")}
                 >
                   {temperatureOptions.map((opt) => (
-                    <option key={String(opt)} value={String(opt)}>
-                      {String(opt)}
-                    </option>
+                    <option key={String(opt)} value={String(opt)}>{String(opt)}</option>
                   ))}
                 </select>
               )}
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium mb-1">Prioridade</label>
             <Controller
@@ -776,9 +404,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
                   onChange={(e) => field.onChange(e.target.value || "Normal")}
                 >
                   {PRIORITY_OPTIONS.map((opt) => (
-                    <option key={String(opt)} value={String(opt)}>
-                      {String(opt)}
-                    </option>
+                    <option key={String(opt)} value={String(opt)}>{String(opt)}</option>
                   ))}
                 </select>
               )}
@@ -868,9 +494,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
 
       <ScheduleActionModal
         open={nextOpen}
-        onClose={() => {
-          setNextOpen(false);
-        }}
+        onClose={() => setNextOpen(false)}
         defaults={nextDefaults}
         contacts={contacts}
         profileId={profileId}

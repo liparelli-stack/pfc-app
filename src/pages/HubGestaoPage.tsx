@@ -1,16 +1,92 @@
-import React from 'react';
-import { AreaChart } from 'lucide-react';
+/*
+-- ===================================================
+-- Código             : src/pages/HubGestaoPage.tsx
+-- Versão (.v20)      : 1.0.0
+-- Data/Hora          : 2026-03-24 19:00 America/Sao_Paulo
+-- Autor              : FL / Execução via (Eva Claude Modelo) (Alpha Dualite modelo LLM)
+-- Objetivo do codigo : Hub de Gestão — container de abas horizontais.
+--                      [1.0.0] Primeira aba: Fechamento Mensal (SUP-000004).
+--                      Padrão de abas idêntico ao CatalogsPage.tsx.
+-- Dependências       : MonthlyClosurePage, lucide-react, clsx
+-- ===================================================
+*/
 
+import React, { useState } from 'react';
+import { CalendarCheck, LucideIcon } from 'lucide-react';
+import clsx from 'clsx';
+import MonthlyClosurePage from './MonthlyClosurePage';
+
+/* ============================================================
+   Tipos
+   ============================================================ */
+type Section = 'monthly-closure';
+
+interface TabItemProps {
+  icon: LucideIcon;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+/* ============================================================
+   TabItem — mesmo padrão visual de CatalogsPage
+   ============================================================ */
+const TabItem: React.FC<TabItemProps> = ({ icon: Icon, label, isActive, onClick }) => (
+  <button
+    role="tab"
+    aria-selected={isActive}
+    onClick={onClick}
+    className={clsx(
+      'flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200',
+      {
+        'neumorphic-concave text-primary': isActive,
+        'neumorphic-convex hover:neumorphic-concave hover:text-primary': !isActive,
+      }
+    )}
+  >
+    <Icon className="h-5 w-5" />
+    <span className="font-semibold">{label}</span>
+  </button>
+);
+
+/* ============================================================
+   COMPONENTE PRINCIPAL
+   ============================================================ */
 const HubGestaoPage: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<Section>('monthly-closure');
+
+  const sections: { id: Section; label: string; icon: LucideIcon; node: React.ReactNode }[] = [
+    {
+      id: 'monthly-closure',
+      label: 'Fechamento Mensal',
+      icon: CalendarCheck,
+      node: <MonthlyClosurePage />,
+    },
+  ];
+
+  const active = sections.find((s) => s.id === activeSection);
+
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center">
-      <div className="neumorphic-convex rounded-2xl p-8 max-w-md w-full">
-        <AreaChart className="mx-auto h-16 w-16 text-primary mb-4" />
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-dark-t1">Hub de Gestão</h1>
-        <p className="text-gray-500 dark:text-dark-t2 mt-2">
-          Esta seção está em construção e estará disponível em breve.
-        </p>
+    <div className="flex flex-col w-full">
+      {/* Barra de abas */}
+      <div role="tablist" className="flex flex-wrap items-center gap-2 p-2 neumorphic-convex rounded-2xl mb-6">
+        {sections.map((section) => (
+          <TabItem
+            key={section.id}
+            icon={section.icon}
+            label={section.label}
+            isActive={activeSection === section.id}
+            onClick={() => setActiveSection(section.id)}
+          />
+        ))}
       </div>
+
+      {/* Conteúdo */}
+      <main className="flex-1 min-w-0">
+        <div key={activeSection}>
+          {active?.node}
+        </div>
+      </main>
     </div>
   );
 };

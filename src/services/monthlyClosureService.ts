@@ -1,23 +1,21 @@
 /*
 -- =====================================================================================================
 -- Código             : src/services/monthlyClosureService.ts
--- Versão (.v20)      : 0.2.0
+-- Versão (.v20)      : 0.3.0
 -- Data/Hora          : 2026-03-24 19:00 America/Sao_Paulo
 -- Autor              : FL / Execução via (Eva Claude Modelo) (Alpha Dualite modelo LLM)
--- Objetivo do codigo : Serviço de fechamento mensal de orçamentos:
---                      • getMonthData  — lê colunas reais da tabela (se fechado) ou agrega
---                                        dados ao vivo via RPC get_monthly_live_data
---                      • isMonthClosed — verifica closed_at NOT NULL em budget_monthly_closures
---                      • closeMonth    — upserta colunas agregadas + closed_at/closed_by
---                      • upsertGoal    — define/atualiza meta mensal em sales_monthly_targets
+-- Objetivo do codigo : Serviço de fechamento mensal de orçamentos.
 -- Dependências       : @/lib/supabaseClient
 --                      DB: budget_monthly_closures, sales_monthly_targets,
 --                          RPC get_monthly_live_data
 -- Versão/Alteração   :
 -- [ 0.1.0 ]          : Versão inicial
--- [ 0.2.0 ]          : Ajuste de schema — remove snapshot JSONB; usa colunas agregadas reais:
---                        qty_X/total_X por status, target_amount/quantity, performance_pct,
---                        closed_by, closed_at, auto_closed
+-- [ 0.2.0 ]          : Ajuste de schema — remove snapshot JSONB; usa colunas agregadas
+-- [ 0.3.0 ]          : Alinhamento com schema real do banco:
+--                        • coluna 'month' (date), não 'mes' (text) — usa '${mes}-01'
+--                        • tabela tem 1 linha POR VENDEDOR (salesperson_id), não por tenant
+--                        • closed_at NOT NULL — existência de rows = mês fechado
+--                        • upsertGoal: salesperson_id + month (date)
 -- =====================================================================================================
 */
 
@@ -27,31 +25,21 @@ import { supabase } from '@/lib/supabaseClient';
    Tipos públicos
    ============================================================ */
 
-/**
- * Reflete a estrutura real da tabela budget_monthly_closures.
- * Usado tanto para dados ao vivo (is_closed=false) quanto para snapshot fechado (is_closed=true).
- */
 export interface MonthData {
   mes: string;
   is_closed: boolean;
   closed_at: string | null;
   auto_closed: boolean;
-  /** Orçamentos em aberto */
   qty_aberta: number;
   total_aberta: number;
-  /** Orçamentos ganhos */
   qty_ganha: number;
   total_ganha: number;
-  /** Orçamentos perdidos */
   qty_perdida: number;
   total_perdida: number;
-  /** Orçamentos encerrados */
   qty_encerrada: number;
   total_encerrada: number;
-  /** Metas do período */
   target_amount: number;
   target_quantity: number;
-  /** Performance calculada: total_ganha / target_amount × 100 */
   performance_pct: number;
 }
 
@@ -59,50 +47,47 @@ export interface MonthData {
    Helpers internos
    ============================================================ */
 
+/** Converte 'YYYY-MM' → 'YYYY-MM-01' (date esperado pelo banco) */
+const toMonthDate = (mes: string) => `${mes}-01`;
+
 const SELECT_COLS = [
-  'qty_aberta', 'total_aberta',
-  'qty_ganha',  'total_ganha',
-  'qty_perdida', 'total_perdida',
+  'salesperson_id',
+  'qty_aberta',    'total_aberta',
+  'qty_ganha',     'total_ganha',
+  'qty_perdida',   'total_perdida',
   'qty_encerrada', 'total_encerrada',
   'target_amount', 'target_quantity', 'performance_pct',
-  'closed_by', 'closed_at', 'auto_closed',
+  'auto_closed',   'closed_by',       'closed_at',
 ].join(', ');
 
-/** Converte uma linha raw da tabela para MonthData */
-function rowToMonthData(mes: string, row: any): MonthData {
+/** Agrega N linhas (uma por vendedor) em totais únicos */
+function aggregateRows(rows: any[]) {
+  const sum = (field: string) => rows.reduce((s, r) => s + (Number(r[field]) || 0), 0);
+  const total_ganha   = sum('total_ganha');
+  const target_amount = sum('target_amount');
   return {
-    mes,
-    is_closed:      !!row.closed_at,
-    closed_at:      row.closed_at ?? null,
-    auto_closed:    !!row.auto_closed,
-    qty_aberta:     Number(row.qty_aberta)    || 0,
-    total_aberta:   Number(row.total_aberta)  || 0,
-    qty_ganha:      Number(row.qty_ganha)     || 0,
-    total_ganha:    Number(row.total_ganha)   || 0,
-    qty_perdida:    Number(row.qty_perdida)   || 0,
-    total_perdida:  Number(row.total_perdida) || 0,
-    qty_encerrada:  Number(row.qty_encerrada) || 0,
-    total_encerrada:Number(row.total_encerrada) || 0,
-    target_amount:  Number(row.target_amount)   || 0,
-    target_quantity:Number(row.target_quantity) || 0,
-    performance_pct:Number(row.performance_pct) || 0,
+    qty_aberta:      sum('qty_aberta'),
+    total_aberta:    sum('total_aberta'),
+    qty_ganha:       sum('qty_ganha'),
+    total_ganha,
+    qty_perdida:     sum('qty_perdida'),
+    total_perdida:   sum('total_perdida'),
+    qty_encerrada:   sum('qty_encerrada'),
+    total_encerrada: sum('total_encerrada'),
+    target_amount,
+    target_quantity: sum('target_quantity'),
+    performance_pct: target_amount > 0
+      ? Math.round((total_ganha / target_amount) * 100)
+      : 0,
   };
 }
 
-/**
- * Agrega os dados por-vendedor retornados pela RPC no shape de MonthData.
- * A RPC retorna: { goal, realized, count, lost } por vendedor.
- * qty_aberta/encerrada ficam em 0 — a RPC atual não fornece esses valores.
- */
+/** Converte resultado da RPC (por vendedor) em MonthData agregado */
 function rpcRowsToMonthData(mes: string, rows: any[]): MonthData {
-  const total_ganha    = rows.reduce((s, r) => s + (Number(r.realized) || 0), 0);
-  const qty_ganha      = rows.reduce((s, r) => s + (Number(r.count)    || 0), 0);
-  const total_perdida  = rows.reduce((s, r) => s + (Number(r.lost)     || 0), 0);
-  const target_amount  = rows.reduce((s, r) => s + (Number(r.goal)     || 0), 0);
-  const performance_pct = target_amount > 0
-    ? Math.round((total_ganha / target_amount) * 100)
-    : 0;
-
+  const total_ganha   = rows.reduce((s, r) => s + (Number(r.realized) || 0), 0);
+  const qty_ganha     = rows.reduce((s, r) => s + (Number(r.count)    || 0), 0);
+  const total_perdida = rows.reduce((s, r) => s + (Number(r.lost)     || 0), 0);
+  const target_amount = rows.reduce((s, r) => s + (Number(r.goal)     || 0), 0);
   return {
     mes,
     is_closed:       false,
@@ -112,13 +97,15 @@ function rpcRowsToMonthData(mes: string, rows: any[]): MonthData {
     total_aberta:    0,
     qty_ganha,
     total_ganha,
-    qty_perdida:     rows.length > 0 ? rows.length - qty_ganha : 0,
+    qty_perdida:     0,
     total_perdida,
     qty_encerrada:   0,
     total_encerrada: 0,
     target_amount,
     target_quantity: 0,
-    performance_pct,
+    performance_pct: target_amount > 0
+      ? Math.round((total_ganha / target_amount) * 100)
+      : 0,
   };
 }
 
@@ -127,51 +114,54 @@ function rpcRowsToMonthData(mes: string, rows: any[]): MonthData {
    ============================================================ */
 
 /**
- * Verifica se um mês já foi fechado (closed_at NOT NULL).
+ * Verifica se o mês já foi fechado.
+ * Como closed_at é NOT NULL na tabela, basta checar se existem linhas para o mês.
  */
 export async function isMonthClosed(mes: string): Promise<boolean> {
-  const { data } = await supabase
+  const { count, error } = await supabase
     .from('budget_monthly_closures')
-    .select('closed_at')
-    .eq('mes', mes)
-    .maybeSingle();
-  return !!data?.closed_at;
+    .select('id', { count: 'exact', head: true })
+    .eq('month', toMonthDate(mes));
+  if (error) throw new Error(error.message);
+  return (count ?? 0) > 0;
 }
 
 /**
  * Retorna os dados do mês:
- * - Se fechado: lê colunas agregadas de budget_monthly_closures
- * - Se aberto:  chama RPC SECURITY DEFINER e agrega em MonthData
+ * - Se fechado (linhas existem em budget_monthly_closures): agrega as linhas por vendedor
+ * - Se aberto: chama RPC SECURITY DEFINER e agrega em MonthData
  */
 export async function getMonthData(mes: string): Promise<MonthData> {
-  // 1. Tenta ler registro existente em budget_monthly_closures
-  const { data: row, error: rowErr } = await supabase
+  const { data: rows, error: rowErr } = await supabase
     .from('budget_monthly_closures')
     .select(SELECT_COLS)
-    .eq('mes', mes)
-    .maybeSingle();
+    .eq('month', toMonthDate(mes));
 
   if (rowErr) throw new Error(rowErr.message);
 
-  // Mês fechado → retorna dados do registro persistido
-  if (row?.closed_at) {
-    return rowToMonthData(mes, row);
+  if (rows && rows.length > 0) {
+    return {
+      mes,
+      is_closed:  true,
+      closed_at:  rows[0].closed_at,
+      auto_closed: rows.some((r) => r.auto_closed),
+      ...aggregateRows(rows),
+    };
   }
 
-  // 2. Mês aberto → dados ao vivo via RPC (cross-user, SECURITY DEFINER)
+  // Mês aberto — dados ao vivo via RPC (SECURITY DEFINER, cross-user)
   const { data: rpcData, error: rpcErr } = await supabase
     .rpc('get_monthly_live_data', { p_mes: mes });
-
   if (rpcErr) throw new Error(rpcErr.message);
 
   return rpcRowsToMonthData(mes, (rpcData as any[]) ?? []);
 }
 
 /**
- * Fecha o mês: persiste as colunas agregadas atuais + registra closed_at/closed_by.
- * @param mes        YYYY-MM do mês a fechar
+ * Fecha o mês: insere uma linha por vendedor em budget_monthly_closures.
+ * @param mes        YYYY-MM
  * @param tenantId   tenant_id do usuário autenticado
- * @param profileId  profiles.id do usuário que está fechando
+ * @param profileId  profiles.id de quem está fechando (closed_by)
  */
 export async function closeMonth(
   mes: string,
@@ -181,53 +171,67 @@ export async function closeMonth(
   const already = await isMonthClosed(mes);
   if (already) throw new Error('Este mês já foi fechado.');
 
-  const live = await getMonthData(mes);
+  const { data: rpcData, error: rpcErr } = await supabase
+    .rpc('get_monthly_live_data', { p_mes: mes });
+  if (rpcErr) throw new Error(rpcErr.message);
+
+  const sellers = (rpcData as any[]) ?? [];
+  if (sellers.length === 0) throw new Error('Nenhum dado encontrado para fechar este mês.');
+
+  const now = new Date().toISOString();
+  const inserts = sellers.map((r) => {
+    const total_ganha   = Number(r.realized) || 0;
+    const target_amount = Number(r.goal)     || 0;
+    return {
+      tenant_id:       tenantId,
+      salesperson_id:  r.profile_id,
+      month:           toMonthDate(mes),
+      qty_aberta:      0,
+      total_aberta:    0,
+      qty_ganha:       Number(r.count) || 0,
+      total_ganha,
+      qty_perdida:     0,
+      total_perdida:   Number(r.lost) || 0,
+      qty_encerrada:   0,
+      total_encerrada: 0,
+      target_amount,
+      target_quantity: 0,
+      performance_pct: target_amount > 0
+        ? Math.round((total_ganha / target_amount) * 100)
+        : 0,
+      auto_closed: false,
+      closed_by:   profileId,
+      closed_at:   now,
+    };
+  });
 
   const { error } = await supabase
     .from('budget_monthly_closures')
-    .upsert(
-      {
-        tenant_id:       tenantId,
-        mes,
-        qty_aberta:      live.qty_aberta,
-        total_aberta:    live.total_aberta,
-        qty_ganha:       live.qty_ganha,
-        total_ganha:     live.total_ganha,
-        qty_perdida:     live.qty_perdida,
-        total_perdida:   live.total_perdida,
-        qty_encerrada:   live.qty_encerrada,
-        total_encerrada: live.total_encerrada,
-        target_amount:   live.target_amount,
-        target_quantity: live.target_quantity,
-        performance_pct: live.performance_pct,
-        closed_at:       new Date().toISOString(),
-        closed_by:       profileId,
-        auto_closed:     false,
-      },
-      { onConflict: 'tenant_id,mes' },
-    );
-
+    .insert(inserts);
   if (error) throw new Error(error.message);
 }
 
 /**
  * Define ou atualiza a meta mensal de um vendedor em sales_monthly_targets.
- * @param tenantId   tenant_id
- * @param profileId  profiles.id do vendedor
- * @param mes        YYYY-MM
- * @param goalAmount Valor alvo em R$
  */
 export async function upsertGoal(
   tenantId: string,
-  profileId: string,
+  salespersonId: string,
   mes: string,
   goalAmount: number,
+  goalQuantity = 0,
 ): Promise<void> {
   const { error } = await supabase
     .from('sales_monthly_targets')
     .upsert(
-      { tenant_id: tenantId, profile_id: profileId, mes, goal_amount: goalAmount },
-      { onConflict: 'tenant_id,profile_id,mes' },
+      {
+        tenant_id:      tenantId,
+        salesperson_id: salespersonId,
+        month:          toMonthDate(mes),
+        target_amount:  goalAmount,
+        target_quantity: goalQuantity,
+      },
+      { onConflict: 'tenant_id,salesperson_id,month' },
     );
   if (error) throw new Error(error.message);
 }

@@ -113,7 +113,7 @@ const CockpitEditCompanyForm: React.FC<CockpitEditCompanyFormProps> = ({
         <Button type="button" variant="default" onClick={onCancel}>
           Cancelar
         </Button>
-        <Button type="submit" variant="primary" isLoading={isSubmitting}>
+        <Button type="submit" variant="primary" loading={isSubmitting}>
           Salvar
         </Button>
       </div>

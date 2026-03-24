@@ -135,7 +135,7 @@ const CockpitEditContactForm: React.FC<CockpitEditContactFormProps> = ({
         <Button type="button" variant="default" onClick={onCancel}>
           Cancelar
         </Button>
-        <Button type="submit" variant="primary" isLoading={isSubmitting}>
+        <Button type="submit" variant="primary" loading={isSubmitting}>
           {isCreating ? "Criar Contato" : "Salvar"}
         </Button>
       </div>

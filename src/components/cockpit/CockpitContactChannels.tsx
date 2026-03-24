@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabaseClient";
 import type { ContactChannel, ChannelType } from "@/types/channel";
@@ -33,6 +34,7 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
   onChannelsUpdated,
 }) => {
   const { addToast } = useToast();
+  const { tenantId } = useAuth();
   const [channels, setChannels] = useState<ContactChannel[]>(currentChannels);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -48,10 +50,11 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
   };
 
   const handleAdd = async (values: ChannelFormValues) => {
+    if (!tenantId) { addToast("Sessão inválida. Faça login novamente.", "error"); return; }
     try {
       const { data, error } = await supabase
         .from(TABLE)
-        .insert({ contact_id: contactId, type: values.type, value: values.value, label_custom: values.label_custom || null, is_preferred: values.is_preferred })
+        .insert({ tenant_id: tenantId, contact_id: contactId, type: values.type, value: values.value, label_custom: values.label_custom || null, is_preferred: values.is_preferred })
         .select("id, type, value, label_custom, is_preferred, created_at, updated_at, export_state")
         .single();
       if (error) throw error;
@@ -123,7 +126,7 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
                 className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-dark-t2">
                 <X className="h-3.5 w-3.5" /> Cancelar
               </button>
-              <Button type="submit" variant="primary" className="h-7 px-3 text-xs" isLoading={editForm.formState.isSubmitting}>
+              <Button type="submit" variant="primary" className="h-7 px-3 text-xs" loading={editForm.formState.isSubmitting}>
                 <Check className="h-3.5 w-3.5 mr-1" /> Salvar
               </Button>
             </div>
@@ -162,7 +165,7 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
               className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
               <X className="h-3.5 w-3.5" /> Cancelar
             </button>
-            <Button type="submit" variant="primary" className="h-7 px-3 text-xs" isLoading={addForm.formState.isSubmitting}>
+            <Button type="submit" variant="primary" className="h-7 px-3 text-xs" loading={addForm.formState.isSubmitting}>
               Adicionar
             </Button>
           </div>

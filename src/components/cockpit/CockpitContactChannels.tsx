@@ -115,9 +115,8 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
 
       {channels.map((ch) =>
         editingId === ch.id ? (
-          <form
+          <div
             key={ch.id}
-            onSubmit={editForm.handleSubmit(handleUpdate)}
             className="border border-gray-200 dark:border-white/10 rounded-lg p-3 space-y-2"
           >
             <ChannelFields form={editForm} />
@@ -126,11 +125,17 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
                 className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-dark-t2">
                 <X className="h-3.5 w-3.5" /> Cancelar
               </button>
-              <Button type="submit" variant="primary" className="h-7 px-3 text-xs" loading={editForm.formState.isSubmitting}>
+              <Button
+                type="button"
+                variant="primary"
+                className="h-7 px-3 text-xs"
+                loading={editForm.formState.isSubmitting}
+                onClick={() => editForm.handleSubmit(handleUpdate)()}
+              >
                 <Check className="h-3.5 w-3.5 mr-1" /> Salvar
               </Button>
             </div>
-          </form>
+          </div>
         ) : (
           <div key={ch.id} className="flex items-center justify-between gap-2 text-sm py-1">
             <div className="flex items-center gap-2 min-w-0">
@@ -156,8 +161,7 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
       )}
 
       {showAddForm ? (
-        <form onSubmit={addForm.handleSubmit(handleAdd)}
-          className="border border-gray-200 dark:border-white/10 rounded-lg p-3 space-y-2 mt-2">
+        <div className="border border-gray-200 dark:border-white/10 rounded-lg p-3 space-y-2 mt-2">
           <p className="text-xs font-medium text-gray-700 dark:text-dark-t1">Novo canal</p>
           <ChannelFields form={addForm} />
           <div className="flex gap-2 justify-end">
@@ -165,11 +169,17 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
               className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
               <X className="h-3.5 w-3.5" /> Cancelar
             </button>
-            <Button type="submit" variant="primary" className="h-7 px-3 text-xs" loading={addForm.formState.isSubmitting}>
+            <Button
+              type="button"
+              variant="primary"
+              className="h-7 px-3 text-xs"
+              loading={addForm.formState.isSubmitting}
+              onClick={() => addForm.handleSubmit(handleAdd)()}
+            >
               Adicionar
             </Button>
           </div>
-        </form>
+        </div>
       ) : (
         <button type="button" onClick={() => { setShowAddForm(true); setEditingId(null); }}
           className="inline-flex items-center gap-1.5 text-xs text-primary hover:opacity-80 font-medium mt-1">

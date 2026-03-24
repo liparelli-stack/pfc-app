@@ -110,8 +110,7 @@ export interface DayCompanyContext {
  * Utils internos
  * ========================= */
 function toIsoYmdUTC(d: Date): string {
-  const tz = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  return tz.toISOString().slice(0, 10);
+  return d.toISOString().slice(0, 10);
 }
 function toIsoYmdLocal(d: Date): string {
   const y = d.getFullYear();

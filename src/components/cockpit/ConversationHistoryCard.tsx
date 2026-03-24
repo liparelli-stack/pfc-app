@@ -845,7 +845,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
   };
 
   return (
-    <section className="p-4 bg-white dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-xl">
+    <section className="p-4 bg-light-bg dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-xl">
       {/* Estilo scoped: opções do select nativo não aceitam classes Tailwind */}
       <style>{`
         .dark .chc-status-filter option {

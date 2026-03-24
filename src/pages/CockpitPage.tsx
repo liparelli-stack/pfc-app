@@ -269,7 +269,7 @@ const CockpitPage: React.FC = () => {
     <div className="flex flex-col md:flex-row gap-8 h-full">
       {/* Painel lateral */}
       <aside className="md:w-1/3 lg:w-1/4 flex-shrink-0">
-        <div className="bg-light-s1 dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd relative isolate z-[200] overflow-visible p-4 rounded-2xl h-full">
+        <div className="bg-light-bg dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd relative isolate z-[200] overflow-visible p-4 rounded-2xl h-full">
           {/* Caixa de busca */}
           <div className="mb-3 relative" ref={searchBoxRef}>
             <div className="relative">
@@ -427,7 +427,7 @@ const CockpitPage: React.FC = () => {
               />
 
               {/* Card do bloco de Notas — sem cabeçalho duplicado */}
-              <section className="bg-white dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-2xl p-6">
+              <section className="bg-light-bg dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-2xl p-6">
                 <NotesSection
                   companyId={selectedCompanyId!}
                   notes={(selectedCompanyDetails as any)?.notes}
@@ -441,7 +441,7 @@ const CockpitPage: React.FC = () => {
             </>
           ) : (
             !isLoadingCompanies && (
-              <div className="flex items-center justify-center h-full p-8 rounded-2xl bg-light-s1 dark:bg-dark-s1">
+              <div className="flex items-center justify-center h-full p-8 rounded-2xl bg-light-bg dark:bg-dark-s1">
                 <p className="text-gray-500">Selecione uma empresa para ver os detalhes.</p>
               </div>
             )

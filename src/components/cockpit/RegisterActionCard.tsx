@@ -53,12 +53,12 @@ const RegisterActionCard: React.FC<RegisterActionCardProps> = ({
 }) => {
   // Remonta o formulário quando trocar a empresa ou quando solicitado via "Cancelar"
   const [remountSeed, setRemountSeed] = useState(0);
+  // Remonta ao trocar de empresa (id muda) ou ao cancelar/salvar (remountSeed muda).
+  // Não inclui contacts.length: novo contato atualiza o dropdown via prop sem remontagem,
+  // evitando que o usuário perca dados digitados no formulário.
   const formKey = useMemo(
-    () =>
-      `${companyDetails?.id ?? "na"}-${
-        companyDetails?.contacts?.length ?? 0
-      }-${remountSeed}`,
-    [companyDetails?.id, companyDetails?.contacts?.length, remountSeed]
+    () => `${companyDetails?.id ?? "na"}-${remountSeed}`,
+    [companyDetails?.id, remountSeed]
   );
 
   // Gatilho de análise de IA: começa como undefined para NÃO disparar no mount

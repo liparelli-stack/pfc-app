@@ -85,6 +85,7 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
   };
 
   const handleContactSaved = (saved: Contact) => {
+    let isNew = false;
     setData((prev) => {
       const exists = prev.contacts.some((c) => c.id === saved.id);
       if (exists) {
@@ -95,12 +96,18 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
           ),
         };
       }
+      isNew = true;
       // Novo contato: adiciona com channels vazio
       return {
         ...prev,
         contacts: [...prev.contacts, { ...saved, channels: [] } as ContactWithChannels],
       };
     });
+    // Notifica CockpitPage para recarregar selectedCompanyDetails,
+    // garantindo que o dropdown "Contato*" no RegisterActionCard veja o novo contato.
+    if (isNew) {
+      window.dispatchEvent(new CustomEvent('cockpit:refreshHistory'));
+    }
     setEditingContactId(null);
     setAddingContact(false);
   };

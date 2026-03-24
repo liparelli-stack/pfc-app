@@ -34,7 +34,8 @@ const CockpitContactChannels: React.FC<CockpitContactChannelsProps> = ({
   onChannelsUpdated,
 }) => {
   const { addToast } = useToast();
-  const { tenantId } = useAuth();
+  const { currentProfileLite } = useAuth();
+  const tenantId = currentProfileLite?.tenantId ?? null;
   const [channels, setChannels] = useState<ContactChannel[]>(currentChannels);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);

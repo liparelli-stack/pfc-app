@@ -178,7 +178,8 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
 
   useEffect(() => {
     if (!nextOpen) reset(defaults);
-  }, [defaults, nextOpen, reset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextOpen]); // Intencional: reset apenas quando o modal de próxima ação abre/fecha, não em cada re-render de defaults
 
   const onInvalid = (errors: any) => addToast(getFirstErrorMessage(errors), "error");
 

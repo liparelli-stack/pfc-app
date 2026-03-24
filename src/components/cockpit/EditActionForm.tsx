@@ -70,7 +70,6 @@
 import React, {
   useEffect,
   useMemo,
-  useState,
 } from "react";
 import clsx from "clsx";
 import { useForm, Controller, useWatch } from "react-hook-form";
@@ -90,7 +89,6 @@ import {
   PRIORITY_OPTIONS,
   TEMPERATURE_OPTIONS,
 } from "@/types/chat";
-import * as chatsService from "@/services/chatsService";
 import type { CompanyDetails, ContactWithChannels } from "@/types/cockpit";
 
 import ScheduleActionModal from "@/components/cockpit/ScheduleActionModal";
@@ -98,12 +96,12 @@ import { TimePickerRHF } from "@/components/ui/TimePicker";
 import { useTagsManager } from "@/components/cockpit/hooks/useTagsManager";
 import type { ActionAiAnalysis } from "@/services/ai/actionsAiService";
 import { useActionAI } from "@/components/cockpit/hooks/useActionAI";
+import { useActionSubmit } from "@/components/cockpit/hooks/useActionSubmit";
 
 import type { Dir } from "@/config/actionConstants";
 import { ACTION_GROUPS, COLOR_PRESETS } from "@/config/actionConstants";
 import { getContrastColor, darkenHex } from "@/utils/colors";
-import { reconstructSelectionId, toTripleFromSelection } from "@/utils/actionMappers";
-import { resolveActionLabel } from "@/utils/actionHelpers";
+import { reconstructSelectionId } from "@/utils/actionMappers";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { TagChip } from "@/components/ui/TagChip";
 
@@ -141,24 +139,6 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
   const isEditing = !!editingChat;
   const contextCompanyId = companyDetails?.id || editingChat?.company_id || "";
   const contacts: ContactWithChannels[] = companyDetails?.contacts ?? [];
-
-  // Estado do modal de próxima ação
-  const [nextOpen, setNextOpen] = useState(false);
-  const [nextDefaults, setNextDefaults] = useState<{
-    company_id: string;
-    contact_id: string | null;
-    subject?: string | null;
-    seed_date?: string | null;
-    seed_time?: string | null;
-  }>({ company_id: "", contact_id: null });
-
-  // Snapshot do pai
-  const [stagedParent, setStagedParent] = useState<ActionFormData | null>(null);
-
-  const normalizePriority = (p: string | null | undefined): string | null => {
-    if (!p) return "Normal";
-    return PRIORITY_OPTIONS.includes(p as any) ? p : "Normal";
-  };
 
   const getFirstErrorMessage = (errors: any): string => {
     const order = [
@@ -290,209 +270,27 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     editingChatTags: (editingChat as any)?.tags,
   });
 
-  /* --------------------- Submit principal (Salvar) --------------------- */
-  const onSubmit = async (formData: ActionFormData) => {
-    if (!formData.action) return addToast("Selecione uma Ação.", "error");
-    if (!formData.contact_id)
-      return addToast("Selecione um Contato.", "error");
-    if (!formData.subject || formData.subject.trim().length < 2)
-      return addToast("Informe o Assunto da ação.", "error");
-    if (!formData.calendar_at) return addToast("Informe a Data.", "error");
-    if (!formData.on_time) return addToast("Informe a Hora.", "error");
-
-    // Padroniza temperatura
-    formData.temperature = formData.temperature || "Neutra";
-
-    const triple = toTripleFromSelection(formData.action);
-
-    const effectiveCompanyId =
-      (formData as any).company_id || contextCompanyId || null;
-
-    const payloadChat = {
-      id: isEditing ? editingChat?.id : undefined,
-      company_id: effectiveCompanyId,
-      contact_id: formData.contact_id,
-      subject: formData.subject,
-      body: formData.body,
-      temperature: formData.temperature,
-      priority: normalizePriority(formData.priority) as any,
-      calendar_at: formData.calendar_at,
-      on_time: formData.on_time,
-      is_done: formData.is_done,
-      kind: triple.kind,
-      direction: triple.direction,
-      channel_type: triple.channel_type,
-      tags, // slugs das etiquetas
-    };
-
-    try {
-      const chat = await chatsService.upsertChat(payloadChat as any);
-
-      if (!isEditing) {
-        const pendentes = budgetItems.filter((b) => (b as any)._pending);
-        for (const p of pendentes) {
-          await chatsService.appendBudget(chat.id, {
-            description: p.description,
-            amount: p.amount,
-            status: p.status,
-            loss_reason: p.loss_reason ?? null,
-          });
-        }
-      }
-
-      if (formData.action === "task:null:orcamento") {
-        const hadInline = isEditing
-          ? false
-          : budgetItems.some((b) => (b as any)._pending);
-        if (hadInline) addToast("Orçamentos pendentes salvos.", "success");
-      }
-
-      addToast(isEditing ? "Ação atualizada." : "Ação registrada.", "success");
-
-      // 🔔 IMPORTANTE: garantir refresh de Histórico + "Empresas com Ações Ativas"
-      try {
-        const detail = { companyId: effectiveCompanyId ?? null };
-        window.dispatchEvent(
-          new CustomEvent("cockpit:refreshHistory", { detail })
-        );
-        window.dispatchEvent(new CustomEvent("chats:changed", { detail }));
-      } catch {
-        // silencioso – não deve quebrar o fluxo de salvar
-      }
-
-      onSaved();
-    } catch (e: any) {
-      addToast(e?.message || "Falha ao salvar.", "error");
-    }
-  };
+  /* --------------------- Submit / Próxima Ação --------------------- */
+  const {
+    onSubmit,
+    handleOpenNextAction,
+    handleSubmitNext,
+    nextOpen,
+    setNextOpen,
+    nextDefaults,
+  } = useActionSubmit({
+    isEditing,
+    editingChatId: editingChat?.id,
+    contextCompanyId,
+    tags,
+    budgetItems,
+    addToast,
+    onSaved,
+  });
 
   const onInvalid = (errors: any) => {
     const msg = getFirstErrorMessage(errors);
     addToast(msg, "error");
-  };
-
-  /* --------------------- + Próxima Ação: VALIDAR → stage PAI → abrir modal --------------------- */
-  const handleOpenNextAction = () => {
-    const data = getValues();
-
-    if (!data.action) return addToast("Selecione uma Ação.", "error");
-    if (!data.contact_id)
-      return addToast("Selecione um Contato.", "error");
-    if (!data.subject || data.subject.trim().length < 2)
-      return addToast("Informe o Assunto da ação.", "error");
-    if (!data.calendar_at) return addToast("Informe a Data.", "error");
-    if (!data.on_time) return addToast("Informe a Hora.", "error");
-
-    const effectiveCompanyId =
-      (data as any).company_id || contextCompanyId || "";
-    if (!effectiveCompanyId) {
-      return addToast(
-        "Empresa inválida: abra/seleciona o dossiê da empresa antes de agendar a próxima ação.",
-        "error"
-      );
-    }
-
-    setStagedParent({
-      ...data,
-      temperature: data.temperature || "Neutra",
-      company_id: effectiveCompanyId,
-      priority: normalizePriority(data.priority) as any,
-    });
-
-    const now = new Date();
-    const seed = new Date(`${data.calendar_at}T${data.on_time}`);
-    const useSeed =
-      !isNaN(seed.getTime()) && seed.getTime() >= now.getTime();
-
-    setNextDefaults({
-      company_id: effectiveCompanyId,
-      contact_id: data.contact_id || null,
-      subject: "",
-      seed_date: useSeed ? data.calendar_at : null,
-      seed_time: useSeed ? data.on_time : null,
-    });
-
-    setNextOpen(true);
-  };
-
-  /* --------------------- Encadeamento do modal --------------------- */
-  const handleSubmitNext = async (nextData: ActionFormData) => {
-    if (!stagedParent) {
-      addToast("Fluxo inválido: dados do formulário não encontrados.", "error");
-      return;
-    }
-
-    try {
-      const tripleParent = toTripleFromSelection(stagedParent.action);
-      const parentCompanyId =
-        (stagedParent as any).company_id || contextCompanyId || null;
-
-      const parentPayload = {
-        id: isEditing ? editingChat?.id : undefined,
-        company_id: parentCompanyId,
-        contact_id: stagedParent.contact_id,
-        subject: stagedParent.subject,
-        body: stagedParent.body,
-        temperature: stagedParent.temperature || "Neutra",
-        priority: normalizePriority(stagedParent.priority) as any,
-        calendar_at: stagedParent.calendar_at,
-        on_time: stagedParent.on_time,
-        is_done: stagedParent.is_done,
-        kind: tripleParent.kind,
-        direction: tripleParent.direction,
-        channel_type: tripleParent.channel_type,
-        tags, // mesmas etiquetas da ação atual
-      };
-      const parent = await chatsService.upsertChat(parentPayload as any);
-
-      if (!isEditing) {
-        const pendentes = budgetItems.filter((b) => (b as any)._pending);
-        for (const p of pendentes) {
-          await chatsService.appendBudget(parent.id, {
-            description: p.description,
-            amount: p.amount,
-            status: p.status,
-            loss_reason: p.loss_reason ?? null,
-          });
-        }
-      }
-
-      const tripleChild = toTripleFromSelection(nextData.action);
-      const childTemp = nextData.temperature || "Neutra";
-      await chatsService.upsertChat({
-        id: undefined,
-        company_id:
-          (nextData as any).company_id ||
-          parentCompanyId ||
-          contextCompanyId ||
-          null,
-        contact_id: nextData.contact_id,
-        subject: nextData.subject,
-        body: nextData.body,
-        temperature: childTemp,
-        priority: nextData.priority,
-        calendar_at: nextData.calendar_at,
-        on_time: nextData.on_time,
-        is_done: nextData.is_done,
-        kind: tripleChild.kind,
-        direction: tripleChild.direction,
-        channel_type: tripleChild.channel_type,
-        reply_to_id: parent.id,
-      } as any);
-
-      addToast("Ação atual e próxima ação registradas.", "success");
-      try {
-        const detail = { companyId: parentCompanyId ?? null };
-        window.dispatchEvent(
-          new CustomEvent("cockpit:refreshHistory", { detail })
-        );
-        window.dispatchEvent(new CustomEvent("chats:changed", { detail }));
-      } catch {}
-      setNextOpen(false);
-      onSaved?.();
-    } catch (e: any) {
-      addToast(e?.message || "Falha ao registrar a próxima ação.", "error");
-    }
   };
 
   const shouldShowBudgetSection = watchedAction === "task:null:orcamento";
@@ -736,8 +534,6 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
               onClick={() => {
                 setIsTagPanelOpen((prev) => !prev);
                 setTagSearch("");
-                setTagSuggestions([]);
-                setTagError(null);
               }}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
@@ -991,7 +787,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-white/10">
           <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-dark-t2">
             <button
-              onClick={handleOpenNextAction}
+              onClick={() => handleOpenNextAction(getValues())}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}
               style={{

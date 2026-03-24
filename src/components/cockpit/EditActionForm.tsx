@@ -158,6 +158,9 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     return withMsg?.message || "Verifique os campos obrigatórios.";
   };
 
+  const normalizePriority = (p: string | null | undefined): string =>
+    PRIORITY_OPTIONS.includes(p as any) ? (p as string) : "Normal";
+
   // Defaults ----------------
   const defaults = useMemo((): ActionFormData => {
     const now = new Date();

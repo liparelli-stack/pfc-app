@@ -21,6 +21,7 @@ import {
   getCompanyDetails,
   searchCompaniesByName,
 } from '@/services/cockpitService';
+import { useAuth } from '@/contexts/AuthContext';
 import { CompanyWithActionCount, CompanyDetails, CompanyMinimal } from '@/types/cockpit';
 import CompanyDetailsCard from '@/components/cockpit/CompanyDetailsCard';
 import RegisterActionCard from '@/components/cockpit/RegisterActionCard';
@@ -68,6 +69,9 @@ type EditingChat = Partial<{ id: string; kind: string; channel_type: string }>;
 const SWITCH_THROTTLE_MS = 300;
 
 const CockpitPage: React.FC = () => {
+  const { currentProfileLite } = useAuth();
+  const tenantId = currentProfileLite?.tenantId ?? null;
+
   // Estados principais
   const [companies, setCompanies] = useState<CompanyWithActionCount[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
@@ -188,7 +192,8 @@ const CockpitPage: React.FC = () => {
     setIsSearching(true);
     debounceRef.current = window.setTimeout(async () => {
       try {
-        const results = await searchCompaniesByName(trimmed);
+        if (!tenantId) { setSearchResults([]); setIsSearching(false); return; }
+        const results = await searchCompaniesByName(trimmed, tenantId);
         setSearchResults(results);
         setActiveIndex(results.length ? 0 : -1);
       } finally {

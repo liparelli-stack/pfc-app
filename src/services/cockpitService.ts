@@ -124,13 +124,14 @@ export const getCompanyDetails = async (companyId: string): Promise<CompanyDetai
 /**
  * Busca por nome — mantém a lógica atual.
  */
-export const searchCompaniesByName = async (term: string): Promise<CompanyMinimal[]> => {
+export const searchCompaniesByName = async (term: string, tenantId: string): Promise<CompanyMinimal[]> => {
   const q = (term ?? '').trim();
   if (q.length < 2) return [];
 
   const { data, error } = await supabase
     .from('companies')
     .select('id, trade_name')
+    .eq('tenant_id', tenantId)
     .ilike('trade_name', `%${q}%`)
     .order('trade_name', { ascending: true })
     .limit(25);

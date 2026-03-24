@@ -790,6 +790,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-white/10">
           <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-dark-t2">
             <button
+              type="button"
               onClick={() => handleOpenNextAction(getValues())}
               onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = '0.88'}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = '1'}

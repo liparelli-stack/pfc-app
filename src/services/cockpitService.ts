@@ -129,19 +129,14 @@ export const searchCompaniesByName = async (term: string, tenantId: string): Pro
   if (q.length < 2) return [];
 
   const { data, error } = await supabase
-    .from('companies')
-    .select('id, trade_name')
-    .eq('tenant_id', tenantId)
-    .ilike('trade_name', `%${q}%`)
-    .order('trade_name', { ascending: true })
-    .limit(25);
+    .rpc('search_companies_by_name', { p_term: q, p_tenant_id: tenantId });
 
   if (error) {
     console.error('[cockpitService] Error searching companies by name:', error);
     throw error;
   }
 
-  return (data ?? []).map((c) => ({
+  return (data ?? []).map((c: any) => ({
     id: c.id as string,
     trade_name: c.trade_name as string,
   }));

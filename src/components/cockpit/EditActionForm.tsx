@@ -223,10 +223,6 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
   const watchedAction = useWatch({ control, name: "action" });
   const watchedSubject = useWatch({ control, name: "subject" });
 
-  useEffect(() => {
-    if (!nextOpen) reset(defaults);
-  }, [defaults, nextOpen, reset]);
-
   // --------------------- Orçamentos ---------------------
   const {
     budgetItems,
@@ -287,6 +283,10 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     addToast,
     onSaved,
   });
+
+  useEffect(() => {
+    if (!nextOpen) reset(defaults);
+  }, [defaults, nextOpen, reset]);
 
   const onInvalid = (errors: any) => {
     const msg = getFirstErrorMessage(errors);

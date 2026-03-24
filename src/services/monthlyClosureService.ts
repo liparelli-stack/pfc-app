@@ -10,7 +10,7 @@
 --                      • closeMonth    — fecha o mês criando snapshot imutável
 --                      • upsertGoal    — define/atualiza meta mensal de um vendedor
 -- Dependências       : @/lib/supabaseClient
---                      DB: monthly_goals, monthly_closure, RPC get_monthly_live_data
+--                      DB: sales_monthly_targets, budget_monthly_closures, RPC get_monthly_live_data
 -- Versão/Alteração   :
 -- [ 0.1.0 ]          : Versão inicial - SUP-000004
 -- =====================================================================================================
@@ -84,7 +84,7 @@ function buildTotals(sellers: SellerRow[]) {
  */
 export async function isMonthClosed(mes: string): Promise<boolean> {
   const { data } = await supabase
-    .from('monthly_closure')
+    .from('budget_monthly_closures')
     .select('closed_at')
     .eq('mes', mes)
     .maybeSingle();
@@ -99,7 +99,7 @@ export async function isMonthClosed(mes: string): Promise<boolean> {
 export async function getMonthData(mes: string): Promise<MonthData> {
   // 1. Verificar se o mês está fechado
   const { data: closure, error: closureErr } = await supabase
-    .from('monthly_closure')
+    .from('budget_monthly_closures')
     .select('closed_at, snapshot')
     .eq('mes', mes)
     .maybeSingle();
@@ -153,7 +153,7 @@ export async function closeMonth(
   const snapshot = live.sellers.map(({ performance: _perf, ...rest }) => rest);
 
   const { error } = await supabase
-    .from('monthly_closure')
+    .from('budget_monthly_closures')
     .upsert(
       {
         tenant_id: tenantId,
@@ -182,7 +182,7 @@ export async function upsertGoal(
   goalAmount: number,
 ): Promise<void> {
   const { error } = await supabase
-    .from('monthly_goals')
+    .from('sales_monthly_targets')
     .upsert(
       { tenant_id: tenantId, profile_id: profileId, mes, goal_amount: goalAmount },
       { onConflict: 'tenant_id,profile_id,mes' },

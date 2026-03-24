@@ -148,7 +148,7 @@ const NotesSection: React.FC<Props> = ({ companyId, notes = [], onNotesChange })
             </button>
           </div>
 
-          <div className="bg-light-s1 dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-xl p-4">
+          <div className="bg-light-bg dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd rounded-xl p-4">
             {Array.isArray(notes) && notes.length > 0 ? (
               <ul className="space-y-3">
                 {[...notes]

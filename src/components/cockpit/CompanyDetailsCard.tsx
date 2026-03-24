@@ -282,8 +282,19 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyDetails 
       {/* Editar empresa */}
       <Modal isOpen={editingCompany} onClose={() => setEditingCompany(false)} title="Editar Empresa" size="lg">
         <CockpitEditCompanyForm
+          key={data.id}
           companyId={data.id}
-          initialData={{ trade_name: data.trade_name, tax_id: data.tax_id, phone: data.phone, email: data.email, website: data.website }}
+          initialData={{
+            trade_name: data.trade_name,
+            tax_id: data.tax_id,
+            phone: data.phone,
+            email: data.email,
+            website: data.website,
+            address_line: data.address_line,
+            city: data.city,
+            state: data.state,
+            zip_code: data.zip_code,
+          }}
           onSaved={handleCompanySaved}
           onCancel={() => setEditingCompany(false)}
         />

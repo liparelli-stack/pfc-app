@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/contexts/ToastContext";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { updateCompany } from "@/services/companiesService";
 import type { Company } from "@/types/company";
@@ -14,6 +13,10 @@ const schema = z.object({
   phone: z.string().nullable().optional(),
   email: z.string().email("E-mail inválido").nullable().optional().or(z.literal("")),
   website: z.string().nullable().optional(),
+  address_line: z.string().nullable().optional(),
+  city: z.string().nullable().optional(),
+  state: z.string().max(2).nullable().optional(),
+  zip_code: z.string().nullable().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -26,6 +29,10 @@ interface CockpitEditCompanyFormProps {
     phone?: string | null;
     email?: string | null;
     website?: string | null;
+    address_line?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zip_code?: string | null;
   };
   onSaved: (updated: Company) => void;
   onCancel: () => void;
@@ -48,6 +55,10 @@ const CockpitEditCompanyForm: React.FC<CockpitEditCompanyFormProps> = ({
         phone: initialData.phone ?? "",
         email: initialData.email ?? "",
         website: initialData.website ?? "",
+        address_line: initialData.address_line ?? "",
+        city: initialData.city ?? "",
+        state: initialData.state ?? "",
+        zip_code: initialData.zip_code ?? "",
       },
     });
 
@@ -59,6 +70,10 @@ const CockpitEditCompanyForm: React.FC<CockpitEditCompanyFormProps> = ({
         phone: values.phone || null,
         email: values.email || null,
         website: values.website || null,
+        address_line: values.address_line || null,
+        city: values.city || null,
+        state: values.state || null,
+        zip_code: values.zip_code || null,
       });
       addToast("Empresa atualizada.", "success");
       onSaved(updated);
@@ -120,6 +135,45 @@ const CockpitEditCompanyForm: React.FC<CockpitEditCompanyFormProps> = ({
           {...register("website")}
           className="input-field h-10 w-full"
           placeholder="www.empresa.com"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Endereço</label>
+        <input
+          {...register("address_line")}
+          className="input-field h-10 w-full"
+          placeholder="Rua, número, complemento"
+        />
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <div className="col-span-2">
+          <label className="block text-sm font-medium mb-1">Cidade</label>
+          <input
+            {...register("city")}
+            className="input-field h-10 w-full"
+            placeholder="São Paulo"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">UF</label>
+          <input
+            {...register("state")}
+            className="input-field h-10 w-full"
+            placeholder="SP"
+            maxLength={2}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">CEP</label>
+        <input
+          {...register("zip_code")}
+          className="input-field h-10 w-full"
+          placeholder="00000-000"
+          maxLength={9}
         />
       </div>
 

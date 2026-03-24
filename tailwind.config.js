@@ -205,7 +205,7 @@ export default {
         },
         // Label uppercase padrão do sistema
         '.label-upper': {
-          'font-size': '10.5px',
+          'font-size': '11px',
           'letter-spacing': '0.09em',
           'text-transform': 'uppercase',
           'font-weight': '500',

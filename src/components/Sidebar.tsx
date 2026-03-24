@@ -127,7 +127,7 @@ const NavItem = ({ icon: Icon, text, active, isOpen, onClick, disabled, badge, t
     title={disabled ? 'Em breve' : isOpen ? undefined : text}
     className={clsx(
       'flex items-center rounded my-[1px]',
-      'font-sans font-normal text-body',
+      'font-sans font-normal text-body-md',
       'transition-[background,color,border-color] duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]',
       'border-[0.5px]',
       'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
@@ -264,7 +264,7 @@ const Sidebar = ({ theme, toggleTheme, isOpen, setIsOpen, isDesktop, activeItem,
           onClick={toggleTheme}
           className={clsx(
             'flex items-center rounded border-[0.5px] border-transparent',
-            'font-sans font-normal text-body',
+            'font-sans font-normal text-body-md',
             'transition-[background,color,border-color] duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]',
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
             isOpen ? 'px-2.5 py-[6px] w-full' : 'w-9 h-9 justify-center',
@@ -295,10 +295,10 @@ const Sidebar = ({ theme, toggleTheme, isOpen, setIsOpen, isDesktop, activeItem,
           {isOpen && (
             <>
               <div className="flex-1 overflow-hidden min-w-0">
-                <p className={clsx('text-caption font-normal truncate leading-tight', t.emailText[theme])}>
+                <p className={clsx('text-body-sm font-normal truncate leading-tight', t.emailText[theme])}>
                   {session?.user?.email}
                 </p>
-                <p className={clsx('text-[11px] leading-tight', t.mutedText[theme])}>Logado</p>
+                <p className={clsx('text-[12px] leading-tight', t.mutedText[theme])}>Logado</p>
               </div>
               <LogOut className={clsx('w-3.5 h-3.5 shrink-0', t.mutedText[theme])} />
             </>

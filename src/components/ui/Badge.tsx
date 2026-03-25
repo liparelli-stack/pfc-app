@@ -95,7 +95,7 @@ export function DealStatusBadge({ status }: { status: 'aberta' | 'ganha' | 'perd
     aberta:    { variant: 'open',    label: 'Aberta'    },
     ganha:     { variant: 'success', label: 'Ganha'     },
     perdida:   { variant: 'danger',  label: 'Perdida'   },
-    em_espera: { variant: 'warning', label: 'Em espera' },
+    em_espera: { variant: 'warning', label: 'Em Espera' },
   }
   const { variant, label } = map[status]
   return <Badge variant={variant}>{label}</Badge>

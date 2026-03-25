@@ -32,7 +32,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { playWinSound } from '@/lib/soundPlayer';
 
 const STAGE_CONFIG: Record<BudgetStatus, { label: string; color: string }> = {
-  em_espera: { label: 'Em espera', color: '#DA8200' },
+  em_espera: { label: 'Em Espera', color: '#DA8200' },
   ganha: { label: 'Ganha', color: '#047857' },
   perdida: { label: 'Perdida', color: '#BE123C' },
 };

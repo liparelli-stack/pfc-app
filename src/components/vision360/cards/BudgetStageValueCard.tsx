@@ -46,7 +46,7 @@ function fmtPct(p: number) {
 }
 
 const LABELS: Record<StageKey, string> = {
-  em_espera: 'Em espera',
+  em_espera: 'Em Espera',
   ganha: 'Ganha',
   perdida: 'Perdida',
 };

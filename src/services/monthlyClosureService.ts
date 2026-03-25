@@ -180,6 +180,135 @@ export async function closeMonth(
   if (error) throw new Error(error.message);
 }
 
+/* ============================================================
+   Dados por vendedor (para exportação detalhada)
+   ============================================================ */
+
+export interface VendedorRow {
+  vendedor:           string;
+  meta:               number;
+  ganhos:             number;
+  percentualAtingido: number;
+  participacao:       number;
+  qtdGanhos:          number;
+  ticketMedio:        number;
+  emEspera:           number;
+  qtdEspera:          number;
+  perdidos:           number;
+  percentualPerda:    number;
+  qtdPerdidos:        number;
+}
+
+/**
+ * Busca dados de orçamentos agrupados por vendedor para um mês/ano.
+ * Meses fechados usam budget_monthly_closures; meses abertos processam chats.budgets (JSONB).
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getVendedorData = async (
+  selectedMonth: string,
+  selectedYear: number,
+  supabaseClient: any,
+): Promise<VendedorRow[]> => {
+  // 1. Profiles
+  const { data: profiles, error: profilesError } = await supabaseClient
+    .from('profiles')
+    .select('id, full_name')
+    .order('full_name');
+
+  if (profilesError) throw profilesError;
+  if (!profiles) return [];
+
+  const monthDate = `${selectedYear}-${selectedMonth.padStart(2, '0')}-01`;
+
+  // 2. Closures (snapshot se mês fechado)
+  const { data: closures } = await supabaseClient
+    .from('budget_monthly_closures')
+    .select('*')
+    .eq('month', monthDate);
+
+  // 3. Metas do mês (coluna month é date 'YYYY-MM-01')
+  const { data: targets } = await supabaseClient
+    .from('sales_monthly_targets')
+    .select('salesperson_id, target_amount')
+    .eq('month', monthDate);
+
+  // 4. Todos os chats com budgets (sem filtro de data — filtramos por budget.updated_at abaixo)
+  const { data: allChats } = await supabaseClient
+    .from('chats')
+    .select('author_user_id, budgets')
+    .not('budgets', 'eq', '[]');
+
+  const targetMonth = parseInt(selectedMonth, 10);
+
+  const vendedorData = profiles.map((profile: { id: string; full_name: string }) => {
+    const closure = closures?.find((c: any) => c.salesperson_id === profile.id);
+
+    let dados = {
+      vendedor: profile.full_name,
+      meta: 0, ganhos: 0, qtdGanhos: 0,
+      emEspera: 0, qtdEspera: 0,
+      perdidos: 0, qtdPerdidos: 0,
+    };
+
+    if (closure) {
+      // Mês fechado — usa snapshot
+      dados = {
+        vendedor:    profile.full_name,
+        meta:        Number(closure.target_amount) || 0,
+        ganhos:      Number(closure.total_ganha)   || 0,
+        qtdGanhos:   closure.qty_ganha             || 0,
+        emEspera:    Number(closure.total_aberta)  || 0,
+        qtdEspera:   closure.qty_aberta            || 0,
+        perdidos:    Number(closure.total_perdida) || 0,
+        qtdPerdidos: closure.qty_perdida           || 0,
+      };
+    } else {
+      // Mês aberto — meta da tabela de targets
+      const target = (targets as any[])?.find((t: any) => t.salesperson_id === profile.id);
+      dados.meta = Number(target?.target_amount) || 0;
+
+      // Itera chats filtrando budgets pelo mês/ano do budget (updated_at ou created_at)
+      if (allChats) {
+        (allChats as any[]).forEach((chat: any) => {
+          if (chat.author_user_id !== profile.id) return;
+          const budgets = Array.isArray(chat.budgets) ? chat.budgets : [];
+          budgets.forEach((budget: any) => {
+            const rawDate = budget.updated_at ?? budget.created_at;
+            if (rawDate) {
+              const d = new Date(rawDate);
+              if (d.getMonth() + 1 !== targetMonth || d.getFullYear() !== selectedYear) return;
+            }
+            const amount = Number(budget.amount ?? budget.value ?? 0);
+            const status = (budget.status ?? '').toLowerCase();
+            if (status === 'ganha') {
+              dados.ganhos += amount; dados.qtdGanhos += 1;
+            } else if (status === 'em_espera' || status === 'aberta') {
+              dados.emEspera += amount; dados.qtdEspera += 1;
+            } else if (status === 'perdida') {
+              dados.perdidos += amount; dados.qtdPerdidos += 1;
+            }
+          });
+        });
+      }
+    }
+
+    const ticketMedio        = dados.qtdGanhos > 0 ? dados.ganhos / dados.qtdGanhos : 0;
+    const percentualAtingido = dados.meta      > 0 ? (dados.ganhos / dados.meta) : 0; // fração pura
+    const percentualPerda    = dados.ganhos    > 0 ? (dados.perdidos / dados.ganhos) : 0; // fração pura
+    const participacao       = 0; // calculado abaixo
+
+    return { ...dados, ticketMedio, percentualAtingido, percentualPerda, participacao };
+  });
+
+  // Participação = fração pura (0–1); Excel formata como %
+  const totalGeralGanhos = vendedorData.reduce((s: number, v: VendedorRow) => s + v.ganhos, 0);
+
+  return vendedorData.map((v: VendedorRow) => ({
+    ...v,
+    participacao: totalGeralGanhos > 0 ? v.ganhos / totalGeralGanhos : 0,
+  }));
+};
+
 /**
  * Define/atualiza meta mensal de um vendedor em sales_monthly_targets.
  */

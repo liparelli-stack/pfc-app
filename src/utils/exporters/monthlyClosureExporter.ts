@@ -50,32 +50,73 @@ function buildRows(sellers: SellerRow[]) {
   }));
 }
 
+function buildStatusRows(data: MonthData) {
+  const totalGeral = data.total_ganha + data.total_perdida + data.total_aberta;
+  const qtdGeral   = data.qty_ganha   + data.qty_perdida   + data.qty_aberta;
+  const participacao = (total: number) =>
+    totalGeral > 0 ? `${((total / totalGeral) * 100).toFixed(2)}%` : '0.00%';
+  const ticketMedio = (total: number, qty: number) =>
+    qty > 0 ? brl(total / qty) : brl(0);
+
+  const rows = [
+    {
+      Status:                'Ganha',
+      Qtd:                   data.qty_ganha,
+      'Total R$':            brl(data.total_ganha),
+      '% Participação':      participacao(data.total_ganha),
+      'Ticket Médio (R$)':   ticketMedio(data.total_ganha, data.qty_ganha),
+    },
+    {
+      Status:                'Perdida',
+      Qtd:                   data.qty_perdida,
+      'Total R$':            brl(data.total_perdida),
+      '% Participação':      participacao(data.total_perdida),
+      'Ticket Médio (R$)':   ticketMedio(data.total_perdida, data.qty_perdida),
+    },
+    {
+      Status:                'Em Espera',
+      Qtd:                   data.qty_aberta,
+      'Total R$':            brl(data.total_aberta),
+      '% Participação':      participacao(data.total_aberta),
+      'Ticket Médio (R$)':   ticketMedio(data.total_aberta, data.qty_aberta),
+    },
+    {
+      Status:                'TOTAL GERAL',
+      Qtd:                   qtdGeral,
+      'Total R$':            brl(totalGeral),
+      '% Participação':      '100%',
+      'Ticket Médio (R$)':   ticketMedio(totalGeral, qtdGeral),
+    },
+  ];
+
+  if (data.qty_encerrada > 0) {
+    rows.splice(3, 0, {
+      Status:                'Encerrado',
+      Qtd:                   data.qty_encerrada,
+      'Total R$':            brl(data.total_encerrada),
+      '% Participação':      '—',
+      'Ticket Médio (R$)':   ticketMedio(data.total_encerrada, data.qty_encerrada),
+    });
+  }
+
+  return rows;
+}
+
 /* ============================================================
    Excel
    ============================================================ */
 
 export function exportToExcel(data: MonthData): void {
-  const rows = buildRows(data.sellers);
-
-  // Linha de totais
-  rows.push({
-    Vendedor:          'TOTAL',
-    'Meta (R$)':       data.target_amount,
-    'Realizado (R$)':  data.total_ganha,
-    'Qtd Ganhos':      data.sellers.reduce((s, r) => s + r.qty_ganha, 0),
-    'Performance (%)': data.performance_pct,
-    'Perdido (R$)':    data.total_perdida,
-  });
+  const rows = buildStatusRows(data);
 
   const ws = XLSX.utils.json_to_sheet(rows);
 
   ws['!cols'] = [
-    { wch: 28 },
     { wch: 16 },
+    { wch: 10 },
+    { wch: 18 },
     { wch: 16 },
-    { wch: 12 },
-    { wch: 16 },
-    { wch: 16 },
+    { wch: 18 },
   ];
 
   const wb = XLSX.utils.book_new();
@@ -90,20 +131,13 @@ export function exportToExcel(data: MonthData): void {
    ============================================================ */
 
 export function exportToCSV(data: MonthData): void {
-  const headers = ['Vendedor', 'Meta R$', 'Realizado R$', 'Qtd Ganhos', 'Performance %', 'Perdido R$'];
+  const headers = ['Status', 'Qtd', 'Total R$', '% Participação', 'Ticket Médio (R$)'];
+  const rows = buildStatusRows(data);
   const lines = [
     headers.join(';'),
-    ...data.sellers.map((s) =>
-      [s.salesperson_name, s.target_amount, s.total_ganha, s.qty_ganha, s.performance_pct, s.total_perdida].join(';'),
+    ...rows.map((r) =>
+      [r.Status, r.Qtd, r['Total R$'], r['% Participação'], r['Ticket Médio (R$)']].join(';'),
     ),
-    [
-      'TOTAL',
-      data.target_amount,
-      data.total_ganha,
-      data.sellers.reduce((s, r) => s + r.qty_ganha, 0),
-      data.performance_pct,
-      data.total_perdida,
-    ].join(';'),
   ];
 
   const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
@@ -145,27 +179,18 @@ export function exportToPDF(data: MonthData): void {
     doc.text(value, x, summaryY + 5);
   });
 
-  const tableRows = data.sellers.map((s) => [
-    s.salesperson_name,
-    brl(s.target_amount),
-    brl(s.total_ganha),
-    String(s.qty_ganha),
-    pct(s.performance_pct),
-    brl(s.total_perdida),
-  ]);
-
-  tableRows.push([
-    'TOTAL',
-    brl(data.target_amount),
-    brl(data.total_ganha),
-    String(data.sellers.reduce((s, r) => s + r.qty_ganha, 0)),
-    pct(data.performance_pct),
-    brl(data.total_perdida),
+  const statusRows = buildStatusRows(data);
+  const tableRows = statusRows.map((r) => [
+    r.Status,
+    String(r.Qtd),
+    r['Total R$'],
+    r['% Participação'],
+    r['Ticket Médio (R$)'],
   ]);
 
   autoTable(doc, {
     startY: summaryY + 14,
-    head: [['Vendedor', 'Meta R$', 'Realizado R$', 'Qtd', 'Performance', 'Perdido R$']],
+    head: [['Status', 'Qtd', 'Total R$', '% Participação', 'Ticket Médio (R$)']],
     body: tableRows,
     styles: { fontSize: 9 },
     headStyles: { fillColor: [59, 104, 245] },

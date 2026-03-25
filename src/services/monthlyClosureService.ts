@@ -134,9 +134,9 @@ function buildMonthData(mes: string, sellers: SellerRow[]): MonthData {
 /**
  * Verifica se o mês já foi fechado via RPC is_month_closed.
  */
-export async function isMonthClosed(mes: string): Promise<boolean> {
+export async function isMonthClosed(mes: string, tenantId: string): Promise<boolean> {
   const { data, error } = await supabase
-    .rpc('is_month_closed', { p_month: toMonthDate(mes) });
+    .rpc('is_month_closed', { p_tenant_id: tenantId, p_month: toMonthDate(mes) });
   if (error) throw new Error(error.message);
   return !!data;
 }
@@ -145,12 +145,21 @@ export async function isMonthClosed(mes: string): Promise<boolean> {
  * Retorna dados do mês (aberto ou fechado) via RPC get_month_data.
  * A RPC retorna uma linha por vendedor; aqui agregamos em MonthData.
  */
-export async function getMonthData(mes: string): Promise<MonthData> {
+export async function getMonthData(mes: string, tenantId: string): Promise<MonthData> {
   const { data, error } = await supabase
-    .rpc('get_month_data', { p_month: toMonthDate(mes) });
+    .rpc('get_month_data', { p_tenant_id: tenantId, p_month: toMonthDate(mes) });
   if (error) throw new Error(error.message);
 
   const sellers = ((data as any[]) ?? []).map(toSellerRow);
+
+  console.log('=== DEBUG GET_MONTH_DATA ===');
+  console.log('Mês solicitado:', mes);
+  console.log('Data enviada RPC:', toMonthDate(mes));
+  console.log('Response data:', data);
+  console.log('Response error:', error);
+  console.log('Sellers mapeados:', sellers);
+  console.log('MonthData final:', buildMonthData(mes, sellers));
+
   return buildMonthData(mes, sellers);
 }
 
@@ -160,14 +169,14 @@ export async function getMonthData(mes: string): Promise<MonthData> {
  */
 export async function closeMonth(
   mes: string,
-  _tenantId: string,
-  _profileId: string,
+  tenantId: string,
+  profileId: string,
 ): Promise<void> {
-  const already = await isMonthClosed(mes);
+  const already = await isMonthClosed(mes, tenantId);
   if (already) throw new Error('Este mês já foi fechado.');
 
   const { error } = await supabase
-    .rpc('close_month', { p_month: toMonthDate(mes) });
+    .rpc('close_month', { p_tenant_id: tenantId, p_month: toMonthDate(mes), p_closed_by: profileId });
   if (error) throw new Error(error.message);
 }
 

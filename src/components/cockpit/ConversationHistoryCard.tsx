@@ -50,6 +50,7 @@ import { onChatChanged } from "@/lib/events";
 import GroupingModeButton, {
   GroupMode,
 } from "@/components/shared/GroupingModeButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 /* ========================================================= */
 
@@ -431,6 +432,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
   showEdit = true,
 }) => {
   const { addToast } = useToast();
+  const queryClient = useQueryClient();
 
   const [baseRows, setBaseRows] = useState<ChatRow[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -636,6 +638,8 @@ const ConversationHistoryCard: React.FC<Props> = ({
 
   const handleSaved = () => {
     handleCloseModal();
+    queryClient.invalidateQueries({ queryKey: ['chats'] });
+    queryClient.invalidateQueries({ queryKey: ['company-details'] });
     fetchData().then(() => {
       if (lastEditedIdRef.current) triggerHighlight(lastEditedIdRef.current);
     });

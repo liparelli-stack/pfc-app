@@ -12,14 +12,15 @@
 */
 
 import React, { useState } from 'react';
-import { CalendarCheck, LucideIcon } from 'lucide-react';
+import { CalendarCheck, Target, LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import MonthlyClosurePage from './MonthlyClosurePage';
+import SalesTargetsPage from './SalesTargetsPage';
 
 /* ============================================================
    Tipos
    ============================================================ */
-type Section = 'monthly-closure';
+type Section = 'monthly-closure' | 'sales-targets';
 
 interface TabItemProps {
   icon: LucideIcon;
@@ -61,6 +62,12 @@ const HubGestaoPage: React.FC = () => {
       label: 'Fechamento Mensal',
       icon: CalendarCheck,
       node: <MonthlyClosurePage />,
+    },
+    {
+      id: 'sales-targets',
+      label: 'Metas Mensais',
+      icon: Target,
+      node: <SalesTargetsPage />,
     },
   ];
 

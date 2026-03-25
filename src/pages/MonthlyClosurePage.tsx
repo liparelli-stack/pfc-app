@@ -395,33 +395,33 @@ const MonthlyClosurePage: React.FC = () => {
                         {data.target_amount > 0 && <td className="py-3 px-4" />}
                       </tr>
                     )}
-                    {/* Encerrada */}
-                    {data.qty_encerrada > 0 && (
-                      <tr className="border-b border-light-bmd/60 hover:bg-light-s2/50 transition-colors">
-                        <td className="py-3 px-4">
-                          <span className="inline-flex items-center gap-2 font-medium text-light-t2">
-                            <span className="h-2 w-2 rounded-full bg-light-t3 inline-block" />
-                            Encerrada
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-light-t1">{data.qty_encerrada}</td>
-                        <td className="py-3 px-4 text-right text-light-t1">{brl(data.total_encerrada)}</td>
-                        {data.target_amount > 0 && <td className="py-3 px-4" />}
-                      </tr>
-                    )}
                   </tbody>
-                  {/* Linha de totais */}
+                  {/* Totais (G+P+A — Encerrado fora da soma) */}
                   <tfoot>
                     <tr className="border-t-2 border-light-bmd bg-light-s2/70">
                       <td className="py-3 px-4 font-bold text-light-t1">Total</td>
                       <td className="py-3 px-4 text-right font-bold text-light-t1">
-                        {data.qty_ganha + data.qty_perdida + data.qty_aberta + data.qty_encerrada}
+                        {data.qty_ganha + data.qty_perdida + data.qty_aberta}
                       </td>
                       <td className="py-3 px-4 text-right font-bold text-light-t1">
-                        {brl(data.total_ganha + data.total_perdida + data.total_aberta + data.total_encerrada)}
+                        {brl(data.total_ganha + data.total_perdida + data.total_aberta)}
                       </td>
                       {data.target_amount > 0 && <td className="py-3 px-4" />}
                     </tr>
+                    {/* Encerrado — informativo, fora da soma */}
+                    {data.qty_encerrada > 0 && (
+                      <tr className="border-t border-light-bmd/60 hover:bg-light-s2/50 transition-colors">
+                        <td className="py-3 px-4">
+                          <span className="inline-flex items-center gap-2 font-medium text-light-t3">
+                            <span className="h-2 w-2 rounded-full bg-light-t3 inline-block" />
+                            Encerrado
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right text-light-t2">{data.qty_encerrada}</td>
+                        <td className="py-3 px-4 text-right text-light-t2">{brl(data.total_encerrada)}</td>
+                        {data.target_amount > 0 && <td className="py-3 px-4" />}
+                      </tr>
+                    )}
                   </tfoot>
                 </table>
               </div>

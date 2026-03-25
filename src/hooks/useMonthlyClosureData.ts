@@ -61,7 +61,7 @@ export function useMonthlyClosureData(mes: string): UseMonthlyClosureDataReturn 
     error,
   } = useQuery<MonthData, Error>({
     queryKey,
-    queryFn: () => getMonthData(mes),
+    queryFn: () => getMonthData(mes, tenantId),
     enabled: !!mes,
     // Mês fechado: dados imutáveis — sem refetch automático
     // Mês aberto:  refetch a cada 30s para refletir novos orçamentos em tempo real

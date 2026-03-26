@@ -16,6 +16,10 @@ import clsx from 'clsx';
 import type { CompanyWithActionCount } from '@/types/cockpit';
 import { normalizeText } from '@/utils/textNormalization';
 
+function formatCurrencyK(value: number): string {
+  return `R$ ${Math.round(value / 1000)}k`;
+}
+
 interface Props {
   empresas: CompanyWithActionCount[];
   selectedCompanyId: string | null;
@@ -46,7 +50,24 @@ const EmpresasAgrupadasList: React.FC<Props> = ({
 
   const letras = useMemo(() => Object.keys(grupos).sort(), [grupos]);
 
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['A']));
+  // Inicializa com todos os grupos abertos (empresas já carregadas pelo pai antes do mount)
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
+    const letters = new Set<string>();
+    for (const emp of empresas) {
+      const letra = normalizeText(emp.trade_name)[0]?.toUpperCase() ?? '#';
+      letters.add(letra);
+    }
+    return letters;
+  });
+
+  // Auto-expande grupos que aparecem após recarregamentos (nova empresa em nova letra)
+  useEffect(() => {
+    setExpandedGroups((prev) => {
+      const novos = letras.filter((l) => !prev.has(l));
+      if (novos.length === 0) return prev;
+      return new Set([...prev, ...novos]);
+    });
+  }, [letras]);
 
   // Auto-expande o grupo da empresa selecionada quando muda externamente
   useEffect(() => {
@@ -146,6 +167,9 @@ const EmpresasAgrupadasList: React.FC<Props> = ({
                         </span>
                         <span className="text-micro font-mono text-light-t2 dark:text-dark-t2 flex-shrink-0 tabular-nums whitespace-nowrap hidden sm:inline">
                           {emp.action_count} {emp.action_count === 1 ? 'ação' : 'ações'}
+                        </span>
+                        <span className="text-micro font-mono font-medium text-accent flex-shrink-0 tabular-nums tracking-tight-md whitespace-nowrap hidden sm:inline">
+                          {formatCurrencyK(emp.valor_total_orcamentos)}
                         </span>
                         <ChevronRight
                           className={clsx(

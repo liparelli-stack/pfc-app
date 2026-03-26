@@ -25,6 +25,8 @@ export interface CompanyWithActionCount {
   id: string;
   trade_name: string;
   action_count: number;
+  /** Total de orçamentos ativos (R$). Requer coluna valor_total_orcamentos na vw_cockpit_active_companies. */
+  valor_total_orcamentos: number;
 }
 
 /**

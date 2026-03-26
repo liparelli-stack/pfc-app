@@ -181,6 +181,17 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextOpen]); // Intencional: reset apenas quando o modal de próxima ação abre/fecha, não em cada re-render de defaults
 
+  // Quando contacts muda (novo contato inserido) e o valor atual não está na lista,
+  // auto-seleciona o primeiro contato disponível para evitar contact_id vazio no submit.
+  useEffect(() => {
+    const currentId = getValues("contact_id");
+    const isInList = contacts.some((c) => c.id === currentId);
+    if (!isInList && contacts.length > 0) {
+      setValue("contact_id", contacts[0].id, { shouldValidate: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contacts.length]); // contacts.length como primitivo estável — dispara só quando a lista cresce/diminui
+
   const onInvalid = (errors: any) => addToast(getFirstErrorMessage(errors), "error");
 
   // --------------------- IA ---------------------

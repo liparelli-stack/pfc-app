@@ -1,26 +1,31 @@
 /*
 -- ===================================================
 -- Código             : src/pages/HubGestaoPage.tsx
--- Versão (.v20)      : 1.0.0
--- Data/Hora          : 2026-03-24 19:00 America/Sao_Paulo
+-- Versão (.v20)      : 1.1.0
+-- Data/Hora          : 2026-03-26 14:40 America/Sao_Paulo
 -- Autor              : FL / Execução via (Eva Claude Modelo) (Alpha Dualite modelo LLM)
 -- Objetivo do codigo : Hub de Gestão — container de abas horizontais.
 --                      [1.0.0] Primeira aba: Fechamento Mensal (SUP-000004).
+--                      [1.1.0] Terceira aba: Acompanhamento de Chats (consulta readonly).
 --                      Padrão de abas idêntico ao CatalogsPage.tsx.
--- Dependências       : MonthlyClosurePage, lucide-react, clsx
+-- Alterações (1.1.0) :
+--   • [NEW] Adicionada aba "Acompanhamento de Chats" com ícone MessageSquare.
+--   • [NEW] Importação de ChatAnalysisPage.
+-- Dependências       : MonthlyClosurePage, SalesTargetsPage, ChatAnalysisPage, lucide-react, clsx
 -- ===================================================
 */
 
 import React, { useState } from 'react';
-import { CalendarCheck, Target, LucideIcon } from 'lucide-react';
+import { CalendarCheck, Target, MessageSquare, LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import MonthlyClosurePage from './MonthlyClosurePage';
 import SalesTargetsPage from './SalesTargetsPage';
+import ChatAnalysisPage from './ChatAnalysisPage';
 
 /* ============================================================
    Tipos
    ============================================================ */
-type Section = 'monthly-closure' | 'sales-targets';
+type Section = 'monthly-closure' | 'sales-targets' | 'chat-analysis';
 
 interface TabItemProps {
   icon: LucideIcon;
@@ -68,6 +73,12 @@ const HubGestaoPage: React.FC = () => {
       label: 'Metas Mensais',
       icon: Target,
       node: <SalesTargetsPage />,
+    },
+    {
+      id: 'chat-analysis',
+      label: 'Acompanhamento de Chats',
+      icon: MessageSquare,
+      node: <ChatAnalysisPage />,
     },
   ];
 

@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **CRM Appy v0.1.1** | Última atualização: 2026-03-25 | Branch: `crmappy-v0101-m2503`
+> **CRM Appy v0.1.1** | Última atualização: 2026-03-25 | Branch: `crmappy-v0101-m2503a`
 
 ---
 
@@ -26,6 +26,7 @@ Page → Hook (src/hooks/use*.ts) → Service (src/services/*Service.ts) → Sup
 ```
 
 - **Hooks** gerenciam cache via React Query; nunca use `useState + useEffect` para fetch.
+  - **Exceção intencional:** hooks de lookup simples para dropdowns de filtro (`useContacts.ts`, `useSalespersons.ts`) usam `useState + useEffect` por serem listas estáticas sem necessidade de cache/invalidação.
 - **Services** são funções puras sem estado.
 - **RLS é a proteção primária** — filtro no código é camada adicional, não substituto.
 
@@ -72,7 +73,7 @@ CRM Appy é uma plataforma CRM moderna e completa para gestão de relacionamento
 ```
 crmappy-v0101/
 ├── src/
-│   ├── pages/              # 13 páginas
+│   ├── pages/              # 14 páginas
 │   ├── components/         # Componentes por feature + UI base
 │   │   ├── Cockpit/        # Pipeline + CRUD inline + hooks
 │   │   ├── Dashboard/
@@ -394,6 +395,18 @@ WITH CHECK (tenant_id = app.current_tenant_id());
 ---
 
 ## Changelog
+
+### [m2503a] - 2026-03-26
+
+#### ✅ Adicionado
+- **Acompanhamento de Chats** (`/hub` → nova aba para ADM/Gestor):
+  - `ChatAnalysisPage.tsx`: visualiza TODOS os chats do tenant (modo readonly)
+  - `ChatAnalysisFilters.tsx`: filtros por vendedor, empresa, assunto, período
+  - `useContacts.ts`: lookup de empresas para dropdown (useState+useEffect — ver exceção acima)
+  - `useSalespersons.ts`: lookup de vendedores (profiles) para dropdown
+  - Reutiliza `ConversationHistoryCard` com props `readOnly`, `showAllChats`, `externalFilters`
+
+---
 
 ### [m2503] - 2026-03-25
 

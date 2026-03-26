@@ -51,10 +51,24 @@ import GroupingModeButton, {
   GroupMode,
 } from "@/components/shared/GroupingModeButton";
 import { useQueryClient } from "@tanstack/react-query";
+import PaginationToolbar from "@/components/shared/PaginationToolbar";
 
 /* ========================================================= */
 
-type Props = { companyId: string | null; showEdit?: boolean };
+type Props = {
+  companyId: string | null;
+  showEdit?: boolean;
+  readOnly?: boolean;
+  showAllChats?: boolean;
+  showPagination?: boolean;
+  externalFilters?: {
+    salespersonId?: string;
+    companyId?: string;
+    subject?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  };
+};
 
 type ChatRow = {
   id: string;
@@ -427,9 +441,15 @@ function groupRowsByCompany(rows: ChatRow[]): GroupedByCompany[] {
 /* Componente principal                                      */
 /* ========================================================= */
 
+const LS_PAGESIZE_KEY = 'chc_pagesize';
+
 const ConversationHistoryCard: React.FC<Props> = ({
   companyId,
   showEdit = true,
+  readOnly = false,
+  showAllChats = false,
+  showPagination = false,
+  externalFilters,
 }) => {
   const { addToast } = useToast();
   const queryClient = useQueryClient();
@@ -459,6 +479,14 @@ const ConversationHistoryCard: React.FC<Props> = ({
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Paginação (ativa apenas quando showPagination=true e groupMode="none")
+  const [pageSize, setPageSize] = useState<15 | 30 | 60>(() => {
+    if (!showPagination) return 15;
+    const saved = localStorage.getItem(LS_PAGESIZE_KEY);
+    return (saved === '30' || saved === '60') ? (Number(saved) as 30 | 60) : 15;
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+
   const todayISO = useMemo(() => getTodayISO(), []);
 
   const triggerHighlight = useCallback((id: string | null) => {
@@ -468,20 +496,33 @@ const ConversationHistoryCard: React.FC<Props> = ({
   }, []);
 
   const fetchData = useCallback(async () => {
-    if (!companyId) return;
+    if (!companyId && !showAllChats) return;
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("chats")
         .select(`
           id, kind, direction, channel_type, subject, temperature,
           calendar_at, on_time, created_at, updated_at, is_done,
-          body, priority, budgets,
+          body, priority, budgets, author_user_id,
           company:companies(trade_name),
           contact:contacts(full_name)
         `)
-        .eq("company_id", companyId)
         .order("updated_at", { ascending: false });
+
+      // Filtro padrão por empresa (modo normal)
+      if (!showAllChats && companyId) {
+        query = query.eq("company_id", companyId);
+      }
+
+      // Filtros externos (modo showAllChats)
+      if (externalFilters?.companyId)    query = query.eq("company_id", externalFilters.companyId);
+      if (externalFilters?.salespersonId) query = query.eq("author_user_id", externalFilters.salespersonId);
+      if (externalFilters?.subject)       query = query.ilike("subject", `%${externalFilters.subject}%`);
+      if (externalFilters?.dateFrom)      query = query.gte("calendar_at", externalFilters.dateFrom);
+      if (externalFilters?.dateTo)        query = query.lte("calendar_at", externalFilters.dateTo);
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -518,7 +559,8 @@ const ConversationHistoryCard: React.FC<Props> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [companyId, addToast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId, showAllChats, JSON.stringify(externalFilters), addToast]);
 
   useEffect(() => {
     fetchData();
@@ -535,7 +577,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
       window.removeEventListener("chats:changed", h1 as any);
       off();
     };
-  }, [fetchData, companyId]);
+  }, [fetchData, companyId, showAllChats, externalFilters]);
 
   const rows = useMemo(() => {
     let r = baseRows.slice();
@@ -615,6 +657,17 @@ const ConversationHistoryCard: React.FC<Props> = ({
     orderDir,
   ]);
 
+  // Resetar página ao mudar filtros/ordenação
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [rows]);
+
+  const paginatedRows = useMemo(() => {
+    if (!showPagination || groupMode !== 'none') return rows;
+    const start = (currentPage - 1) * pageSize;
+    return rows.slice(start, start + pageSize);
+  }, [rows, showPagination, groupMode, currentPage, pageSize]);
+
   const handleEdit = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     try {
@@ -645,7 +698,8 @@ const ConversationHistoryCard: React.FC<Props> = ({
     });
   };
 
-  const COLSPAN = showEdit ? 6 : 5;
+  const canEdit = showEdit && !readOnly;
+  const COLSPAN = canEdit ? 6 : 5;
 
   const applySearchFromInput = () => {
     setSearchTerm(searchInput.trim());
@@ -717,7 +771,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
 
           <td className="py-2 px-2 text-xs">{r.company_name}</td>
 
-          {showEdit && (
+          {canEdit && (
             <td className="py-2 px-2">
               <Button
                 type="button"
@@ -998,7 +1052,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                   { key: "channel_type", label: "Tipo" },
                   { key: "subject", label: "Assunto" },
                   { key: "company_name", label: "Empresa" },
-                  ...(showEdit
+                  ...(canEdit
                     ? ([{ key: "actions", label: "Ações" }] as const)
                     : []),
                 ].map((col) => (
@@ -1067,7 +1121,7 @@ const ConversationHistoryCard: React.FC<Props> = ({
                   </td>
                 </tr>
               ) : groupMode === "none" ? (
-                rows.map(renderRowBlock)
+                paginatedRows.map(renderRowBlock)
               ) : groupMode === "date" ? (
                 groupRowsByDate(rows).map((g) => (
                   <React.Fragment key={`day-${g.day}`}>
@@ -1170,6 +1224,21 @@ const ConversationHistoryCard: React.FC<Props> = ({
             </tbody>
           </table>
         </div>
+      )}
+
+      {showPagination && groupMode === 'none' && (
+        <PaginationToolbar
+          page={currentPage}
+          pageSize={pageSize}
+          total={rows.length}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            localStorage.setItem(LS_PAGESIZE_KEY, String(size));
+            setCurrentPage(1);
+          }}
+          itemTypeLabel="ações"
+        />
       )}
 
       <Modal

@@ -1349,12 +1349,6 @@ const Dashboard: React.FC = () => {
         </NeumorphicCard>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <IndicatorCard icon={Building} label="Novos Hoje" value="8" iconBg="bg-blue-100 dark:bg-blue-900/50" />
-        <IndicatorCard icon={Phone} label="Reuniões" value="4" iconBg="bg-green-100 dark:bg-green-900/50" />
-        <IndicatorCard icon={BarChart2} label="Taxa Sucesso" value="67%" iconBg="bg-purple-100 dark:bg-purple-900/50" />
-        <IndicatorCard icon={DollarSign} label="Receita Mês" value="R$ 45k" iconBg="bg-yellow-100 dark:bg-yellow-900/50" />
-      </div>
     </div>
   );
 };

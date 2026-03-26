@@ -19,9 +19,9 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Lock, RefreshCw, FileSpreadsheet, FileText, FileDown,
+  Lock, RefreshCw, FileSpreadsheet, FileText, FileDown, Search,
   AlertTriangle, TrendingUp, TrendingDown, Target, DollarSign, CalendarSearch,
-  HelpCircle, X,
+  HelpCircle, X, Database,
 } from 'lucide-react';
 import clsx from 'clsx';
 import * as XLSX from 'xlsx';
@@ -30,10 +30,10 @@ import autoTable from 'jspdf-autotable';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { getCurrentProfile } from '@/services/profilesService';
-import { getVendedorData } from '@/services/monthlyClosureService';
+import { getVendedorData, createBaseline, checkBaselineExists, getDetalhamentoMes } from '@/services/monthlyClosureService';
 import { supabase } from '@/lib/supabaseClient';
 import { useMonthlyClosureData } from '@/hooks/useMonthlyClosureData';
-import { exportToCSV } from '@/utils/exporters/monthlyClosureExporter';
+import { exportToCSV, exportDetalhamentoExcel } from '@/utils/exporters/monthlyClosureExporter';
 
 /* ============================================================
    Helpers
@@ -165,6 +165,9 @@ const MonthlyClosurePage: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [hasBaseline, setHasBaseline] = useState(true);
+  const [showBaselineModal, setShowBaselineModal] = useState(false);
+  const [baselineLoading, setBaselineLoading] = useState(false);
   const monthOptions = buildMonthOptions(12);
 
   /* Verificação de admin */
@@ -175,6 +178,29 @@ const MonthlyClosurePage: React.FC = () => {
       .catch(() => { if (mounted) setIsAdmin(false); });
     return () => { mounted = false; };
   }, [session]);
+
+  /* Verificação de baseline */
+  useEffect(() => {
+    let mounted = true;
+    checkBaselineExists()
+      .then((exists) => { if (mounted) setHasBaseline(exists); })
+      .catch(() => { if (mounted) setHasBaseline(true); }); // conservador: não exibe botão em caso de erro
+    return () => { mounted = false; };
+  }, []);
+
+  const handleCreateBaseline = async () => {
+    setBaselineLoading(true);
+    try {
+      const result = await createBaseline();
+      addToast(`Baseline criado: ${result.records} orçamentos importados.`, 'success');
+      setHasBaseline(true);
+      setShowBaselineModal(false);
+    } catch (e: any) {
+      addToast(e?.message || 'Falha ao criar baseline.', 'error');
+    } finally {
+      setBaselineLoading(false);
+    }
+  };
 
   // Hook recebe '' quando null → hook interno tem `enabled: !!mes`, não dispara
   const { data, isLoading, isError, error, isClosed, closeMutation } =
@@ -336,6 +362,21 @@ const MonthlyClosurePage: React.FC = () => {
     } catch (err) {
       console.error('Erro ao exportar PDF:', err);
       addToast('Erro ao exportar PDF', 'error');
+    }
+  };
+
+  const handleExportDetalhamento = async () => {
+    if (!selectedMes) return;
+    // Admin: null = sem filtro (todos os vendedores)
+    // Vendedor: undefined = usa auth.uid() (só os próprios)
+    const vendedorId = isAdmin ? null : undefined;
+    try {
+      const dados = await getDetalhamentoMes(selectedMes, vendedorId);
+      exportDetalhamentoExcel(dados, selectedMes);
+      addToast('Conferência exportada com sucesso!', 'success');
+    } catch (err) {
+      console.error('Erro ao exportar conferência:', err);
+      addToast('Erro ao exportar conferência', 'error');
     }
   };
 
@@ -650,7 +691,26 @@ const MonthlyClosurePage: React.FC = () => {
               >
                 <FileDown className="h-4 w-4" /> PDF
               </button>
+              <button
+                type="button"
+                onClick={handleExportDetalhamento}
+                title="Exportar detalhamento completo para auditoria"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-light-s1 border border-light-bmd text-light-t2 hover:text-accent-light hover:border-accent-light/40 shadow-[var(--sh1)] transition-colors"
+              >
+                <Search className="h-4 w-4" /> Conferência
+              </button>
             </>
+          )}
+
+          {/* Baseline inicial (admin + sem eventos em budget_events) */}
+          {isAdmin && !hasBaseline && (
+            <button
+              type="button"
+              onClick={() => setShowBaselineModal(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-danger text-white hover:opacity-90 shadow-[var(--sh1)] transition-opacity"
+            >
+              <Database className="h-4 w-4" /> Criar Baseline
+            </button>
           )}
 
           {/* Fechar mês (admin + aberto + mês selecionado) */}
@@ -888,6 +948,46 @@ const MonthlyClosurePage: React.FC = () => {
           onCancel={() => setShowConfirm(false)}
           isPending={closeMutation.isPending}
         />
+      )}
+
+      {/* Modal de baseline */}
+      {showBaselineModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-light-s1 rounded-2xl shadow-[var(--sh2)] p-8 max-w-md w-full mx-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-10 w-10 rounded-full bg-danger/15 flex items-center justify-center">
+                <Database className="h-5 w-5 text-danger" />
+              </div>
+              <h2 className="text-xl font-bold text-light-t1">Criar Baseline Inicial</h2>
+            </div>
+            <p className="text-light-t2 text-sm mb-3">
+              Importa todos os orçamentos existentes para a tabela de eventos de forma que
+              o Fechamento Mensal possa calcular os dados corretamente.
+            </p>
+            <p className="text-light-t3 text-xs mb-6">
+              Fotografia em: <strong className="text-light-t2">{new Date().toLocaleString('pt-BR')}</strong>
+              {' '}— operação idempotente (orçamentos já importados são ignorados).
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setShowBaselineModal(false)}
+                disabled={baselineLoading}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-light-t2 hover:bg-light-s2 transition-colors disabled:opacity-60"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleCreateBaseline}
+                disabled={baselineLoading}
+                className="px-4 py-2 rounded-lg text-sm font-bold bg-danger text-white hover:opacity-90 transition-opacity disabled:opacity-60"
+              >
+                {baselineLoading ? 'Importando…' : 'Confirmar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Modal de ajuda */}

@@ -7,6 +7,7 @@ type AddToast = (message: string, type: string) => void;
 interface UseBudgetManagerParams {
   isEditing: boolean;
   chatId: string | undefined;
+  companyId: string | undefined;
   initialBudgets: UIBudgetItem[] | null | undefined;
   addToast: AddToast;
 }
@@ -24,9 +25,20 @@ export interface UseBudgetManagerReturn {
 const ALLOWED_STATUSES = ["aberta", "ganha", "perdida", "terminado"] as const;
 type BudgetStatus = typeof ALLOWED_STATUSES[number];
 
+function dispatchBudgetRefresh(companyId: string | undefined) {
+  try {
+    const detail = { companyId: companyId ?? null };
+    window.dispatchEvent(new CustomEvent("cockpit:refreshHistory", { detail }));
+    window.dispatchEvent(new CustomEvent("chats:changed", { detail }));
+  } catch {
+    // silencioso
+  }
+}
+
 export function useBudgetManager({
   isEditing,
   chatId,
+  companyId,
   initialBudgets,
   addToast,
 }: UseBudgetManagerParams): UseBudgetManagerReturn {
@@ -113,6 +125,7 @@ export function useBudgetManager({
               // 3.8.2: se virou "terminado", some da UI (deleção fria)
               .filter((it) => (it as any).status !== "terminado")
           );
+          dispatchBudgetRefresh(companyId);
           addToast("Orçamento atualizado.", "success");
         } else {
           // Criar novo em chat existente
@@ -137,6 +150,7 @@ export function useBudgetManager({
               } as any,
             ]);
           }
+          dispatchBudgetRefresh(companyId);
           addToast("Orçamento criado.", "success");
         }
         setBudgetDraft(null);

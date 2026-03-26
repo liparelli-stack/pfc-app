@@ -145,6 +145,7 @@ const EditActionForm: React.FC<EditActionFormProps> = ({
   } = useBudgetManager({
     isEditing,
     chatId: editingChat?.id,
+    companyId: contextCompanyId || undefined,
     initialBudgets: editingChat?.budgets as any,
     addToast,
   });

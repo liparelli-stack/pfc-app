@@ -333,3 +333,173 @@ export async function upsertGoal(
     );
   if (error) throw new Error(error.message);
 }
+
+/* ============================================================
+   Baseline de budget_events
+   ============================================================ */
+
+/**
+ * Popula budget_events com os orçamentos já existentes em chats.budgets
+ * que ainda não possuem eventos. Idempotente.
+ */
+export async function createBaseline(
+  baselineTs?: string,
+): Promise<{ success: boolean; timestamp: string; records: number }> {
+  const { data, error } = baselineTs
+    ? await supabase.rpc('create_baseline', { baseline_ts: baselineTs })
+    : await supabase.rpc('create_baseline');
+
+  if (error) throw new Error(error.message);
+  return data as { success: boolean; timestamp: string; records: number };
+}
+
+/**
+ * Verifica se já existem eventos em budget_events (baseline executado).
+ */
+export async function checkBaselineExists(): Promise<boolean> {
+  const { count, error } = await supabase
+    .from('budget_events')
+    .select('*', { count: 'exact', head: true });
+
+  if (error) throw new Error(error.message);
+  return (count ?? 0) > 0;
+}
+
+/* ============================================================
+   Detalhamento de conferência por mês
+   ============================================================ */
+
+export interface DetalhamentoRow {
+  vendedor_nome:       string;
+  cliente_nome:        string;
+  valor:               number;
+  status_fechamento:   string;
+  data_mudanca:        string;
+  status_atual:        string;
+  mudou_apos:          boolean;
+  dias_ate_fechamento: number | null;
+  budget_id:           string;
+  chat_id:             string;
+  observacao:          string;
+  motivo_perda:        string;
+}
+
+function normalizeStatusDetalhamento(s: string): string {
+  switch ((s ?? '').toLowerCase()) {
+    case 'ganha':     return 'Ganha';
+    case 'perdida':   return 'Perdida';
+    case 'terminado':
+    case 'encerrado': return 'Encerrado';
+    default:          return 'Aberta';
+  }
+}
+
+/**
+ * Retorna detalhamento de orçamentos de um mês para auditoria/conferência.
+ * Filtra pelos orçamentos cujo budget.updated_at cai no mês solicitado.
+ * vendedorId undefined → usa auth.uid() do usuário logado.
+ */
+export async function getDetalhamentoMes(
+  mesFechamento: string,
+  vendedorId?: string | null,
+): Promise<DetalhamentoRow[]> {
+  const user = (await supabase.auth.getUser()).data.user;
+  if (!user) throw new Error('Não autenticado');
+
+  // null  → admin: sem filtro, retorna todos os vendedores
+  // undefined → vendedor: filtra pelo usuário logado
+  // string → filtra pelo ID fornecido
+  const targetVendedor = vendedorId === null ? null : (vendedorId ?? user.id);
+
+  const [yyyy, mm] = mesFechamento.split('-');
+  const year  = parseInt(yyyy, 10);
+  const month = parseInt(mm,   10);
+  const mesInicio = new Date(Date.UTC(year, month - 1, 1));
+  const mesFim    = new Date(Date.UTC(year, month,     1));
+
+  // 1. Buscar chats com budgets (sem filtro de vendedor quando admin)
+  let chatQuery = supabase
+    .from('chats')
+    .select('id, author_user_id, company_id, budgets')
+    .neq('budgets', '[]');
+
+  if (targetVendedor !== null) {
+    chatQuery = chatQuery.eq('author_user_id', targetVendedor);
+  }
+
+  const { data: chats, error: chatsError } = await chatQuery;
+
+  if (chatsError) throw new Error(chatsError.message);
+  if (!chats?.length) return [];
+
+  // 2. Buscar companies em batch
+  const companyIds = [...new Set(chats.map((c: any) => c.company_id).filter(Boolean))];
+
+  const { data: companies } = companyIds.length
+    ? await supabase.from('companies').select('id, nome, trade_name').in('id', companyIds)
+    : { data: [] as any[] };
+
+  const companiesMap = new Map((companies ?? []).map((c: any) => [c.id, c]));
+
+  // 3. Buscar vendedores em batch
+  const vendedorIds = [...new Set(chats.map((c: any) => c.author_user_id).filter(Boolean))];
+
+  const { data: vendedores } = vendedorIds.length
+    ? await supabase.from('profiles').select('id, full_name').in('id', vendedorIds)
+    : { data: [] as any[] };
+
+  const vendedoresMap = new Map((vendedores ?? []).map((v: any) => [v.id, v]));
+
+  // 4. Processar budgets filtrando pelo mês (budget.updated_at)
+  type BudgetItem = {
+    id: string;
+    status?: string;
+    amount?: number;
+    updated_at?: string;
+    created_at?: string;
+    description?: string;
+    loss_reason?: string | null;
+  };
+
+  const resultado: DetalhamentoRow[] = [];
+
+  for (const chat of chats as any[]) {
+    const company = companiesMap.get(chat.company_id);
+    const vendedor = vendedoresMap.get(chat.author_user_id);
+    const budgets: BudgetItem[] = Array.isArray(chat.budgets) ? chat.budgets : [];
+
+    for (const budget of budgets) {
+      if (!budget.updated_at) continue;
+      const updated = new Date(budget.updated_at);
+      if (updated < mesInicio || updated >= mesFim) continue;
+
+      const criacao     = budget.created_at ? new Date(budget.created_at) : mesInicio;
+      const atualizacao = updated;
+      const dias = Math.floor((atualizacao.getTime() - criacao.getTime()) / 86_400_000);
+
+      const statusNormalizado =
+        budget.status === 'ganha'    ? 'Ganha'    :
+        budget.status === 'perdida'  ? 'Perdida'  :
+        budget.status === 'terminado'? 'Encerrado': 'Aberta';
+
+      const isTerminal = budget.status === 'ganha' || budget.status === 'perdida';
+
+      resultado.push({
+        vendedor_nome:       vendedor?.full_name ?? 'Vendedor não identificado',
+        cliente_nome:        company?.nome ?? company?.trade_name ?? 'Cliente não vinculado',
+        valor:               Number(budget.amount) || 0,
+        status_fechamento:   statusNormalizado,
+        data_mudanca:        budget.updated_at,
+        status_atual:        statusNormalizado,
+        mudou_apos:          false,
+        dias_ate_fechamento: isTerminal ? dias : null,
+        budget_id:           budget.id,
+        chat_id:             chat.id,
+        observacao:          budget.description ?? '',
+        motivo_perda:        budget.loss_reason  ?? '',
+      });
+    }
+  }
+
+  return resultado;
+}

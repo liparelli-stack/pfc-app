@@ -24,7 +24,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { MonthData, SellerRow } from '@/services/monthlyClosureService';
+import type { MonthData, SellerRow, DetalhamentoRow } from '@/services/monthlyClosureService';
 
 /* ============================================================
    Helpers
@@ -202,4 +202,63 @@ export function exportToPDF(data: MonthData): void {
   });
 
   doc.save(filename(data.mes, 'pdf'));
+}
+
+/* ============================================================
+   Excel — Detalhamento de Conferência
+   ============================================================ */
+
+export function exportDetalhamentoExcel(
+  rows: DetalhamentoRow[],
+  mes: string,
+  nomeArquivo?: string,
+): void {
+  const wsData = rows.map((r) => ({
+    'Vendedor':           r.vendedor_nome,
+    'Cliente':            r.cliente_nome,
+    'Valor (R$)':         r.valor,
+    'Status Fechamento':  r.status_fechamento,
+    'Data Mudança':       r.data_mudanca
+      ? new Date(r.data_mudanca).toLocaleDateString('pt-BR')
+      : '',
+    'Status Atual':       r.status_atual,
+    'Mudou Depois?':      r.mudou_apos ? 'Sim' : 'Não',
+    'Dias até Fechar':    r.dias_ate_fechamento ?? '',
+    'Budget ID':          r.budget_id,
+    'Chat ID':            r.chat_id,
+    'Observação':         r.observacao,
+    'Motivo Perda':       r.motivo_perda,
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(wsData);
+
+  ws['!cols'] = [
+    { wch: 22 }, // Vendedor
+    { wch: 30 }, // Cliente
+    { wch: 16 }, // Valor
+    { wch: 18 }, // Status Fechamento
+    { wch: 14 }, // Data Mudança
+    { wch: 14 }, // Status Atual
+    { wch: 14 }, // Mudou Depois?
+    { wch: 14 }, // Dias até Fechar
+    { wch: 32 }, // Budget ID
+    { wch: 32 }, // Chat ID
+    { wch: 28 }, // Observação
+    { wch: 28 }, // Motivo Perda
+  ];
+
+  // Formato moeda na coluna C (Valor)
+  wsData.forEach((_, i) => {
+    const ref = `C${i + 2}`;
+    if (ws[ref]) ws[ref].z = 'R$ #,##0.00';
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Detalhamento');
+
+  const buf = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+  saveAs(
+    new Blob([buf], { type: 'application/octet-stream' }),
+    nomeArquivo ?? `conferencia_${mes}.xlsx`,
+  );
 }

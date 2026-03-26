@@ -1,8 +1,8 @@
 /*
 -- ===================================================
 -- Código             : /src/services/aiNotesService.ts
--- Versão (.v20)      : 1.1.0
--- Data/Hora          : 2025-12-18 22:25 America/Sao_Paulo
+-- Versão (.v20)      : 1.2.0
+-- Data/Hora          : 2026-03-26 America/Sao_Paulo
 -- Autor              : FL / Execução via E.V.A.
 -- Objetivo do codigo : Service de Notas da IA (CRUD + Finder FTS)
 -- Fluxo              : UI / Hooks
@@ -11,7 +11,8 @@
 -- Observações:
 --   • Escopo por JWT + RLS (tenant_id + owner_profile_id)
 --   • Finder usa FTS (title + body)
---   • Soft delete via deleted_at
+--   • Hard delete via policy ai_notes_delete_own
+--   • listAiNotes / searchAiNotes filtram deleted_at IS NULL explicitamente
 -- ===================================================
 */
 
@@ -102,6 +103,7 @@ export async function listAiNotes(
       updated_at
     `
     )
+    .is('deleted_at', null)
     .order('updated_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -139,6 +141,7 @@ export async function searchAiNotes(
       updated_at
     `
     )
+    .is('deleted_at', null)
     .textSearch('search_tsv', query, {
       type: 'websearch',
       config: 'portuguese',
@@ -208,12 +211,12 @@ export async function updateAiNote(
 }
 
 /* ===================================================
- * SOFT DELETE
+ * DELETE
  * =================================================== */
 export async function deleteAiNote(noteId: string): Promise<boolean> {
   const { error } = await supabase
     .from('ai_notes')
-    .update({ deleted_at: new Date().toISOString() })
+    .delete()
     .eq('id', noteId);
 
   if (error) {

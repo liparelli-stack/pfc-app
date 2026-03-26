@@ -15,7 +15,7 @@
 */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Building, LucideIcon, Loader2, X as XIcon, Search as SearchIcon } from 'lucide-react';
+import { Loader2, X as XIcon, Search as SearchIcon } from 'lucide-react';
 import {
   listCompaniesWithActiveActions,
   getCompanyDetails,
@@ -28,42 +28,10 @@ import RegisterActionCard from '@/components/cockpit/RegisterActionCard';
 import ConversationHistoryCard from '@/components/cockpit/ConversationHistoryCard';
 import NotesSection from '@/components/vision360/NotesSection';
 import { Skeleton } from '@/components/ui/Skeleton';
+import EmpresasAgrupadasList from '@/components/cockpit/EmpresasAgrupadasList';
 import clsx from 'clsx';
 import { onChatChanged } from '@/lib/events';
 
-interface NavItemProps {
-  icon: LucideIcon;
-  label: string;
-  actionCount: number;
-  isActive: boolean;
-  onClick: () => void;
-  onHover?: () => void;
-}
-
-const CockpitNavItem: React.FC<NavItemProps> = ({ icon: Icon, label, actionCount, isActive, onClick, onHover }) => (
-  <button
-    onClick={onClick}
-    onMouseEnter={onHover}
-    className={clsx(
-      'relative z-[210] pointer-events-auto block w-full',
-      'flex items-center justify-between text-left p-3 my-1 rounded-lg transition-none md:transition-all duration-200',
-      { 'neumorphic-concave text-primary': isActive, 'neumorphic-convex hover:neumorphic-concave hover:text-primary': !isActive }
-    )}
-    aria-current={isActive ? 'page' : undefined}
-  >
-    <div className="flex items-center min-w-0">
-      <Icon className="h-5 w-5 mr-3 flex-shrink-0" />
-      <span className="font-semibold truncate" title={label}>{label}</span>
-    </div>
-    <span
-      className="ml-2 text-xs font-bold px-2 py-1 rounded-full bg-[#FFD700] text-gray-900 shadow-inner"
-      aria-label={`${actionCount} ações ativas`}
-      title={`${actionCount} ações ativas`}
-    >
-      {actionCount}
-    </span>
-  </button>
-);
 
 type EditingChat = Partial<{ id: string; kind: string; channel_type: string }>;
 const SWITCH_THROTTLE_MS = 300;
@@ -390,25 +358,13 @@ const CockpitPage: React.FC = () => {
             <div className="space-y-2">
               {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
             </div>
-          ) : companies.length > 0 ? (
-            <nav className="relative z-[205] pointer-events-auto">
-              <ul className="space-y-0">
-                {companies.map((company) => (
-                  <li key={company.id} className="relative">
-                    <CockpitNavItem
-                      icon={Building}
-                      label={company.trade_name}
-                      actionCount={company.action_count}
-                      isActive={selectedCompanyId === company.id}
-                      onHover={() => prefetchCompanyDetails(company.id)}
-                      onClick={() => throttleSelect(company.id)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </nav>
           ) : (
-            <p className="text-center text-gray-500 p-4">Nenhuma empresa com ações ativas.</p>
+            <EmpresasAgrupadasList
+              empresas={companies}
+              selectedCompanyId={selectedCompanyId}
+              onSelect={throttleSelect}
+              onHover={prefetchCompanyDetails}
+            />
           )}
         </div>
       </aside>

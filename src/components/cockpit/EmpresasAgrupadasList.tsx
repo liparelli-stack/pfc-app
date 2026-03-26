@@ -101,10 +101,7 @@ const EmpresasAgrupadasList: React.FC<Props> = ({
   }
 
   return (
-    <div
-      className="overflow-y-auto"
-      style={{ maxHeight: 'calc(100vh - 320px)', minHeight: '400px' }}
-    >
+    <div className="flex-1 overflow-y-auto overflow-x-hidden">
       {letras.map((letra) => {
         const isOpen = expandedGroups.has(letra);
         const emps = grupos[letra];

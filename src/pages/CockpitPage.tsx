@@ -242,7 +242,7 @@ const CockpitPage: React.FC = () => {
     <div className="flex flex-col md:flex-row gap-8 h-full">
       {/* Painel lateral */}
       <aside className="md:w-1/3 lg:w-1/4 flex-shrink-0">
-        <div className="bg-light-bg dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd relative isolate z-[200] overflow-visible p-4 rounded-2xl h-full">
+        <div className="bg-light-bg dark:bg-dark-s1 border border-light-bmd dark:border-dark-bmd relative isolate z-[200] overflow-visible p-4 rounded-2xl flex flex-col max-h-[calc(100vh-200px)] min-h-[300px]">
           {/* Caixa de busca */}
           <div className="mb-3 relative" ref={searchBoxRef}>
             <div className="relative">

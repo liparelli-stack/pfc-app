@@ -17,7 +17,7 @@ import type { CompanyWithActionCount } from '@/types/cockpit';
 import { normalizeText } from '@/utils/textNormalization';
 
 function formatCurrencyK(value: number): string {
-  return `R$ ${Math.round(value / 1000)}k`;
+  return `R$ ${(value / 1000).toFixed(1).replace('.', ',')}k`;
 }
 
 interface Props {

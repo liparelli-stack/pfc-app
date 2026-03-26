@@ -174,7 +174,7 @@ const EmpresasAgrupadasList: React.FC<Props> = ({
                             {formatCurrencyK(emp.valor_total_orcamentos)}
                           </span>
                           <div className={clsx(
-                            'pointer-events-none absolute bottom-full right-0 mb-2 z-20',
+                            'pointer-events-none absolute top-full right-0 mt-2 z-20',
                             'hidden group-hover:block',
                             'rounded-lg border border-light-bmd dark:border-dark-bmd',
                             'bg-light-s2 dark:bg-dark-s2 shadow-sh2',

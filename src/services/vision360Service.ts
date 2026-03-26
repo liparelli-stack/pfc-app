@@ -39,10 +39,7 @@ export const searchCompanies = async (query: string): Promise<Company[]> => {
   if (!query || query.trim().length < 2) return [];
 
   const { data, error } = await supabase
-    .from('companies')
-    .select('id, trade_name, legal_name')
-    .ilike('trade_name', `%${query.trim()}%`)
-    .limit(10);
+    .rpc('search_companies_vision360', { p_term: query.trim() });
 
   if (error) {
     console.error('[vision360Service] Erro ao buscar empresas para Visão 360:', error);

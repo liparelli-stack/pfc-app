@@ -168,9 +168,32 @@ const EmpresasAgrupadasList: React.FC<Props> = ({
                         <span className="text-micro font-mono text-light-t2 dark:text-dark-t2 flex-shrink-0 tabular-nums whitespace-nowrap hidden sm:inline">
                           {emp.action_count} {emp.action_count === 1 ? 'ação' : 'ações'}
                         </span>
-                        <span className="text-micro font-mono font-medium text-accent flex-shrink-0 tabular-nums tracking-tight-md whitespace-nowrap hidden sm:inline">
-                          {formatCurrencyK(emp.valor_total_orcamentos)}
-                        </span>
+                        {/* Valor com tooltip de breakdown por status */}
+                        <div className="relative group hidden sm:inline-block flex-shrink-0">
+                          <span className="cursor-help text-micro font-mono font-medium text-accent tabular-nums tracking-tight-md whitespace-nowrap">
+                            {formatCurrencyK(emp.valor_total_orcamentos)}
+                          </span>
+                          <div className={clsx(
+                            'pointer-events-none absolute bottom-full right-0 mb-2 z-20',
+                            'hidden group-hover:block',
+                            'rounded-lg border border-light-bmd dark:border-dark-bmd',
+                            'bg-light-s2 dark:bg-dark-s2 shadow-sh2',
+                            'px-3 py-2 min-w-[152px]'
+                          )}>
+                            <div className="flex items-center justify-between gap-3 mb-0.5">
+                              <span className="text-label text-light-t3 dark:text-dark-t3 whitespace-nowrap">Em Aberto</span>
+                              <span className="text-label font-mono text-light-t1 dark:text-dark-t1 tabular-nums">{formatCurrencyK(emp.valor_abertos)}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-3 mb-0.5">
+                              <span className="text-label text-light-t3 dark:text-dark-t3 whitespace-nowrap">Ganhos</span>
+                              <span className="text-label font-mono text-success tabular-nums">{formatCurrencyK(emp.valor_ganhos)}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="text-label text-light-t3 dark:text-dark-t3 whitespace-nowrap">Perdidos</span>
+                              <span className="text-label font-mono text-danger tabular-nums">{formatCurrencyK(emp.valor_perdidos)}</span>
+                            </div>
+                          </div>
+                        </div>
                         <ChevronRight
                           className={clsx(
                             'h-3 w-3 flex-shrink-0',

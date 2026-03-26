@@ -49,7 +49,10 @@ export const listCompaniesWithActiveActions = async (): Promise<CompanyWithActio
       company_trade_name,
       active_actions_count,
       last_action_at,
-      valor_total_orcamentos
+      valor_total_orcamentos,
+      valor_abertos,
+      valor_ganhos,
+      valor_perdidos
     `
     );
 
@@ -66,6 +69,9 @@ export const listCompaniesWithActiveActions = async (): Promise<CompanyWithActio
       trade_name: row.company_trade_name as string,
       action_count: (row.active_actions_count as number) || 0,
       valor_total_orcamentos: (row.valor_total_orcamentos as number) || 0,
+      valor_abertos: (row.valor_abertos as number) || 0,
+      valor_ganhos: (row.valor_ganhos as number) || 0,
+      valor_perdidos: (row.valor_perdidos as number) || 0,
     }))
     .filter((c) => c.action_count > 0)
     .sort((a, b) => a.trade_name.localeCompare(b.trade_name));

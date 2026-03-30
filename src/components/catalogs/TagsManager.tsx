@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import TagForm from './TagForm';
 import clsx from 'clsx';
 
@@ -150,10 +150,16 @@ const TagsManager: React.FC = () => {
         <section className="neumorphic-convex rounded-2xl p-4 sm:p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-t1">Gerenciador de Etiquetas</h2>
-            <Button onClick={handleOpenCreate} variant="primary">
-              <Plus className="h-5 w-5 mr-2" />
-              Adicionar Nova Etiqueta
-            </Button>
+            <button
+              onClick={handleOpenCreate}
+              style={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', gap: '8px', background: '#3b68f5', color: '#ffffff', border: '0.5px solid rgba(59,104,245,0.38)', borderRadius: '8px', padding: '8px 16px', fontSize: '13px', fontWeight: 500, cursor: 'pointer', boxShadow: '0 1px 8px rgba(59,104,245,0.35)' }}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M8 4.5v7M4.5 8h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              <span>Adicionar Nova Etiqueta</span>
+            </button>
           </div>
 
           <div className="mb-4 max-w-md">

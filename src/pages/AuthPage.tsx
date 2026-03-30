@@ -31,6 +31,7 @@ import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import { supabase } from '@/lib/supabaseClient';
+import { AppVersion } from '@/components/AppVersion';
 
 type AuthView = 'login' | 'signup' | 'forgot';
 
@@ -107,9 +108,13 @@ export const AuthPage = () => {
   // VIEW: LOGIN / SIGNUP
   // ---------------------------------------------------------------------------
   return (
-    <div className="flex items-center justify-center min-h-screen bg-plate dark:bg-dark-s1">
+    <div className="relative flex items-center justify-center min-h-screen bg-plate dark:bg-dark-s1">
       <div className="w-full max-w-sm p-8 space-y-6 bg-plate dark:bg-dark-s1 rounded-2xl neumorphic-convex">
-        
+
+        <div className="flex justify-center mb-2">
+          <img src="/logo-login.png" alt="CRMappy" className="h-12 w-auto" />
+        </div>
+
         <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-dark-t1">
           {getTitle()}
         </h1>
@@ -143,8 +148,16 @@ export const AuthPage = () => {
             required={view === 'login' || view === 'signup'}
             minLength={6}
             autoComplete={view === 'login' ? 'current-password' : 'new-password'}
-            icon={showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            onIconClick={() => setShowPassword(!showPassword)}
+            iconRight={
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                className="text-dark-t3 hover:text-dark-t1 transition-colors"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            }
           />
           
           {view === 'login' && (
@@ -241,6 +254,10 @@ export const AuthPage = () => {
           </button>
         </p>
       </div>
+
+      <footer className="absolute bottom-6 left-6">
+        <AppVersion />
+      </footer>
     </div>
   );
 };

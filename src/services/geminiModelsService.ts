@@ -30,6 +30,18 @@
 */
 
 import { getDefaultIntegrationKey } from "@/services/integrationKeysService";
+import { LLM_MODEL, LLM_DEFAULT_PRESET, LLMPreset } from "@/config/llmPreset";
+
+const PRESET_STORAGE_KEY = 'crmappy.llm.preset';
+
+function getLLMPreset(): LLMPreset {
+  try {
+    const stored = localStorage.getItem(PRESET_STORAGE_KEY);
+    return stored ? (JSON.parse(stored) as LLMPreset) : LLM_DEFAULT_PRESET;
+  } catch {
+    return LLM_DEFAULT_PRESET;
+  }
+}
 
 export type GeminiModel = {
   name: string;
@@ -122,7 +134,7 @@ export async function generateGeminiContent(
     );
   }
 
-  const effectiveModelId = modelId || model || "gemini-2.5-flash";
+  const effectiveModelId = modelId || model || LLM_MODEL;
   const url = `${GEMINI_MODELS_ENDPOINT}/${encodeURIComponent(
     effectiveModelId
   )}:generateContent?key=${encodeURIComponent(key.apiKey)}`;
@@ -132,6 +144,8 @@ export async function generateGeminiContent(
     ? `${system.trim()}\n\n${prompt.trim()}`
     : prompt.trim();
 
+  const preset = getLLMPreset();
+
   const body = {
     contents: [
       {
@@ -140,8 +154,10 @@ export async function generateGeminiContent(
       },
     ],
     generationConfig: {
-      temperature,
-      maxOutputTokens,
+      temperature: preset.temperature,
+      topP: preset.top_p,
+      maxOutputTokens: preset.max_tokens,
+      // frequency_penalty e presence_penalty são parâmetros OpenAI — não enviados ao Gemini
     },
   };
 

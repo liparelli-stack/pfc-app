@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Comandos
 
 ```bash
-npm run dev       # Dev server (Vite, porta 3000)
+npm run dev       # Dev server (Vite, porta 5173)
 npm run build     # tsc + vite build → dist/
 npm run lint      # ESLint (TypeScript + React, zero warnings)
 npm run preview   # Preview do build de produção
@@ -32,7 +32,7 @@ supabase functions deploy <name>
 CRM Appy é uma plataforma CRM moderna para gestão de relacionamento com clientes, vendas, agenda e base de conhecimento. Suporte multi-tenant, integrações com IA (Google Gemini) e impersonação de usuários via Master Admin.
 
 - Idioma da interface: Português Brasileiro (pt-BR)
-- Deploy: Netlify (SPA)
+- Deploy: Netlify (SPA) — `https://cognosone.pro/crmappy`
 - Backend: Supabase (PostgreSQL + Auth + Edge Functions)
 
 ---
@@ -71,6 +71,7 @@ src/
 │   ├── Cockpit/        # Pipeline kanban + CRUD inline
 │   ├── Dashboard/
 │   ├── Vision360/
+│   ├── HubGestao/      # Dashboard executivo: RankingClientes + ClientDetailModal
 │   ├── Deals/
 │   ├── AgendaX/
 │   ├── Knowledge/
@@ -87,7 +88,7 @@ src/
 ├── superMa/            # Módulo Master Admin (impersonação)
 ├── schemas/            # Schemas adicionais
 ├── providers/          # Providers React
-├── config/             # Constantes de configuração
+├── config/             # llmPreset.ts, llmProviders.ts + outras constantes
 ├── data/               # Dados estáticos
 └── lib/
     └── supabaseClient.ts
@@ -186,6 +187,8 @@ Page → Hook (src/hooks/use*.ts) → Service (src/services/*Service.ts) → Sup
 
 O `AuthContext` propaga `user`, `profile`, `tenantId` via React Context — não passar `tenant_id` manualmente em queries.
 
+**CurrentProfileLite** (v3.6): objeto leve com `{ id, tenantId, displayName, salutationPref, timezone }`. Resolução assíncrona (paralela) — `displayName` é o primeiro nome e **nunca** exibe email como fallback. Sempre vazio até resolver.
+
 ### Regra de Ouro
 
 - **RLS garante:** Isolamento de tenant (segurança do banco)
@@ -276,6 +279,31 @@ Status de deals: `aberta | ganha | perdida | em_espera`
 
 ---
 
+## HubGestao — Dashboard Executivo
+
+Módulo de performance de carteiras em `src/components/HubGestao/`:
+
+- **RankingClientes**: tabela com cabeçalho duplo agrupando status (`em_espera | ganha | perdida | encerrado`). Sub-colunas: R$ | Qtd | TKM | % | TME/TMA (dias). Ordenação client-side, filtros por vendedor (admin only) e período.
+- **ClientDetailModal**: deep dive com 4 seções — Números, Comportamento (cadência/temperatura/canais), Score Saúde, IA.
+  - Score de Saúde: algoritmo de penalidades por tipo (`silence`, `cooling`, `no_budget`, `loss_rate`, `overdue`)
+  - Temperatura: timeline com ECharts, rótulos Fria/Neutra/Morna/Quente
+  - IA: prompt ao Gemini e salva análise como nota em `ai_notes`
+- **clientRankingService**: RPC `get_client_ranking(p_tenant_id, p_author_user_id?, p_period_start?, p_period_end?)` — retorna `ClientRankingRow[]`; converter strings numéricas do Postgres com `parseFloat()`
+- **clientDetailService**: RPC `get_client_detail(p_company_id, p_tenant_id)` — retorna JSONB com `tempTimeline`, `riskBreakdown`, `chats`, `channelMix`
+
+---
+
+## LLM Preset System
+
+Configuração centralizada de parâmetros de IA em `src/config/`:
+
+- **llmPreset.ts**: defaults (`temperature=0.15`, `top_p=0.9`, `max_tokens=500`)
+- **llmProviders.ts**: catálogo estático de 6 providers (Gemini, OpenAI, Claude, DeepSeek, Qwen, Mistral) com modelos por tier (`free | free-limited | paid | low-cost | experimental`)
+- **useLLMPreset()** (`src/hooks/useLLMPreset.ts`): persiste preset em `localStorage.crmappy.llm.preset`; retorna `{ preset, savePreset, resetToFactory, isCustom }`
+- **geminiModelsService.ts**: lê preset via `getLLMPreset()` e envia `temperature/top_p/maxOutputTokens` ao Gemini API
+
+---
+
 ## Integração com IA
 
 - **Provedor:** Google Gemini API
@@ -283,7 +311,19 @@ Status de deals: `aberta | ganha | perdida | em_espera`
 - `src/services/ai/vision360AiService.ts` — Insights sobre cliente 360
 - `src/services/ai/actionsAiService.ts` — Sugestões de próximas ações
 - `src/services/aiNotesService.ts` — Notas auto-geradas
-- `src/services/geminiModelsService.ts` — Config de modelos
+- `src/services/geminiModelsService.ts` — Config de modelos + execução de prompts
+
+Padrão nos componentes ao usar Gemini:
+```tsx
+const response = await generateGeminiContent({ prompt, system });
+const cleaned = response.replace(/\*\*(.*?)\*\*/g, '$1'); // remove markdown bold
+```
+
+---
+
+## AppVersion
+
+`src/components/AppVersion.tsx` exibe metadados de build: `APP_VERSION`, `BUILD_DATE` (formato DDMM) e `VITE_GIT_SHA` (env var, fallback `'dev'`). Usado em rodapé e tela de login para rastreabilidade.
 
 ---
 
@@ -298,6 +338,47 @@ Alias `@/` aponta para `src/` — usar sempre em vez de caminhos relativos.
 
 ---
 
+## Deploy & Infraestrutura
+
+- **Hosting:** Netlify
+- **Domínio:** `https://cognosone.pro`
+- **Subpath:** aplicação publicada em `https://cognosone.pro/crmappy`
+- **Branch de deploy:** `crmappy-v0102` (deploy automático a cada `git push`)
+
+### Roteamento SPA
+
+React Router **sem** `basename` em `src/main.tsx`:
+
+```tsx
+<BrowserRouter>
+  <App />
+</BrowserRouter>
+```
+
+Redirect configurado em `netlify.toml`:
+
+```toml
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+### Assets estáticos (`public/`)
+
+| Arquivo | Uso |
+|---------|-----|
+| `favicon.svg` | Ícone da aba do navegador |
+| `logo-app.png` | Logo na interface (fundo transparente) |
+| `logo-login.png` | Logo na tela de login (fundo escuro) |
+
+### Dependências de segurança
+
+- `npm audit fix` executado — sem vulnerabilidades críticas pendentes
+- `npm audit fix --force` **não** executado (evitar breaking changes)
+
+---
+
 ## Regras Importantes
 
 1. **Schemas Zod são fonte de verdade** — não criar interfaces TypeScript manualmente
@@ -309,3 +390,11 @@ Alias `@/` aponta para `src/` — usar sempre em vez de caminhos relativos.
 7. **Edge Functions usam Deno** — sintaxe diferente do Node.js
 8. **Normalização de texto:** usar `normalizeText()` de `src/utils/textNormalization.ts` para buscas
 9. **Cockpit:** filtrar por `tenant_id` E `owner_user_id` — RLS é primeira linha, código é segunda
+
+---
+
+## Pendências com Prazo
+
+| Prazo | Item |
+|-------|------|
+| após 2026-04-29 | **Funil de Conversão** — revisar dados da trigger `company_kind_history` (dados ainda não estáveis para validação do funil) |

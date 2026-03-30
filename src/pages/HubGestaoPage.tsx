@@ -16,16 +16,18 @@
 */
 
 import React, { useState } from 'react';
-import { CalendarCheck, Target, MessageSquare, LucideIcon } from 'lucide-react';
+import { CalendarCheck, Target, MessageSquare, Trophy, BarChart2, LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import MonthlyClosurePage from './MonthlyClosurePage';
 import SalesTargetsPage from './SalesTargetsPage';
 import ChatAnalysisPage from './ChatAnalysisPage';
+import RankingClientes from '../components/HubGestao/RankingClientes';
+import BaseDiagnostics from '../components/HubGestao/BaseDiagnostics';
 
 /* ============================================================
    Tipos
    ============================================================ */
-type Section = 'monthly-closure' | 'sales-targets' | 'chat-analysis';
+type Section = 'monthly-closure' | 'sales-targets' | 'chat-analysis' | 'ranking-clientes' | 'base-diagnostics';
 
 interface TabItemProps {
   icon: LucideIcon;
@@ -79,6 +81,18 @@ const HubGestaoPage: React.FC = () => {
       label: 'Acompanhamento de Chats',
       icon: MessageSquare,
       node: <ChatAnalysisPage />,
+    },
+    {
+      id: 'ranking-clientes',
+      label: 'Performance das Carteiras',
+      icon: Trophy,
+      node: <RankingClientes />,
+    },
+    {
+      id: 'base-diagnostics',
+      label: 'Diagnóstico de Base de Empresas',
+      icon: BarChart2,
+      node: <BaseDiagnostics />,
     },
   ];
 

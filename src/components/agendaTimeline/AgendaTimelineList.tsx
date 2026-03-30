@@ -196,7 +196,16 @@ const AgendaTimelineList = ({
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={clsx('px-3 py-2 text-sm', t === tab ? 'bg-primary text-white' : 'hover:neumorphic-concave')}
+                className={t === tab
+                  ? 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200'
+                  : 'px-4 py-2 rounded-lg text-sm font-normal transition-all duration-200'
+                }
+                style={t === tab
+                  ? { background: 'var(--acc)', color: '#fff', border: '0.5px solid var(--abrd)', boxShadow: '0 1px 8px rgba(59,104,245,0.35)' }
+                  : { background: 'var(--s2)', color: 'var(--t1)', border: '0.5px solid var(--bmd)' }
+                }
+                onMouseEnter={t !== tab ? (e) => { e.currentTarget.style.background = 'var(--s3)'; e.currentTarget.style.color = 'var(--t1)'; } : undefined}
+                onMouseLeave={t !== tab ? (e) => { e.currentTarget.style.background = 'var(--s2)'; e.currentTarget.style.color = 'var(--t1)'; } : undefined}
                 aria-pressed={t === tab}
               >
                 {t === 'dia' && <>Do Dia</>}
@@ -235,11 +244,16 @@ const AgendaTimelineList = ({
               <button
                 key={f.key}
                 onClick={() => setQuickFilter(f.key)}
-                className={clsx(
-                  'px-3 py-1.5 rounded-full text-xs font-semibold',
-                  'neumorphic-convex hover:neumorphic-concave transition',
-                  active && 'bg-primary text-white'
-                )}
+                className={active
+                  ? 'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200'
+                  : 'px-4 py-2 rounded-lg text-sm font-normal transition-all duration-200'
+                }
+                style={active
+                  ? { background: 'var(--acc)', color: '#fff', border: '0.5px solid var(--abrd)', boxShadow: '0 1px 8px rgba(59,104,245,0.35)' }
+                  : { background: 'var(--s2)', color: 'var(--t1)', border: '0.5px solid var(--bmd)' }
+                }
+                onMouseEnter={!active ? (e) => { e.currentTarget.style.background = 'var(--s3)'; e.currentTarget.style.color = 'var(--t1)'; } : undefined}
+                onMouseLeave={!active ? (e) => { e.currentTarget.style.background = 'var(--s2)'; e.currentTarget.style.color = 'var(--t1)'; } : undefined}
                 aria-pressed={active}
                 title={`Filtrar: ${f.label}`}
               >

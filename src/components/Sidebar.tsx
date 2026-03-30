@@ -207,10 +207,14 @@ const Sidebar = ({ theme, toggleTheme, isOpen, setIsOpen, isDesktop, activeItem,
       )}
     >
       {/* LOGO + COLLAPSE */}
-      <div className={clsx('flex items-center mb-6 h-10', isOpen ? 'justify-between px-1' : 'justify-center')}>
+      <div className={clsx('flex items-center mb-2 h-[112px]', isOpen ? 'justify-between px-1' : 'justify-center')}>
         {isOpen && (
-          <div className={clsx('text-[13px] font-medium tracking-tight-sm py-1.5 px-3 rounded', t.logo[theme])}>
-            CRM Appy
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img
+              src="/logo-topo-menu.png"
+              alt="CRM Appy"
+              style={{ height: '112px', width: 'auto', objectFit: 'contain', maxWidth: '100%' }}
+            />
           </div>
         )}
         {isDesktop && (

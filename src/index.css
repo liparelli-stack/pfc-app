@@ -25,6 +25,55 @@
 @tailwind utilities;
 
 /* ===================================================
+   CSS Variables — DS v0101
+   Aliases curtos para usar via var() em qualquer contexto.
+   Espelham exatamente os tokens do tailwind.config.js.
+   =================================================== */
+:root {
+  /* Surfaces (Light) */
+  --bg:   #f4f5f7;
+  --s1:   #eef0f4;
+  --s2:   #f8f9fb;
+  --s3:   #ffffff;
+  /* Texto (Light) */
+  --t1:   #0f1117;
+  --t2:   #5a6172;
+  --t3:   #9096a3;
+  /* Bordas (Light) */
+  --blo:  rgba(0,0,0,0.07);
+  --bmd:  rgba(0,0,0,0.10);
+  --bhi:  rgba(0,0,0,0.16);
+  /* Accent (Light) */
+  --acc:  #1c4c96;
+  --adim: rgba(28,76,150,0.10);
+  --abrd: rgba(28,76,150,0.30);
+  /* Ease padrão */
+  --ease: cubic-bezier(0.4,0,0.2,1);
+}
+
+.dark {
+  /* Surfaces (Dark) */
+  --bg:   #0c0d10;
+  --s1:   #13151a;
+  --s2:   #1a1d24;
+  --s3:   #22262f;
+  /* Texto (Dark) */
+  --t1:   #f0eeec;
+  --t2:   #9096a3;
+  --t3:   #555b68;
+  /* Bordas (Dark) */
+  --blo:  rgba(255,255,255,0.06);
+  --bmd:  rgba(255,255,255,0.11);
+  --bhi:  rgba(255,255,255,0.17);
+  /* Accent (Dark) */
+  --acc:  #3b68f5;
+  --adim: rgba(59,104,245,0.12);
+  --abrd: rgba(59,104,245,0.38);
+  /* Ease padrão */
+  --ease: cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ===================================================
    Tema Base (Light/Dark padrão) — DS v0101
    =================================================== */
 @layer base {
@@ -558,6 +607,43 @@
 [data-theme='sepia'] .btn-next-action:hover {
   background: rgba(59,42,20,0.06);
   color: #3b2e1a;
+}
+
+/* ===================================================
+   LLM Range Sliders — DS v0101
+   Classe .llm-range para não afetar outros range inputs
+   =================================================== */
+input.llm-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--s3);
+  border-radius: 4px;
+  height: 4px;
+  outline: none;
+  cursor: pointer;
+}
+input.llm-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--acc);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(59,104,245,0.3);
+  transition: box-shadow 0.2s;
+}
+input.llm-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--acc);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(59,104,245,0.3);
+}
+input.llm-range:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(59,104,245,0.15);
 }
 
 /* ===================================================

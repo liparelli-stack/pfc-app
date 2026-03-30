@@ -18,6 +18,7 @@
 */
 
 import React, { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Lock, RefreshCw, FileSpreadsheet, FileText, FileDown, Search,
   AlertTriangle, TrendingUp, TrendingDown, Target, DollarSign, CalendarSearch,
@@ -160,6 +161,7 @@ const ConfirmCloseModal: React.FC<ConfirmCloseModalProps> = ({ mes, onConfirm, o
 const MonthlyClosurePage: React.FC = () => {
   const { session, currentProfileLite } = useAuth();
   const { addToast } = useToast();
+  const queryClient = useQueryClient();
   // Estado inicial null: nenhuma query disparada até o usuário selecionar um mês
   const [selectedMes, setSelectedMes] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -195,6 +197,9 @@ const MonthlyClosurePage: React.FC = () => {
       addToast(`Baseline criado: ${result.records} orçamentos importados.`, 'success');
       setHasBaseline(true);
       setShowBaselineModal(false);
+      if (selectedMes) {
+        await queryClient.invalidateQueries({ queryKey: ['monthly-closure', selectedMes] });
+      }
     } catch (e: any) {
       addToast(e?.message || 'Falha ao criar baseline.', 'error');
     } finally {
@@ -426,28 +431,81 @@ const MonthlyClosurePage: React.FC = () => {
 
               <div className="bg-light-s1 dark:bg-dark-s1 rounded-lg p-3 border border-light-blo dark:border-dark-blo">
                 <div className="font-medium text-light-t1 dark:text-dark-t1 mb-2 flex items-center gap-2">
-                  🗓️ <strong>Como selecionar o período:</strong>
+                  📊 <strong>Como selecionar o período:</strong>
                 </div>
                 <p className="text-light-t2 dark:text-dark-t2">
                   Use o <strong>dropdown de mês/ano</strong> (no topo da página) para escolher qual período você quer analisar. Os dados exibidos na tela são automaticamente filtrados para o mês selecionado.
                 </p>
               </div>
+            </div>
+          </section>
 
-              <div className="bg-light-s1 dark:bg-dark-s1 rounded-lg p-3 border border-light-blo dark:border-dark-blo">
-                <div className="font-medium text-light-t1 dark:text-dark-t1 mb-2 flex items-center gap-2">
-                  🎯 <strong>Propósito do fechamento:</strong>
+          <div className="h-px bg-light-bmd dark:bg-dark-bmd my-6"></div>
+
+          {/* === SEÇÃO: COMO FUNCIONA O FECHAMENTO === */}
+          <section>
+            <h3 className="text-lg font-semibold text-light-t1 dark:text-dark-t1 mb-4 flex items-center gap-2">
+              🔍 Como funciona o fechamento?
+            </h3>
+            <div className="space-y-3 text-sm">
+
+              <div className="p-3 bg-light-s1 dark:bg-dark-s1 rounded-lg border border-light-blo dark:border-dark-blo">
+                <div className="font-medium text-light-t1 dark:text-dark-t1 mb-1 flex items-center gap-2">
+                  🗃️ <strong>Fonte de dados:</strong>
                 </div>
-                <ul className="space-y-1 text-light-t2 dark:text-dark-t2 list-disc list-inside">
-                  <li>Criar um <strong>snapshot imutável</strong> dos resultados do mês</li>
-                  <li>Facilitar análises comparativas mês a mês</li>
-                  <li>Gerar relatórios detalhados por vendedor (via exportação)</li>
-                  <li>Bloquear alterações retroativas em períodos já encerrados</li>
-                </ul>
+                <p className="text-light-t2 dark:text-dark-t2">
+                  O sistema busca informações na tabela que registra todas as mudanças de status de cada orçamento ao longo do tempo. Se um orçamento foi criado como "Em Espera" e depois mudou para "Ganha", existem 2 registros — o sistema sempre considera a <strong>mudança mais recente</strong>.
+                </p>
               </div>
 
-              <p className="text-xs italic text-light-t3 dark:text-dark-t3">
-                💡 <strong>Dica:</strong> A tela mostra a <strong>sumarização rápida</strong> (por status). Para ver o <strong>detalhamento completo por pessoa</strong>, use os botões de exportação (Excel/CSV/PDF).
-              </p>
+              <div className="p-3 bg-light-s1 dark:bg-dark-s1 rounded-lg border border-light-blo dark:border-dark-blo">
+                <div className="font-medium text-light-t1 dark:text-dark-t1 mb-1 flex items-center gap-2">
+                  📆 <strong>Critério de filtro por mês:</strong>
+                </div>
+                <p className="text-light-t2 dark:text-dark-t2">
+                  Os orçamentos aparecem no mês em que <strong>mudaram de status pela última vez</strong>, não pelo mês de criação.
+                </p>
+                <p className="text-xs italic text-light-t3 dark:text-dark-t3 mt-2">
+                  Exemplo: Orçamento criado em janeiro mas ganho em março → aparece no fechamento de <strong>março</strong>.
+                </p>
+              </div>
+
+              <div className="p-3 bg-light-s1 dark:bg-dark-s1 rounded-lg border border-light-blo dark:border-dark-blo">
+                <div className="font-medium text-light-t1 dark:text-dark-t1 mb-1 flex items-center gap-2">
+                  🗄️ <strong>Baseline inicial:</strong>
+                </div>
+                <p className="text-light-t2 dark:text-dark-t2">
+                  Na primeira vez, clique em <strong>"Criar Baseline"</strong> para importar todos os orçamentos existentes. Esse processo pode rodar várias vezes sem duplicar e atualiza a tela automaticamente.
+                </p>
+              </div>
+
+              <div className="p-3 bg-light-s1 dark:bg-dark-s1 rounded-lg border border-light-blo dark:border-dark-blo">
+                <div className="font-medium text-light-t1 dark:text-dark-t1 mb-1 flex items-center gap-2">
+                  🔒 <strong>Ao fechar o mês:</strong>
+                </div>
+                <p className="text-light-t2 dark:text-dark-t2">
+                  Quando você clica em <strong>"Fechar Mês"</strong>, o sistema cria uma fotografia imutável dos resultados. Dados ficam congelados, permitindo análises históricas mês a mês.
+                </p>
+              </div>
+
+              <div className="p-3 bg-light-s1 dark:bg-dark-s1 rounded-lg border border-light-blo dark:border-dark-blo">
+                <div className="font-medium text-light-t1 dark:text-dark-t1 mb-1 flex items-center gap-2">
+                  ⏱️ <strong>Dados em tempo real:</strong>
+                </div>
+                <p className="text-light-t2 dark:text-dark-t2">
+                  Meses abertos atualizam a cada 30 segundos. Meses fechados vêm da fotografia e não mudam mais.
+                </p>
+              </div>
+
+              <div className="p-3 bg-light-s1 dark:bg-dark-s1 rounded-lg border border-light-blo dark:border-dark-blo">
+                <div className="font-medium text-light-t1 dark:text-dark-t1 mb-1 flex items-center gap-2">
+                  📤 <strong>Exportações:</strong>
+                </div>
+                <p className="text-light-t2 dark:text-dark-t2">
+                  Excel, CSV e PDF sempre refletem <strong>exatamente</strong> os mesmos números da tela.
+                </p>
+              </div>
+
             </div>
           </section>
 

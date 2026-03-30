@@ -34,7 +34,6 @@ import {
   AlertCircle,
   UserCheck,
   UserX,
-  Sparkles,
   Flame,
   Thermometer,
   MinusCircle,
@@ -121,9 +120,9 @@ function getGenderPrefix(pref?: SalutationPref | null): "Bem-vindo" | "Bem-vinda
 }
 
 function getCardGradient(hour: number): string {
-  if (hour <= 11) return "from-amber-400 to-orange-500";
-  if (hour <= 17) return "from-sky-500 to-indigo-600";
-  return "from-fuchsia-600 to-violet-700";
+  if (hour <= 11) return "linear-gradient(135deg, rgba(251,191,36,0.50) 0%, rgba(249,115,22,0.60) 100%)";
+  if (hour <= 17) return "linear-gradient(135deg, rgba(14,165,233,0.50) 0%, rgba(79,70,229,0.60) 100%)";
+  return "linear-gradient(135deg, rgba(79,70,229,0.50) 0%, rgba(30,58,138,0.60) 100%)";
 }
 
 /**
@@ -497,15 +496,6 @@ function useAgendaHoje(timezone: string) {
 
 /* ============================ UI Reutilizáveis ============================ */
 
-const IaBadge: React.FC = () => (
-  <button
-    type="button"
-    className="absolute top-3 right-3 inline-flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-200 p-1.5 text-[10px] hover:scale-105 transition"
-    title="Clique aqui para análise IA"
-  >
-    <Sparkles className="h-3 w-3" aria-hidden="true" />
-  </button>
-);
 
 const NeumorphicCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
@@ -514,7 +504,6 @@ const NeumorphicCard: React.FC<{ children: React.ReactNode; className?: string }
   <div
     className={`relative bg-plate dark:bg-dark-s1 rounded-2xl p-6 neumorphic-convex hover:neumorphic-concave active:neumorphic-concave transition-all duration-200 ${className}`}
   >
-    <IaBadge />
     {children}
   </div>
 );
@@ -862,7 +851,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className={`p-6 rounded-2xl bg-gradient-to-r ${gradient} text-white shadow-lg`}>
+      <div className="p-6 rounded-2xl text-white shadow-lg" style={{ background: gradient }}>
         <h2 className="text-2xl font-bold">
           {greeting}
           {displayName ? `, ${displayName}!` : "!"} 👋
